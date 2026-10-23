@@ -59,6 +59,7 @@ export default () => {
     fileState.name = f.name
     fileState.savedAt = f.savedAt
     fileState.dirty = false
+    fileState.sample = false
     return true
   }
 
@@ -69,6 +70,7 @@ export default () => {
     fileState.name = ''
     fileState.savedAt = 0
     fileState.dirty = false
+    fileState.sample = false
   }
 
   /** 샘플 제안서 열기 — 새 문서로(저장하면 내 파일에 새로 생김) */

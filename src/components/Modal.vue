@@ -42,7 +42,7 @@ const emit = defineEmits<{
   (event: 'closed'): void
 }>()
 
-const contentVisible = ref(false)
+const contentVisible = ref(props.visible) // 처음부터 열린 채 시작해도 내용이 보이게
 
 const contentStyle = computed(() => {
   return {

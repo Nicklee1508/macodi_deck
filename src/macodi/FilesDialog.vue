@@ -32,12 +32,12 @@
           <div class="fd-meta">빈 캔버스로 시작</div>
         </div>
         <!-- 샘플 제안서 — 새 프로젝트 다음(삭제 불가). 열면 새 문서로 시작 -->
-        <div class="fd-card sample" @click="doOpenSample">
+        <div class="fd-card sample" :class="{ cur: fileState.sample && !fileState.id }" @click="doOpenSample">
           <div class="fd-thumb">
             <ThumbnailSlide v-if="sampleThumb" :slide="sampleThumb" :size="216" />
           </div>
           <div class="fd-name">샘플 제안서</div>
-          <div class="fd-meta">마코디 예시 · {{ sampleCount }}장</div>
+          <div class="fd-meta">moodeck 예시 · {{ sampleCount }}장</div>
           <span class="fd-badge">샘플</span>
         </div>
         <div
@@ -74,6 +74,7 @@ import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 import { type DeckFile, deleteFile, fileState, listFiles } from './autosave'
 import useDeckFiles from './useDeckFiles'
 import { fetchSampleDeck } from './sampleDeck'
+import { ensureSubscribed } from './subscription'
 
 const { title } = storeToRefs(useSlidesStore())
 const { saveFileAs, openFile, openSample, openBlank } = useDeckFiles()
@@ -85,10 +86,16 @@ const loadSampleThumb = () => fetchSampleDeck().then(d => {
   sampleThumb.value = d.slides[d.startIndex] || d.slides[0] || null
   sampleCount.value = d.slides.length
 }).catch(() => undefined)
-const doOpenBlank = () => {
+const doOpenBlank = async () => {
+  if (!(await ensureSubscribed('new'))) return // 새 프로젝트 = 구독 기능(서버로 바로 확인)
   if (openBlank()) fileState.dialog = ''
 }
 const doOpenSample = async () => {
+  // 지금 열려 있는 게 샘플이면 그대로 이어서(고친 내용 유지)
+  if (fileState.sample && !fileState.id) {
+    fileState.dialog = ''
+    return
+  }
   if (await openSample()) fileState.dialog = ''
 }
 
@@ -110,7 +117,7 @@ watch(() => fileState.dialog, d => {
     refresh()
     loadSampleThumb()
   }
-})
+}, { immediate: true }) // 첫 화면으로 이미 열린 채 시작할 때도
 
 const doSaveAs = async () => {
   await saveFileAs(name.value)

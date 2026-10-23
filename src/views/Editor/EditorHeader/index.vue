@@ -26,11 +26,15 @@
           </div>
           <Divider :margin="10" />
           <!-- 내 파일(로그인 없이 이 브라우저에 저장) -->
+          <PopoverMenuItem class="popover-menu-item" @click="fileState.dialog = 'open'; mainMenuVisible = false"><i-icon-park-outline:folder-open class="icon" /> 내 파일 열기 <span class="hk">Ctrl+O</span></PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="saveFile(); mainMenuVisible = false"><i-icon-park-outline:save class="icon" /> 저장 <span class="hk">Ctrl+S</span></PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="fileState.dialog = 'saveAs'; mainMenuVisible = false"><i-icon-park-outline:save-one class="icon" /> 다른 이름으로 저장 <span class="hk">Ctrl+Shift+S</span></PopoverMenuItem>
-          <PopoverMenuItem class="popover-menu-item" @click="fileState.dialog = 'open'; mainMenuVisible = false"><i-icon-park-outline:folder-open class="icon" /> 내 파일 열기 <span class="hk">Ctrl+O</span></PopoverMenuItem>
           <Divider :margin="10" />
           <PopoverMenuItem class="popover-menu-item" @click="setDialogForExport('pptx')"><i-icon-park-outline:download class="icon" /> 파일 내보내기</PopoverMenuItem>
+          <Divider :margin="10" />
+          <!-- 구독(로그인 없음·활성화 키) -->
+          <PopoverMenuItem class="popover-menu-item" @click="openSub('manage')"><i-icon-park-outline:vip-one class="icon" /> 구독 관리 <span class="hk">{{ subscribeState.active ? '이용 중' : '' }}</span></PopoverMenuItem>
+          <PopoverMenuItem class="popover-menu-item" @click="openSub('activate')"><i-icon-park-outline:key class="icon" /> 활성화 키 입력</PopoverMenuItem>
           <Divider :margin="10" />
           <!-- 개발 전용: 지금 제안서를 기본 샘플 원본으로 저장(운영 빌드엔 안 보임) -->
           <PopoverMenuItem v-if="isDev" class="popover-menu-item" @click="saveAsSample(); mainMenuVisible = false"><i-icon-park-outline:upload-one class="icon" /> (개발) 지금 제안서를 기본 샘플로</PopoverMenuItem>
@@ -42,6 +46,9 @@
         </template>
         <div class="menu-item"><i-icon-park-outline:hamburger-button class="icon" /></div>
       </Popover>
+
+      <!-- moodeck 로고 — 누르면 랜딩(사이트 첫 화면) -->
+      <a class="brand" href="/" title="moodeck 홈"><img :src="moodeckMark" alt="" /><span>moodeck</span></a>
 
       <div class="title">
         <Input 
@@ -100,6 +107,8 @@ import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
 import { loadSampleDeck } from '@/macodi/sampleDeck'
 import { draftState, fileState } from '@/macodi/autosave'
 import useDeckFiles from '@/macodi/useDeckFiles'
+import { ensureSubscribed, subscribeState } from '@/macodi/subscription'
+import moodeckMark from '@/assets/moodeck-mark.svg'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
@@ -145,12 +154,19 @@ const stateText = computed(() => {
 
 // 새 제안서 — 기본 양식으로 다시 시작(지금 작업은 덮어씀, 확인 후)
 const startNewDeck = async () => {
+  mainMenuVisible.value = false
+  if (!(await ensureSubscribed('new'))) return // 새 제안서 = 구독 기능(새 프로젝트 생성과 같음)
   if (fileState.dirty ? !confirmDiscard() : !window.confirm('기본 양식으로 새로 시작할까요?' + (fileState.id ? ' (저장한 파일은 내 파일에 그대로 있어요)' : ' 지금 작업은 지워져요.'))) return
   detachFile()
   mainStore.setActiveElementIdList([])
   await loadSampleDeck()
 }
 const isDev = import.meta.env.DEV
+const openSub = (mode: 'manage' | 'activate') => {
+  subscribeState.reason = ''
+  subscribeState.mode = mode
+  mainMenuVisible.value = false
+}
 const saveAsSample = async () => {
   const { slides, viewportRatio, theme } = slidesStore
   const body = JSON.stringify({ title: '샘플 제안서', viewportRatio, theme, startIndex: 11, slides })
@@ -227,6 +243,22 @@ const setDialogForExport = (type: DialogForExportTypes) => {
 
   &:hover {
     background-color: #f1f1f1;
+  }
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 10px 0 4px;
+  padding-right: 12px;
+  border-right: 1px solid $borderColor;
+  text-decoration: none;
+  img { width: 24px; height: 21px; }
+  span {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    color: #23443A;
   }
 }
 .popover-menu-item {

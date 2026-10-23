@@ -187,7 +187,7 @@ const openSelectPanel = () => {
   color: #222;
   cursor: pointer;
   white-space: nowrap;
-  &:hover:not(.off) { background: #f3effc; color: $themeColor; }
+  &:hover:not(.off) { background: #EEF2EE; color: $themeColor; }
   &.off { color: #bbb; cursor: default; }
   .ic { font-size: 15px; flex: none; }
   .ic.flip { transform: scaleX(-1); }

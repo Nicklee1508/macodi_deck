@@ -5,6 +5,7 @@
 import api from '@/services'
 import { useSlidesStore } from '@/store'
 import type { Slide, SlideTheme } from '@/types/slides'
+import { fileState } from './autosave'
 
 interface SampleDeck {
   title: string
@@ -43,4 +44,5 @@ export const loadSampleDeck = async () => {
   if (d.viewportRatio) slidesStore.setViewportRatio(d.viewportRatio)
   slidesStore.setSlides(d.slides)
   slidesStore.updateSlideIndex(Math.min(d.startIndex || 0, d.slides.length - 1))
+  fileState.sample = true
 }

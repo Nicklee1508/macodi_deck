@@ -1,13 +1,11 @@
 <template>
   <div class="element-animation-panel">
     <div class="element-animation" v-if="handleElement">
-      <Popover 
-        trigger="click" 
-        v-model:value="animationPoolVisible" 
-        @update:value="visible => handlePopoverVisibleChange(visible)"
-        style="width: 100%;"
-      >
-        <template #content>
+      <!-- 애니메이션 고르기 — 오른쪽 패널 안에서 펼침(패널 밖으로 나가는 팝업이 아니라) -->
+      <Button class="element-animation-btn" :class="{ open: animationPoolVisible }" @click="handleAnimationId = ''; handlePopoverVisibleChange(!animationPoolVisible)">
+        <i-icon-park-outline:effects /> 애니메이션 추가
+      </Button>
+      <div v-if="animationPoolVisible" class="animation-pool-inline">
           <Tabs 
             :tabs="tabs" 
             v-model:value="activeTab" 
@@ -41,11 +39,7 @@
               <div class="mask" v-if="!popoverMaskHide"></div>
             </div>
           </template>
-        </template>
-        <Button class="element-animation-btn" @click="handleAnimationId = ''">
-          <i-icon-park-outline:effects /> 애니메이션 추가
-        </Button>
-      </Popover>
+      </div>
     </div>
 
     <div class="tip" v-else><i-icon-park-outline:click style="margin-right: 5px;" /> 캔버스에서 요소를 선택해 애니메이션을 추가하세요</div>
@@ -141,7 +135,6 @@ import Button from '@/components/Button.vue'
 import Draggable from 'vuedraggable'
 import NumberInput from '@/components/NumberInput.vue'
 import Select from '@/components/Select.vue'
-import Popover from '@/components/Popover.vue'
 
 const animationEffects: Record<string, string> = {}
 for (const effect of ENTER_ANIMATIONS) {
@@ -334,13 +327,11 @@ const addAnimation = (type: AnimationType, effect: string) => {
   }, 0)
 }
 
-// 动画选择面板打开600ms后再移除遮罩层，否则打开面板后迅速滑入鼠标预览会导致抖动
+// 애니메이션 고르기 펼침/접기(패널 안). 펼치는 애니메이션이 없어 미리보기 가림막은 바로 걷음
 const popoverMaskHide = ref(false)
 const handlePopoverVisibleChange = (visible: boolean) => {
-  if (visible) {
-    setTimeout(() => popoverMaskHide.value = true, 600)
-  }
-  else popoverMaskHide.value = false
+  animationPoolVisible.value = visible
+  popoverMaskHide.value = visible
 }
 
 const openAnimationPool = (elementId: string) => {
@@ -367,9 +358,9 @@ $attentionColor: #e8b76a;
   flex-direction: column;
 }
 .element-animation {
-  height: 32px;
   display: flex;
-  align-items: center;
+  flex-direction: column; // 버튼 아래로 애니메이션 목록이 펼쳐짐(패널 폭 그대로)
+  flex-shrink: 0;
 }
 .element-animation-btn {
   width: 100%;
@@ -389,9 +380,20 @@ $attentionColor: #e8b76a;
   align-items: center;
   font-style: italic;
 }
+.animation-pool-inline {
+  margin-top: 10px;
+  padding: 10px 8px 4px;
+  border: 1px solid $borderColor;
+  border-radius: $borderRadius;
+  background: #fff;
+}
+.element-animation-btn.open {
+  border-color: $themeColor;
+  color: $themeColor;
+}
 .animation-pool {
-  width: 400px;
-  height: 500px;
+  width: 100%;
+  max-height: 440px;
   overflow-y: auto;
   overflow-x: hidden;
   font-size: 12px;
@@ -431,17 +433,26 @@ $attentionColor: #e8b76a;
   @include flex-grid-layout();
 }
 .pool-item {
-  @include flex-grid-layout-children(4, 24%);
+  @include flex-grid-layout-children(3, 32%);
 
-  margin-bottom: 5px;
-  height: 40px;
-  line-height: 40px;
+  margin-bottom: 6px;
   text-align: center;
   cursor: pointer;
 }
+// 한글 이름이 길어(예: 오른쪽으로 튀며 나타나기) 한 줄 40px 상자를 넘쳤음 → 두 줄까지 상자 안에
 .animation-box {
+  height: 44px;
+  padding: 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: $lightGray;
   border-radius: $borderRadius;
+  font-size: 11.5px;
+  line-height: 1.35;
+  word-break: keep-all;
+  overflow: hidden;
+  &:hover { background-color: #EEF2EE; color: $themeColor; }
 }
 
 .animation-sequence {

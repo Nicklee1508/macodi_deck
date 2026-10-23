@@ -53,7 +53,7 @@ const readSaved = (): { shareKey: string; editKey: string } | null => {
   }
 }
 const saved = ref(readSaved())
-const linkOf = (k: string) => `${window.location.origin}/?v=${k}`
+const linkOf = (k: string) => `${window.location.origin}/editor?v=${k}` // 편집기 주소(사이트 첫 화면은 랜딩)
 const link = ref(saved.value ? linkOf(saved.value.shareKey) : '')
 const stats = reactive({ viewCount: 0, lastViewedAt: null as string | null })
 const busy = ref(false)
