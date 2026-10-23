@@ -1,15 +1,33 @@
-/* Macodi Deck 랜딩 — 주소 설정 + 화면 동작 */
+/* moodeck 랜딩 — 주소 설정 + 화면 동작 */
 
 // ===== 주소 설정: 운영 주소가 바뀌면 여기만 수정 =====
 var CONFIG = {
-  appUrl: 'https://deck.macodi.co.kr/', // '무료로 시작하기' 등 Deck 으로 가는 버튼
-  macodiUrl: 'https://macodi.co.kr/',   // 마코디 홈페이지 · 약관 링크
+  appUrl: 'https://deck.macodi.co.kr/editor', // '무료로 시작하기' 등 Deck 편집 화면으로 가는 버튼
+  macodiUrl: 'https://macodi.co.kr/',   // 이용약관 · 개인정보처리방침 링크(운영사 문서)
 };
 
 (function () {
   // 버튼 주소 적용
   document.querySelectorAll('[data-app-link]').forEach(function (a) { a.href = CONFIG.appUrl; });
   document.querySelectorAll('[data-macodi-link]').forEach(function (a) { a.href = CONFIG.macodiUrl + (a.dataset.path || ''); });
+
+  // 준비 중인 기능 버튼(data-soon) — 화면 아래에 잠깐 안내를 띄움
+  var toast;
+  var toastTimer;
+  document.querySelectorAll('[data-soon]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.setAttribute('role', 'status');
+        document.body.appendChild(toast);
+      }
+      toast.textContent = b.dataset.soon;
+      toast.classList.add('is-on');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove('is-on'); }, 2400);
+    });
+  });
 
   // 헤더: 스크롤 시 하단선, 모바일 메뉴
   var hd = document.querySelector('.hd');
@@ -67,12 +85,12 @@ var CONFIG = {
     return el;
   }
 
-  // 공간 장면용 자재(실제 마코디 등록 제품) — 바닥 / 벽 / 소파 / 카운터
+  // 공간 장면용 자재(실제 마코디 등록 제품) — 바닥 / 소파(처음부터 배치) · 벽 / 천장(AI 영역 검색으로 배치)
   var SPACE_MATS = [
     { img: 'mat-ah6103.jpg', brand: '동신포리마', name: 'AH-6103', kind: '데코타일/LVT', size: '600*600' },
-    { img: 'mat-walnut.jpg', brand: '인목', name: 'INWT70 천연 월넛 슬립매치', kind: '무늬목/무늬목 판재', size: '1200*2400' },
     { img: 'mat-parchment.jpg', brand: 'Designtex', name: '3069-102 Parchment', kind: '패브릭/혼방직물', size: '1420' },
-    { img: 'mat-nd104.jpg', brand: 'LG 비아테라', name: 'ND104 시프', kind: '인조대리석/엔지니어드스톤', size: '1600*3300' },
+    { img: 'mat-walnut.jpg', brand: '인목', name: 'INWT70 천연 월넛 슬립매치', kind: '무늬목/무늬목 판재', size: '1200*2400' },
+    { img: 'mat-na155.jpg', brand: 'KCC', name: 'NA155', kind: '페인트/수성페인트', size: '해당없음' },
   ];
 
   // ===== 히어로: 편집 화면 재현 + 자동 재생 (장면 1 제품 보드 ↔ 장면 2 공간 + 마감재) =====
@@ -94,8 +112,21 @@ var CONFIG = {
     // base = 처음부터 놓인 자재, add = 커서가 클릭해서 넣는 자재, panel = 오른쪽 패널 목록(add 가 위쪽에 보이게)
     var SCENES = [
       { mats: MATS, base: [0, 1], add: [2, 3], panel: [0, 1, 2, 3, 4, 5], page: 3 },
-      { mats: SPACE_MATS, base: [0, 1], add: [2, 3], panel: [2, 3, 0, 1], extra: [MATS[3], MATS[0]], page: 4 },
+      { mats: SPACE_MATS, base: [0, 1], add: [2, 3], panel: [2, 3, 0, 1], extra: [MATS[3], MATS[0]], page: 4,
+        // AI 영역 검색으로 넣는 자재: 사진 위 영역(%: 왼쪽, 위, 폭, 높이) + AI 추천 목록(첫 번째가 클릭할 자재)
+        ai: {
+          2: { rect: [1, 14, 10, 68], recs: [SPACE_MATS[2], // 벽 → 월넛 무늬목
+            { img: 'mat-walnut2.jpg', brand: '인목', name: 'INWT70 천연 월넛', kind: '무늬목/엣지 및 래핑재', size: '19,22,25' },
+            { img: 'mat-walnut3.jpg', brand: '인목', name: 'INSW70 천연 사틴 월넛', kind: '무늬목/엣지 및 래핑재', size: '19,22,25' }] },
+          3: { rect: [58, 10, 32, 22], recs: [SPACE_MATS[3], // 천장 → 흰 도장
+            { img: 'mat-ya43f.jpg', brand: 'KCC', name: 'YA43F', kind: '페인트/수성페인트', size: '해당없음' },
+            { img: 'mat-travertino.jpg', brand: 'OIKOS', name: 'TRAVERTINO MONOLITICO (WHITE)', kind: '스페셜페인트/유럽미장', size: '해당없음' }] },
+        } },
     ];
+    var aiBtn = document.getElementById('heroAi');
+    var aiSel = document.getElementById('heroSel');
+    var aiTag = document.getElementById('heroAiTag');
+    var photo = document.getElementById('heroPhoto');
     SCENES.forEach(function (sc, n) {
       sc.slide = app.querySelector('.aslide[data-scene="' + n + '"]');
       sc.slots = document.getElementById('heroSlots' + n);
@@ -137,13 +168,17 @@ var CONFIG = {
         s.slide.classList.toggle('is-on', s === sc);
         s.th.classList.toggle('is-on', s === sc);
       });
+      renderPanel(sc);
+      pageNo.textContent = '슬라이드 ' + sc.page + ' / 6';
+      say('');
+    };
+    // 오른쪽 패널: 일반 목록
+    function renderPanel(sc) {
       hgrid.innerHTML = '';
       cardEls = [];
       sc.panel.forEach(function (i) { var c = matCard(sc.mats[i], 'div'); hgrid.appendChild(c); cardEls[i] = c; });
       (sc.extra || []).forEach(function (m) { hgrid.appendChild(matCard(m, 'div')); });
-      pageNo.textContent = '슬라이드 ' + sc.page + ' / 6';
-      say('');
-    };
+    }
     SCENES.forEach(reset);
     show(SCENES[0]);
     if (reduceMotion) { SCENES.forEach(function (sc) { sc.add.forEach(function (i) { put(sc, i, false); }); }); return; }
@@ -171,9 +206,59 @@ var CONFIG = {
       await wait(300);
       cursor.classList.remove('is-click');
     };
-    // 한 장면: 마감재 2개를 차례로 클릭해 배치 → 잠시 보여준 뒤 다음 장면을 위해 되돌림
+    // AI 영역 검색: AI 버튼 → 사진 위 영역 드래그 → 추천 목록 → 첫 번째 추천 클릭
+    var aiPick = async function (sc, i) {
+      var ai = sc.ai[i], r = ai.rect, name = sc.mats[i].name;
+      moveTo(aiBtn, .55, .55);
+      await wait(1000);
+      await click(aiBtn);
+      aiBtn.classList.add('on');
+      aiTag.classList.add('on');
+      say('슬라이드 위에서 찾을 곳을 둘러 그려주세요');
+      aiSel.className = 'hsel';
+      aiSel.style.left = r[0] + '%';
+      aiSel.style.top = r[1] + '%';
+      aiSel.style.width = aiSel.style.height = '0';
+      moveTo(photo, r[0] / 100, r[1] / 100);
+      await wait(1000);
+      aiSel.classList.add('on');
+      void aiSel.offsetWidth;
+      aiSel.classList.add('grow');
+      aiSel.style.width = r[2] + '%';
+      aiSel.style.height = r[3] + '%';
+      moveTo(photo, (r[0] + r[2]) / 100, (r[1] + r[3]) / 100);
+      await wait(1100);
+      say('AI 추천 검색 중…');
+      await wait(800);
+      hgrid.innerHTML = '';
+      var target;
+      ai.recs.forEach(function (m, k) { var c = matCard(m, 'div'); hgrid.appendChild(c); if (!k) target = c; });
+      say('AI 추천 자재');
+      await wait(600);
+      moveTo(target);
+      await wait(1000);
+      target.classList.add('is-hover');
+      await wait(350);
+      cursor.classList.add('is-click');
+      target.classList.add('is-press');
+      say('“' + name + '” 삽입 중…');
+      await wait(220);
+      target.classList.remove('is-press');
+      await wait(250);
+      put(sc, i, true);
+      say('삽입 완료: ' + name, true);
+      aiSel.classList.add('fade');
+      await wait(450);
+      cursor.classList.remove('is-click');
+      aiBtn.classList.remove('on');
+      aiTag.classList.remove('on');
+      await wait(900);
+      renderPanel(sc);
+    };
+    // 한 장면: 마감재 2개를 차례로 배치(장면 2는 AI 영역 검색) → 잠시 보여준 뒤 다음 장면을 위해 되돌림
     var play = async function (sc) {
       for (var k = 0; k < sc.add.length; k++) {
+        if (sc.ai && sc.ai[sc.add[k]]) { await aiPick(sc, sc.add[k]); continue; }
         var i = sc.add[k], card = cardEls[i], name = sc.mats[i].name;
         moveTo(card);
         await wait(1000);
@@ -452,12 +537,18 @@ var CONFIG = {
   });
 
   // ===== 이런 분들께 =====
+  // [제목, 설명, 아이콘(24×24 선 아이콘 path)]
   var WHO = [
-    ['인테리어 디자인 스튜디오', '프로젝트마다 반복되는 마감재 조사 시간을 줄이고, 팀원 누구나 같은 형식의 스펙 정리로 제안서 품질을 맞출 수 있습니다.'],
-    ['프리랜서 디자이너', '비싼 소프트웨어 없이 웹에서 바로 제안서를 만들고, 국내에서 구할 수 있는 제품만 골라 클라이언트에게 자신 있게 제안하세요.'],
-    ['건축 설계사무소', '설계 단계의 마감 계획을 실제 제품 스펙과 함께 정리해, 발주처 보고와 협의 자료를 빠르게 준비할 수 있습니다.'],
-    ['시공 · 리모델링 업체', '고객 상담 자리에서 마감재를 바로 검색해 보여주고, 선택한 자재를 스펙과 함께 정리한 견적 제안서로 이어가세요.'],
-    ['공간 디자인 전공 학생', '과제와 포트폴리오에 실제 유통되는 마감재를 넣어, 현실감 있는 디자인 제안서를 무료로 완성할 수 있습니다.'],
+    ['인테리어 디자인 스튜디오', '프로젝트마다 반복되는 마감재 조사 시간을 줄이고, 팀원 누구나 같은 형식의 스펙 정리로 제안서 품질을 맞출 수 있습니다.',
+      'M5 11V8.5A2.5 2.5 0 0 1 7.5 6h9A2.5 2.5 0 0 1 19 8.5V11M3 13a2 2 0 0 1 4 0v1h10v-1a2 2 0 0 1 4 0v4H3zM5 17v2M19 17v2'], // 소파
+    ['프리랜서 디자이너', '비싼 소프트웨어 없이 웹에서 바로 제안서를 만들고, 국내에서 구할 수 있는 제품만 골라 클라이언트에게 자신 있게 제안하세요.',
+      'M4 6.5A1.5 1.5 0 0 1 5.5 5h13A1.5 1.5 0 0 1 20 6.5V15H4zM2 18h20M10 9.5l2 2 3.5-3.5'], // 노트북
+    ['건축 설계사무소', '설계 단계의 마감 계획을 실제 제품 스펙과 함께 정리해, 발주처 보고와 협의 자료를 빠르게 준비할 수 있습니다.',
+      'M4 20V4l16 16zM8 16v-3.5l3.5 3.5zM4 8h2M4 12h2'], // 삼각자
+    ['시공 · 리모델링 업체', '고객 상담 자리에서 마감재를 바로 검색해 보여주고, 선택한 자재를 스펙과 함께 정리한 견적 제안서로 이어가세요.',
+      'M10.5 6.5 14 3l7 7-3.5 3.5zM12.3 8.3 3.7 16.9a1.7 1.7 0 0 0 2.4 2.4l8.6-8.6'], // 망치
+    ['공간 디자인 전공 학생', '과제와 포트폴리오에 실제 유통되는 마감재를 넣어, 현실감 있는 디자인 제안서를 무료로 완성할 수 있습니다.',
+      'M2 9.5 12 5l10 4.5L12 14zM6 11.5V16c0 1.4 2.7 3 6 3s6-1.6 6-3v-4.5M22 9.5V15'], // 학사모
   ];
   var whoCard = document.getElementById('whoCard');
   var whoBtns = document.querySelectorAll('[data-who]');
@@ -467,6 +558,7 @@ var CONFIG = {
       var w = WHO[b.dataset.who];
       whoCard.querySelector('h3').textContent = w[0];
       whoCard.querySelector('p').textContent = w[1];
+      whoCard.querySelector('.who__ic path').setAttribute('d', w[2]);
       whoCard.classList.remove('is-swap');
       void whoCard.offsetWidth;
       whoCard.classList.add('is-swap');
