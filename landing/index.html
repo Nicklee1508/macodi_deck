@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <!-- /home 처럼 끝 슬래시 없이 들어오면 상대경로(assets/...)가 루트를 가리키므로 /home/ 으로 보정. 운영에서는 CloudFront 에서 301 처리 -->
+  <script>
+    (function () {
+      var p = location.pathname;
+      if (!/\/$/.test(p) && !/\.[a-z0-9]+$/i.test(p)) location.replace(p + '/' + location.search + location.hash);
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macodi Deck — 마감재 스펙까지 한 번에, 인테리어 디자이너를 위한 온라인 PPT</title>
+  <meta name="description" content="Macodi Deck은 인테리어 디자이너를 위한 무료 온라인 프레젠테이션 툴입니다. 마코디에 등록된 국내 수급 가능 마감재를 검색해 클릭 한 번으로 제품 이미지와 스펙을 슬라이드에 배치하세요. PowerPoint 불러오기·내보내기 지원.">
+  <meta name="keywords" content="Macodi Deck, 마코디 덱, 마코디, 온라인 PPT, 웹 PPT, 인테리어 제안서, 마감재 제안서, 마감재 스펙, 인테리어 프레젠테이션">
+  <!-- 공유 미리보기: 운영 주소가 확정되면 og:url·og:image 를 절대주소로 확인 -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Macodi Deck — 인테리어 디자이너를 위한 온라인 PPT">
+  <meta property="og:description" content="마감재를 찾고, 클릭하면, 제품 이미지와 스펙이 슬라이드에 배치됩니다.">
+  <meta property="og:url" content="https://deck.macodi.co.kr/home/">
+  <meta property="og:image" content="https://deck.macodi.co.kr/home/assets/img/deck-editor.jpg">
+  <link rel="canonical" href="https://deck.macodi.co.kr/home/">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard-dynamic-subset.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="hd" id="top">
+  <div class="wrap hd__in">
+    <a class="logo" href="./" aria-label="Macodi Deck 홈">
+      <img src="assets/img/logo-macodi.svg" alt="macodi" class="logo__mark">
+      <i class="logo__bar" aria-hidden="true"></i>
+      <img src="assets/img/logo-deck.svg" alt="Deck" class="logo__deck">
+    </a>
+    <nav class="gnb" aria-label="주요 메뉴">
+      <a href="#pptx">PowerPoint 호환</a>
+      <a href="#spec">스펙 모듈</a>
+      <a href="#search">마감재 검색</a>
+      <a href="#features">기능</a>
+      <a href="#pricing">요금 안내</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="hd__cta">
+      <a class="btn btn--primary btn--sm" data-app-link href="https://deck.macodi.co.kr/">무료로 시작하기</a>
+      <button class="hd__menu" type="button" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <p class="eyebrow">인테리어 디자이너를 위한 제안서 서비스</p>
+    <h1 class="hero__title">마감재 스펙까지<br class="m-only"> 한 번에 완성하는<br><span class="hl">프레젠테이션</span></h1>
+    <p class="hero__sub">이미지 저장하고, 스펙 옮겨 적고, 크기 맞추던 시간은 이제 그만.<br class="pc-only"> 국내에서 구할 수 있는 마감재를 검색해 클릭 한 번으로 슬라이드에 배치하세요.</p>
+    <div class="hero__btns">
+      <a class="btn btn--primary btn--lg" data-app-link href="https://deck.macodi.co.kr/">무료로 시작하기</a>
+      <a class="btn btn--ghost btn--lg" href="#spec">어떻게 동작하나요?</a>
+    </div>
+    <ul class="hero__notes">
+      <li><i class="ic-check"></i>설치 없이 웹 브라우저에서 바로</li>
+      <li><i class="ic-check"></i>PPT 편집 기능 무료</li>
+      <li><i class="ic-check"></i>PowerPoint 파일로 내보내기 · 불러오기</li>
+    </ul>
+
+    <div class="browser hero__shot reveal">
+      <div class="browser__bar"><i></i><i></i><i></i><span class="browser__url">deck.macodi.co.kr</span></div>
+      <!-- Deck 편집 화면 재현(1280×760 기준으로 그리고 폭에 맞춰 축소) — 커서가 마감재를 클릭하면 스펙 모듈이 슬라이드에 배치되는 장면 반복 -->
+      <div class="appfit" id="appFit" role="img" aria-label="Macodi Deck 편집 화면 — 오른쪽 마감재 패널에서 제품을 클릭하면 이미지와 스펙이 슬라이드에 배치됩니다">
+        <div class="app" id="app" aria-hidden="true">
+          <div class="app__top">
+            <span class="app__ham"><i></i><i></i><i></i></span>
+            <span class="app__doc">거실 마감재 제안서</span>
+            <span class="app__topr">
+              <svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="11" rx="1"/><path d="M12 15v4M9 19h6M10 8l4 2.5-4 2.5z"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+            </span>
+          </div>
+          <div class="app__tool">
+            <span class="app__add">+ 슬라이드 추가</span>
+            <span class="app__icons">
+              <svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3"/></svg>
+              <svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5M20 9H9a5 5 0 0 0 0 10h3"/></svg>
+              <i class="sep"></i>
+              <svg viewBox="0 0 24 24"><path d="M5 6h14M12 6v13"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="4" y="9" width="10" height="10" rx="1"/><circle cx="15" cy="9" r="5"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="m4 16 5-5 4 4 3-3 4 4"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M5 19 19 5"/></svg>
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 4v8h8"/></svg>
+              <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="1"/><path d="M4 10h16M4 15h16M10 5v14"/></svg>
+            </span>
+            <span class="app__zoom">− &nbsp;99% &nbsp;+</span>
+          </div>
+          <div class="app__body">
+            <aside class="app__thumbs">
+              <div class="th"><b>01</b><span class="th__s th__s--cover"></span></div>
+              <div class="th"><b>02</b><span class="th__s th__s--list"></span></div>
+              <div class="th is-on" data-scene="0"><b>03</b><span class="th__s th__s--spec" id="heroThumb0"></span></div>
+              <div class="th" data-scene="1"><b>04</b><span class="th__s th__s--space"><img src="assets/img/space-lounge.jpg" alt=""><span class="th__sq" id="heroThumb1"></span></span></div>
+              <div class="th"><b>05</b><span class="th__s th__s--list"></span></div>
+              <div class="th"><b>06</b><span class="th__s"></span></div>
+            </aside>
+            <div class="app__canvas">
+              <!-- 장면 1: 제품만 크게 보여주는 마감재 보드 -->
+              <div class="aslide is-on" data-scene="0">
+                <div class="aslide__head">
+                  <div>
+                    <span class="aslide__label">MATERIAL SPECIFICATION</span>
+                    <span class="aslide__title">거실 마감재 제안</span>
+                  </div>
+                  <span class="aslide__meta">LIVING ROOM · 바닥 / 벽 / 가구</span>
+                </div>
+                <div class="aslide__grid" id="heroSlots0"></div>
+                <div class="aslide__foot"><span>※ 위 자재는 국내 수급 가능 제품이며, 제품 링크에서 상세 정보를 확인할 수 있습니다.</span><span>스튜디오명 · 담당 디자이너</span></div>
+                <span class="aslide__page">03</span>
+              </div>
+              <!-- 장면 2: 공간 이미지 + 마감재 정보 (이미지: 스페이스시프트 레이카운티 프로젝트) -->
+              <div class="aslide aslide--space" data-scene="1">
+                <div class="aslide__head">
+                  <div>
+                    <span class="aslide__label">SPACE &amp; MATERIAL</span>
+                    <span class="aslide__title">라운지 공간 제안</span>
+                  </div>
+                  <span class="aslide__meta">LOUNGE · 바닥 / 벽 / 소파 / 카운터</span>
+                </div>
+                <div class="aslide__body">
+                  <div class="aslide__photo" id="heroPhoto">
+                    <img src="assets/img/space-lounge.jpg" alt="">
+                  </div>
+                  <div class="aslide__grid aslide__grid--2" id="heroSlots1"></div>
+                </div>
+                <span class="aslide__page">04</span>
+              </div>
+            </div>
+            <aside class="app__panel">
+              <div class="app__tabs"><span class="is-on"><img src="assets/img/logo-m.svg" alt=""></span><span>전환</span><span>애니메이션</span><span>디자인</span></div>
+              <div class="mpanel__search">
+                <span class="mpanel__ai">AI</span>
+                <span class="mpanel__color"></span>
+                <span class="mpanel__input">자재명·브랜드 검색 (예: 대리석)</span>
+              </div>
+              <div class="app__status" id="heroStatus"></div>
+              <div class="app__grid" id="heroGrid"></div>
+            </aside>
+          </div>
+          <div class="app__foot"><span id="heroPageNo">슬라이드 3 / 6</span><span>클릭해서 발표자 메모 입력</span></div>
+          <div class="app__cursor" id="heroCursor"><svg viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.8L10 19z"/></svg><i></i></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="stats">
+  <div class="wrap stats__in">
+    <div class="stat"><b>19,000<small>+</small></b><span>마코디에 등록된 국내 수급 가능 마감재</span></div>
+    <div class="stat"><b>3<small>가지</small></b><span>텍스트 · 색상 · AI 영역 검색</span></div>
+    <div class="stat"><b>1<small>클릭</small></b><span>제품 이미지와 스펙 자동 배치</span></div>
+    <div class="stat"><b>0<small>원</small></b><span>누구나 무료로 쓰는 PPT 편집 기능</span></div>
+  </div>
+</section>
+
+<!-- ============ 1. PPTX 호환 ============ -->
+<section class="sec" id="pptx">
+  <div class="wrap split">
+    <div class="split__txt reveal">
+      <p class="eyebrow">PowerPoint 호환</p>
+      <h2 class="sec__title">PowerPoint 파일,<br>그대로 열고 그대로 보내세요</h2>
+      <p class="sec__lead">쓰던 제안서를 버릴 필요가 없습니다.<br class="pc-only"> 클라이언트·협업사와 PowerPoint 파일로 그대로 주고받으세요.</p>
+      <ul class="checks">
+        <li><b>불러오기 · 내보내기</b> — PowerPoint 파일을 열어 편집하고 그대로 저장</li>
+        <li><b>PDF · 이미지 내보내기</b> — 인쇄용, 메신저 공유용으로 간편하게</li>
+        <li><b>스펙 모듈 유지</b> — 내보낸 파일에서도 제품 이미지·스펙·링크가 그대로</li>
+      </ul>
+      <a class="btn btn--primary" data-app-link href="https://deck.macodi.co.kr/">파일 불러와서 시작하기</a>
+    </div>
+    <div class="split__vis reveal">
+      <!-- 같은 슬라이드를 Deck 화면 ↔ PowerPoint 화면으로 전환해 보여줌(960×560 기준으로 그리고 폭에 맞춰 축소) -->
+      <div class="swap" id="swap">
+        <div class="swap__tabs">
+          <button type="button" class="is-on" data-v="deck"><img src="assets/img/logo-m.svg" alt="">Macodi Deck</button>
+          <span class="swap__arrow" aria-label="양방향 호환"><svg viewBox="0 0 44 18" aria-hidden="true"><path d="M3 6h38M35 1l6 5M41 12H3M9 17l-6-5"/></svg><small>.pptx</small></span>
+          <button type="button" data-v="ppt"><span class="pico">P</span>PowerPoint</button>
+        </div>
+        <div class="swapfit" id="swapFit" role="img" aria-label="같은 슬라이드가 Macodi Deck 과 PowerPoint 에서 똑같이 열리는 모습">
+          <div class="swapapp" id="swapApp" data-v="deck" aria-hidden="true">
+            <!-- Deck 화면 -->
+            <div class="sw-layer sw-deck">
+              <div class="sw-d-top"><span class="app__ham"><i></i><i></i><i></i></span>거실 마감재 제안서</div>
+              <div class="sw-d-tool"><span>+ 슬라이드 추가</span><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              <div class="sw-d-thumbs sw-thumbs" data-active="2"></div>
+              <div class="sw-d-canvas"></div>
+              <div class="sw-d-panel">
+                <div class="sw-d-ptabs"><span class="is-on"><img src="assets/img/logo-m.svg" alt=""></span><span>전환</span><span>애니메이션</span><span>디자인</span></div>
+                <div class="mpanel__search"><span class="mpanel__ai">AI</span><span class="mpanel__color"></span><span class="mpanel__input">자재명·브랜드 검색</span></div>
+                <div class="sw-d-grid" id="swapCards"></div>
+              </div>
+              <div class="sw-d-foot">슬라이드 3 / 6</div>
+            </div>
+            <!-- PowerPoint 화면(로고 없이 리본 구성과 색감으로 재현) -->
+            <div class="sw-layer sw-ppt">
+              <div class="sw-p-title"><span class="sw-p-save">자동 저장 ●</span>거실_마감재제안.pptx - PowerPoint<span class="sw-p-win">—&nbsp;&nbsp;☐&nbsp;&nbsp;✕</span></div>
+              <div class="sw-p-tabs"><span>파일</span><span class="is-on">홈</span><span>삽입</span><span>그리기</span><span>디자인</span><span>전환</span><span>애니메이션</span><span>슬라이드 쇼</span><span>검토</span><span>보기</span></div>
+              <div class="sw-p-ribbon">
+                <div class="grp"><div class="ic"><i class="big"></i><i></i><i></i></div><b>클립보드</b></div>
+                <div class="grp"><div class="ic"><i class="big"></i><i></i><i></i></div><b>슬라이드</b></div>
+                <div class="grp grp--w"><div class="ic"><i class="bar"></i><i></i><i></i><i></i><i></i><i></i></div><b>글꼴</b></div>
+                <div class="grp"><div class="ic"><i></i><i></i><i></i><i></i><i></i></div><b>단락</b></div>
+                <div class="grp grp--w"><div class="ic"><i class="big"></i><i class="big"></i><i></i></div><b>그리기</b></div>
+                <div class="grp"><div class="ic"><i></i><i></i></div><b>편집</b></div>
+              </div>
+              <div class="sw-p-thumbs sw-thumbs" data-active="2"></div>
+              <div class="sw-p-canvas"></div>
+              <div class="sw-p-status"><span>슬라이드 3/6 &nbsp;&nbsp; 한국어</span><span>메모 &nbsp; ▭ ▦ ▣ &nbsp; − ━━━●━━ + &nbsp;80%</span></div>
+            </div>
+            <!-- 두 화면이 함께 쓰는 슬라이드 — 위치만 이동 -->
+            <div class="sw-slide" id="swapSlide"></div>
+          </div>
+        </div>
+      </div>
+      <div class="formats">
+        <span>PPTX</span><span>PDF</span><span>PNG · JPG</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. 핵심: 스펙 모듈 (인터랙티브 데모) ============ -->
+<section class="sec sec--tint" id="spec">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">핵심 기능 · 스펙 모듈</p>
+      <h2 class="sec__title">찾고, 클릭하면,<br class="m-only"> 스펙까지 슬라이드에 담깁니다</h2>
+      <p class="sec__lead">제품 사이트를 하나하나 찾아다니며 이미지를 저장하고 스펙을 옮겨 적을 필요가 없습니다.<br class="pc-only"> 마감재를 클릭하면 이미지 · 브랜드 · 제품명 · 종류 · 사이즈가 정리된 모듈이 바로 배치됩니다.</p>
+    </div>
+
+    <ol class="steps reveal">
+      <li>
+        <i class="steps__ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><span>1</span></i>
+        <b>검색</b><p>텍스트 · 색상 · AI 영역으로 마감재 찾기</p>
+      </li>
+      <li>
+        <i class="steps__ic"><svg viewBox="0 0 24 24"><path d="M6 3.5l12 6.5-5.2 1.6-2.3 5.4z"/><path d="M13 13l5 5"/></svg><span>2</span></i>
+        <b>클릭</b><p>원하는 제품을 한 번 클릭</p>
+      </li>
+      <li>
+        <i class="steps__ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="13" rx="1.5"/><rect x="6" y="8" width="5" height="5"/><path d="M13.5 9h4.5M13.5 12h3"/></svg><span>3</span></i>
+        <b>배치 완료</b><p>이미지와 스펙을 슬라이드에 바로 배치</p>
+      </li>
+    </ol>
+
+    <div class="demo reveal" aria-label="스펙 모듈 체험">
+      <p class="demo__badge"><i class="demo__dot"></i>직접 눌러보세요 · 마감재를 클릭하면 슬라이드에 배치됩니다</p>
+      <div class="demo__slide">
+        <div class="slide">
+          <div class="slide__head">
+            <span class="slide__label">INTERIOR DESIGN PROPOSAL</span>
+            <span class="slide__title">거실 · 주방 마감재 제안</span>
+          </div>
+          <div class="slide__cards" id="demoCards"><!-- 스펙 모듈 + 빈자리(main.js) --></div>
+          <span class="slide__page">03</span>
+        </div>
+        <button type="button" class="demo__reset" id="demoReset">초기화</button>
+      </div>
+      <div class="demo__panel">
+        <div class="mpanel__search">
+          <span class="mpanel__ai">AI</span>
+          <span class="mpanel__color"></span>
+          <span class="mpanel__input">자재명·브랜드 검색 (예: 대리석)</span>
+        </div>
+        <div class="mpanel__grid" id="demoGrid"><!-- main.js 에서 채움 --></div>
+        <p class="mpanel__hint"><i class="ic-cursor"></i> 카드를 클릭하면 슬라이드에 배치됩니다</p>
+      </div>
+    </div>
+    <p class="caption">* 체험용 예시입니다. 마코디에 실제 등록된 제품 정보로 구성했습니다.</p>
+  </div>
+</section>
+
+<!-- ============ 3. 마감재 검색 (탭) ============ -->
+<section class="sec" id="search">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">마코디 마감재 검색</p>
+      <h2 class="sec__title">원하는 마감재를<br class="m-only"> 세 가지 방법으로 찾으세요</h2>
+      <p class="sec__lead">마코디에 등록된 국내 수급 가능 제품만 보여주기 때문에, 제안한 마감재를 실제 현장에서 구할 수 있습니다.</p>
+    </div>
+
+    <div class="tabs reveal" role="tablist" aria-label="검색 방식">
+      <button class="tab is-on" role="tab" aria-selected="true" data-tab="text">텍스트 검색</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="color">색상 검색</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="ai">AI 영역 검색</button>
+    </div>
+
+    <div class="tabpanes reveal">
+      <!-- 텍스트 -->
+      <div class="pane is-on" data-pane="text" role="tabpanel">
+        <div class="pane__txt">
+          <h3>자재명 · 브랜드로<br>바로 검색</h3>
+          <p>‘대리석’, ‘화이트’, ‘타일’처럼 떠오르는 단어를 입력하세요.<br class="pc-only"> 키워드를 여러 개 넣으면 모든 조건에 맞는 제품을 보여줍니다.</p>
+          <ul class="checks checks--sm">
+            <li>자재명 · 브랜드 · 종류 통합 검색</li>
+            <li>키워드를 조합해 더 정확하게 찾기</li>
+            <li>국내 수급 가능 마감재 19,000여 개에서 검색</li>
+          </ul>
+        </div>
+        <div class="pane__vis">
+          <div class="mock">
+            <div class="mock__search">
+              <span class="chip">타일<i>×</i></span><span class="chip">화이트<i>×</i></span><span class="mock__caret">키워드 추가</span>
+            </div>
+            <div class="mock__grid">
+              <div class="mcard"><img src="assets/img/mat-ah6103.jpg" alt=""><b>AH-6103</b><span>데코타일 / LVT</span><span>600×600</span></div>
+              <div class="mcard"><img src="assets/img/mat-5.jpg" alt=""><b>BASALTINA_GREY MATT</b><span>타일 / 스톤</span><span>600×1200</span></div>
+              <div class="mcard mcard--dim"><img src="assets/img/mat-1.jpg" alt=""><b>8221-17</b><span>벽지 / 프리미엄 비닐벽지</span><span>1370×27400</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 색상 -->
+      <div class="pane" data-pane="color" role="tabpanel" hidden>
+        <div class="pane__txt">
+          <h3>컬러 팔레트에 맞춰<br>색상으로 검색</h3>
+          <p>무드보드의 톤이 정해졌다면 색을 먼저 고르세요. 선택한 색과 비슷한 마감재를 모아 보여주고, 키워드와 함께 쓰면 더 좁혀집니다.</p>
+          <ul class="checks checks--sm">
+            <li>원하는 색을 고르면 비슷한 색의 제품 정렬</li>
+            <li>색상 + 키워드 동시 적용</li>
+            <li>디자인 콘셉트 톤에 맞는 자재 빠르게 선별</li>
+          </ul>
+        </div>
+        <div class="pane__vis">
+          <div class="mock">
+            <div class="mock__search">
+              <span class="swatch" style="--c:#2d6f8a"></span><span class="mock__colorname">#2D6F8A 블루 계열</span>
+            </div>
+            <div class="palette">
+              <span style="--c:#efe6d6"></span><span style="--c:#c9b48f"></span><span style="--c:#7d7a76"></span><span class="on" style="--c:#2d6f8a"></span><span style="--c:#3a3a3e"></span><span style="--c:#b8442f"></span>
+            </div>
+            <div class="mock__grid">
+              <div class="mcard"><img src="assets/img/mat-6.jpg" alt=""><b>3061-403 Oceania</b><span>인조가죽 / 비닐</span><span>1370</span></div>
+              <div class="mcard"><img src="assets/img/mat-2.jpg" alt=""><b>3021-802 Sterling</b><span>인조가죽 / 실리콘</span><span>1370</span></div>
+              <div class="mcard mcard--dim"><img src="assets/img/mat-4.jpg" alt=""><b>3069-801 Mineral</b><span>패브릭 / 혼방직물</span><span>1420</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- AI 영역 -->
+      <div class="pane" data-pane="ai" role="tabpanel" hidden>
+        <div class="pane__txt">
+          <h3>이미지 위에 그리면<br>AI가 비슷한 자재를 추천</h3>
+          <p>슬라이드에 넣은 레퍼런스 이미지나 투시도에서 찾고 싶은 부분을 둘러 그리세요. AI가 그 영역과 닮은 마감재를 찾아 추천합니다.</p>
+          <ul class="checks checks--sm">
+            <li>슬라이드 위 이미지에서 원하는 영역만 선택</li>
+            <li>바닥 · 벽 · 가구 마감 등 부분별 추천</li>
+            <li>추천 결과도 클릭 한 번으로 스펙 모듈 배치</li>
+          </ul>
+        </div>
+        <div class="pane__vis">
+          <!-- Deck 편집 화면에서 AI 버튼 → 슬라이드 위 영역 드래그 → 오른쪽 패널에 추천(900×520 기준, 폭에 맞춰 축소)
+               이미지: 스페이스시프트 롯데 타임빌라스 프로젝트 / 추천 자재: 실제 마코디 등록 제품 -->
+          <div class="aifit" id="aiFit" role="img" aria-label="AI 버튼을 누르고 슬라이드 이미지의 바닥 영역을 지정하면, 오른쪽 패널에 비슷한 마감재가 추천됩니다">
+            <div class="aiapp" id="aiApp" aria-hidden="true">
+              <div class="ai-top"><span class="app__ham"><i></i><i></i><i></i></span>로비 공간 제안서</div>
+              <div class="ai-canvas">
+                <div class="ai-slide" id="aiSlide">
+                  <img src="assets/img/space-lobby.jpg" alt="">
+                  <span class="ai-tag" id="aiTag">AI 영역 검색</span>
+                  <div class="ai-sel" id="aiSel"><i></i><i></i><i></i><i></i></div>
+                </div>
+              </div>
+              <div class="ai-panel">
+                <div class="ai-search">
+                  <span class="ai-btn" id="aiBtn">AI</span>
+                  <span class="mpanel__color"></span>
+                  <span class="mpanel__input">자재명·브랜드 검색 (예: 대리석)</span>
+                </div>
+                <div class="ai-sec" id="aiSec"></div>
+                <div class="ai-grid" id="aiGrid"></div>
+              </div>
+              <div class="app__cursor" id="aiCursor"><svg viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.8L10 19z"/></svg><i></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="caption">* 기능을 쉽게 보여드리기 위해 구성한 예시 화면으로, 실제 서비스 화면과 다를 수 있습니다.</p>
+  </div>
+</section>
+
+<!-- ============ 4. 수정 가능 ============ -->
+<section class="sec sec--tint">
+  <div class="wrap split split--rev">
+    <div class="split__txt reveal">
+      <p class="eyebrow">자유로운 편집</p>
+      <h2 class="sec__title">배치한 다음에도<br>마음대로 고칠 수 있습니다</h2>
+      <p class="sec__lead">스펙 모듈은 일반 이미지와 텍스트로 이루어져 있어, 제안서 디자인에 맞게 크기와 위치, 글자를 자유롭게 바꿀 수 있습니다.</p>
+      <ul class="checks">
+        <li><b>크기 · 위치 조절</b> — 그룹으로 묶여 있어 한 번에 옮기고 늘리기</li>
+        <li><b>텍스트 수정</b> — 스펙 항목을 고치거나 메모를 덧붙이기</li>
+        <li><b>제품 링크 버튼</b> — 슬라이드 쇼와 내보낸 PPTX에서 누르면 마코디 제품 상세로 이동</li>
+      </ul>
+    </div>
+    <div class="split__vis reveal">
+      <div class="editcard">
+        <div class="editcard__sel">
+          <div class="spec spec--lg">
+            <div class="spec__img"><img src="assets/img/mat-ah6103.jpg" alt=""><span class="spec__link" title="마코디 제품 페이지로 이동"><svg viewBox="0 0 20 20"><path d="M15.5 9.2v6.6a1.9 1.9 0 0 1-1.9 1.9H4.2a1.9 1.9 0 0 1-1.9-1.9V6.4a1.9 1.9 0 0 1 1.9-1.9h6.6M17.7 2.3 8.9 11.1M17.7 2.3h-4.4M17.7 2.3v4.4"/></svg></span></div>
+            <dl class="spec__rows">
+              <div><dt>브랜드</dt><dd>동신포리마</dd></div>
+              <div><dt>제품명</dt><dd class="typing">AH-6103</dd></div>
+              <div><dt>구분/종류</dt><dd>데코타일/LVT</dd></div>
+              <div><dt>사이즈</dt><dd>600*600</dd></div>
+            </dl>
+          </div>
+          <i class="h h1"></i><i class="h h2"></i><i class="h h3"></i><i class="h h4"></i>
+        </div>
+        <div class="editcard__tools" aria-hidden="true">
+          <span>B</span><span><i>I</i></span><span>가</span><span class="sw" style="--c:#413D7D"></span><span class="sw" style="--c:#EA483E"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. 기본 기능 ============ -->
+<section class="sec" id="features">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">기본 기능</p>
+      <h2 class="sec__title">제안서에 필요한 PPT 기능은<br class="pc-only"> 모두 무료로</h2>
+      <p class="sec__lead">마감재 검색만 있는 툴이 아닙니다. 일반적인 프레젠테이션 편집 기능을 누구나 무료로 사용할 수 있습니다.</p>
+    </div>
+    <div class="fgrid">
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 9v11"/></svg></i>
+        <h3>제안서 템플릿</h3>
+        <p>표지 · 목차 · 마감재표까지 갖춘 템플릿으로 빠르게 시작</p>
+      </article>
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg></i>
+        <h3>텍스트 · 도형 · 이미지</h3>
+        <p>글꼴, 정렬, 도형, 이미지 자르기 등 익숙한 편집 도구</p>
+      </article>
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M3 15h18M9 4v16M15 4v16"/></svg></i>
+        <h3>표 · 차트</h3>
+        <p>마감재 리스트, 공정표, 예산 비교를 표와 차트로 정리</p>
+      </article>
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><path d="M5 12h4l2-6 2 12 2-6h4"/></svg></i>
+        <h3>전환 · 애니메이션</h3>
+        <p>슬라이드 전환과 요소 애니메이션으로 발표에 리듬을</p>
+      </article>
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></i>
+        <h3>슬라이드 쇼 · 발표자 모드</h3>
+        <p>발표자 메모를 보면서 클라이언트 미팅을 진행</p>
+      </article>
+      <article class="fcard reveal">
+        <i class="fic"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></i>
+        <h3>다양한 내보내기</h3>
+        <p>PPTX · PDF · 이미지로 내보내 어디서든 공유</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6. 누가 쓰나요 ============ -->
+<section class="sec sec--tint">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">이런 분들께</p>
+      <h2 class="sec__title">공간을 제안하는 모든 사람을 위해</h2>
+    </div>
+    <div class="who reveal">
+      <ul class="who__list" role="tablist">
+        <li><button class="is-on" data-who="0">인테리어 디자인 스튜디오</button></li>
+        <li><button data-who="1">프리랜서 디자이너</button></li>
+        <li><button data-who="2">건축 설계사무소</button></li>
+        <li><button data-who="3">시공 · 리모델링 업체</button></li>
+        <li><button data-who="4">공간 디자인 전공 학생</button></li>
+      </ul>
+      <div class="who__card" id="whoCard" aria-live="polite">
+        <h3>인테리어 디자인 스튜디오</h3>
+        <p>프로젝트마다 반복되는 마감재 조사 시간을 줄이고, 팀원 누구나 같은 형식의 스펙 정리로 제안서 품질을 맞출 수 있습니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. 비교 ============ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">왜 Macodi Deck인가</p>
+      <h2 class="sec__title">일반 PPT 툴에는 없는 것</h2>
+    </div>
+    <div class="cmp reveal">
+      <table>
+        <thead>
+          <tr><th scope="col"></th><th scope="col" class="cmp__us">Macodi Deck</th><th scope="col">일반 PPT 툴</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">PowerPoint(.pptx) 불러오기 · 내보내기</th><td class="cmp__us"><i class="yes"></i></td><td><i class="yes"></i></td></tr>
+          <tr><th scope="row">설치 없이 웹 브라우저에서 사용</th><td class="cmp__us"><i class="yes"></i></td><td><span class="mid">제품마다 다름</span></td></tr>
+          <tr><th scope="row">국내 수급 가능 마감재 데이터베이스</th><td class="cmp__us"><i class="yes"></i></td><td><i class="no"></i></td></tr>
+          <tr><th scope="row">텍스트 · 색상 · AI 영역 마감재 검색</th><td class="cmp__us"><i class="yes"></i></td><td><i class="no"></i></td></tr>
+          <tr><th scope="row">클릭 한 번으로 제품 이미지 + 스펙 배치</th><td class="cmp__us"><i class="yes"></i></td><td><span class="mid">직접 검색 · 복사</span></td></tr>
+          <tr><th scope="row">PPT 편집 기능 무료</th><td class="cmp__us"><i class="yes"></i></td><td><span class="mid">제품마다 다름</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. 요금 ============ -->
+<section class="sec sec--tint" id="pricing">
+  <div class="wrap">
+    <div class="sec__head reveal">
+      <p class="eyebrow">요금 안내</p>
+      <h2 class="sec__title">PPT는 무료,<br class="m-only"> 마감재 검색은 필요한 만큼</h2>
+    </div>
+    <div class="plans">
+      <article class="plan reveal">
+        <p class="plan__name">Macodi Deck</p>
+        <p class="plan__price">무료</p>
+        <p class="plan__desc">누구나 바로 사용하는 온라인 PPT</p>
+        <ul class="checks checks--sm">
+          <li>슬라이드 편집 기능 전체</li>
+          <li>제안서 템플릿</li>
+          <li>.pptx 불러오기 · 내보내기</li>
+          <li>PDF · 이미지 내보내기</li>
+          <li>슬라이드 쇼 · 발표자 모드</li>
+        </ul>
+        <a class="btn btn--ghost btn--block" data-app-link href="https://deck.macodi.co.kr/">무료로 시작하기</a>
+      </article>
+      <article class="plan plan--pro reveal">
+        <span class="plan__badge">부분 유료 구독</span>
+        <p class="plan__name">마코디 마감재 검색</p>
+        <p class="plan__price"><span class="tbd">요금 안내 예정</span></p>
+        <p class="plan__desc">Deck에 포함된 마감재 검색 · 스펙 모듈 서비스</p>
+        <ul class="checks checks--sm">
+          <li>국내 수급 가능 마감재 19,000여 개 검색</li>
+          <li>텍스트 · 색상 검색</li>
+          <li>AI 영역 검색</li>
+          <li>스펙 모듈 배치 · 제품 링크</li>
+          <li class="tbd-row">무료 / 구독 범위는 확정 후 안내</li>
+        </ul>
+        <a class="btn btn--primary btn--block" data-app-link href="https://deck.macodi.co.kr/">마감재 검색 사용해 보기</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. FAQ ============ -->
+<section class="sec" id="faq">
+  <div class="wrap wrap--narrow">
+    <div class="sec__head reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 class="sec__title">자주 묻는 질문</h2>
+    </div>
+    <div class="faq reveal">
+      <details>
+        <summary>정말 무료로 사용할 수 있나요?</summary>
+        <p>네. 슬라이드 편집, 템플릿, 불러오기 · 내보내기 등 PPT 기능은 누구나 무료로 사용할 수 있습니다. 마코디 마감재 검색 서비스는 일부 기능이 유료 구독으로 제공됩니다.</p>
+      </details>
+      <details>
+        <summary>PowerPoint에서 만든 파일을 열 수 있나요?</summary>
+        <p>네. .pptx 파일을 불러와 Deck에서 이어서 편집할 수 있고, 완성한 제안서는 다시 .pptx로 내보내 PowerPoint에서 열 수 있습니다.</p>
+      </details>
+      <details>
+        <summary>프로그램을 설치해야 하나요?</summary>
+        <p>설치가 필요 없습니다. 크롬, 엣지 등 웹 브라우저에서 deck.macodi.co.kr 에 접속하면 바로 사용할 수 있습니다.</p>
+      </details>
+      <details>
+        <summary>검색되는 마감재는 어떤 제품인가요?</summary>
+        <p>마코디에 등록된 제품 중 국내에서 수급 가능한 마감재입니다. 벽지, 타일, 패브릭, 인조가죽, 목재 등 다양한 종류를 검색할 수 있습니다.</p>
+      </details>
+      <details>
+        <summary>스펙 모듈은 어떤 정보가 들어가나요?</summary>
+        <p>제품 이미지와 브랜드, 제품명, 구분/종류, 사이즈가 들어가며, 제품 상세 페이지로 연결되는 링크 버튼이 함께 배치됩니다. 배치 후 자유롭게 수정할 수 있습니다.</p>
+      </details>
+      <details>
+        <summary>내보낸 PPTX에서도 스펙 모듈이 유지되나요?</summary>
+        <p>네. 제품 이미지와 스펙 텍스트, 링크 버튼이 함께 내보내지므로 PowerPoint에서도 그대로 확인하고 편집할 수 있습니다.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA BAND ============ -->
+<section class="cta">
+  <div class="wrap cta__in reveal">
+    <h2>다음 제안서는<br class="m-only"> Macodi Deck으로 만들어 보세요</h2>
+    <p>마감재를 찾아다니던 시간을, 디자인에 쓰세요.</p>
+    <a class="btn btn--white btn--lg" data-app-link href="https://deck.macodi.co.kr/">무료로 시작하기</a>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="ft">
+  <div class="wrap">
+    <div class="ft__top">
+      <div class="ft__brand">
+        <a class="logo logo--white" href="./"><img src="assets/img/logo-macodi-white.svg" alt="macodi" class="logo__mark"><i class="logo__bar" aria-hidden="true"></i><img src="assets/img/logo-deck-white.svg" alt="Deck" class="logo__deck"></a>
+        <p>인테리어 디자이너를 위한 온라인 프레젠테이션</p>
+      </div>
+      <nav class="ft__cols" aria-label="하단 메뉴">
+        <div>
+          <h4>서비스</h4>
+          <a data-app-link href="https://deck.macodi.co.kr/">Macodi Deck 시작하기</a>
+          <a href="#search">마감재 검색</a>
+          <a data-macodi-link href="https://macodi.co.kr/">마코디 홈페이지</a>
+        </div>
+        <div>
+          <h4>안내</h4>
+          <a href="#features">기능</a>
+          <a href="#pricing">요금 안내</a>
+          <a href="#faq">자주 묻는 질문</a>
+        </div>
+        <div>
+          <h4>정책</h4>
+          <a data-macodi-link data-path="terms" href="https://macodi.co.kr/terms" target="_blank" rel="noopener">이용약관</a>
+          <a data-macodi-link data-path="privacypolicy" href="https://macodi.co.kr/privacypolicy" target="_blank" rel="noopener">개인정보처리방침</a>
+        </div>
+      </nav>
+    </div>
+    <div class="ft__info">
+      <p><span>법인명 : (주) 스페이스시프트</span><span>대표이사 : 이동훈</span><span>개인정보보호책임자 : 박정환</span></p>
+      <p><span>주소 : 서울특별시 영등포구 양산로7길 3, 202호</span><span>고객센터 : 02-2677-9884</span></p>
+      <p><span>사업자등록번호 : 293-88-02438</span><span>이메일 : spaceshift.kr@gmail.com</span></p>
+      <p class="ft__copy">© SPACESHIFT Inc. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
