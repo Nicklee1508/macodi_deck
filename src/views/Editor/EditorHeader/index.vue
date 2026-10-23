@@ -25,8 +25,16 @@
             </div>
           </div>
           <Divider :margin="10" />
+          <!-- 내 파일(로그인 없이 이 브라우저에 저장) -->
+          <PopoverMenuItem class="popover-menu-item" @click="saveFile(); mainMenuVisible = false"><i-icon-park-outline:save class="icon" /> 저장 <span class="hk">Ctrl+S</span></PopoverMenuItem>
+          <PopoverMenuItem class="popover-menu-item" @click="fileState.dialog = 'saveAs'; mainMenuVisible = false"><i-icon-park-outline:save-one class="icon" /> 다른 이름으로 저장 <span class="hk">Ctrl+Shift+S</span></PopoverMenuItem>
+          <PopoverMenuItem class="popover-menu-item" @click="fileState.dialog = 'open'; mainMenuVisible = false"><i-icon-park-outline:folder-open class="icon" /> 내 파일 열기 <span class="hk">Ctrl+O</span></PopoverMenuItem>
+          <Divider :margin="10" />
           <PopoverMenuItem class="popover-menu-item" @click="setDialogForExport('pptx')"><i-icon-park-outline:download class="icon" /> 파일 내보내기</PopoverMenuItem>
           <Divider :margin="10" />
+          <!-- 개발 전용: 지금 제안서를 기본 샘플 원본으로 저장(운영 빌드엔 안 보임) -->
+          <PopoverMenuItem v-if="isDev" class="popover-menu-item" @click="saveAsSample(); mainMenuVisible = false"><i-icon-park-outline:upload-one class="icon" /> (개발) 지금 제안서를 기본 샘플로</PopoverMenuItem>
+          <PopoverMenuItem class="popover-menu-item" @click="startNewDeck(); mainMenuVisible = false"><i-icon-park-outline:file-addition class="icon" /> 새 제안서 (기본 양식)</PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="resetSlides(); mainMenuVisible = false"><i-icon-park-outline:refresh class="icon" /> 슬라이드 초기화</PopoverMenuItem>
           <PopoverMenuItem class="popover-menu-item" @click="mainMenuVisible = false; hotkeyDrawerVisible = true"><i-icon-park-outline:command class="icon" /> 단축키</PopoverMenuItem>
           <!-- 의견 보내기 = 마코디 카카오톡 채널 문의 -->
@@ -49,6 +57,10 @@
           :title="title"
           v-else
         >{{ title }}</div>
+      </div>
+      <!-- 로그인 없이 이 브라우저에 임시 저장 -->
+      <div class="draft-state" :class="{ err: draftState.error }" v-tooltip="'Ctrl+S 로 이 브라우저에 저장하고, ☰ 메뉴 → 내 파일 열기에서 다시 열 수 있어요. 저장 전 작업도 자동 임시 저장돼요.'">
+        {{ draftState.error ? '임시 저장 실패' : stateText }}
       </div>
     </div>
 
@@ -84,7 +96,10 @@
 </template>
 
 <script lang="ts" setup>
-import { nextTick, ref, useTemplateRef } from 'vue'
+import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+import { loadSampleDeck } from '@/macodi/sampleDeck'
+import { draftState, fileState } from '@/macodi/autosave'
+import useDeckFiles from '@/macodi/useDeckFiles'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore } from '@/store'
 import useScreening from '@/hooks/useScreening'
@@ -109,6 +124,39 @@ const { importSpecificFile, importPPTXFile, exporting } = useImport()
 const { resetSlides } = useSlideHandler()
 
 const mainMenuVisible = ref(false)
+
+// 임시 저장 표시 — 30초마다 '몇 분 전' 갱신
+const now = ref(Date.now())
+setInterval(() => (now.value = Date.now()), 30000)
+const savedAgo = computed(() => {
+  const sec = Math.max(0, Math.round((now.value - draftState.savedAt) / 1000))
+  if (sec < 60) return '방금'
+  if (sec < 3600) return `${Math.floor(sec / 60)}분 전`
+  return new Date(draftState.savedAt).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+})
+watch(() => draftState.savedAt, () => (now.value = Date.now()))
+
+const { saveFile, detachFile, confirmDiscard } = useDeckFiles()
+// 내 파일로 저장했으면 저장 상태, 아니면 임시 저장 상태
+const stateText = computed(() => {
+  if (fileState.id) return fileState.dirty ? '변경됨 · Ctrl+S 로 저장' : '저장됨'
+  return draftState.savedAt ? `임시 저장됨 · ${savedAgo.value}` : ''
+})
+
+// 새 제안서 — 기본 양식으로 다시 시작(지금 작업은 덮어씀, 확인 후)
+const startNewDeck = async () => {
+  if (fileState.dirty ? !confirmDiscard() : !window.confirm('기본 양식으로 새로 시작할까요?' + (fileState.id ? ' (저장한 파일은 내 파일에 그대로 있어요)' : ' 지금 작업은 지워져요.'))) return
+  detachFile()
+  mainStore.setActiveElementIdList([])
+  await loadSampleDeck()
+}
+const isDev = import.meta.env.DEV
+const saveAsSample = async () => {
+  const { slides, viewportRatio, theme } = slidesStore
+  const body = JSON.stringify({ title: '샘플 제안서', viewportRatio, theme, startIndex: 11, slides })
+  const r = await fetch('/__save-sample', { method: 'POST', body }).catch(() => null)
+  window.alert(r?.ok ? '저장했어요. 개발자가 그림을 정리해 기본 샘플로 반영합니다.' : '저장 실패(개발 서버에서만 됩니다)')
+}
 const hotkeyDrawerVisible = ref(false)
 const editingTitle = ref(false)
 const titleValue = ref('')
@@ -184,6 +232,13 @@ const setDialogForExport = (type: DialogForExportTypes) => {
 .popover-menu-item {
   display: flex;
   padding: 8px 10px;
+
+  .hk {
+    margin-left: auto;
+    padding-left: 16px;
+    font-size: 12px;
+    color: #aaa;
+  }
 
   .icon {
     font-size: 18px;
@@ -327,6 +382,13 @@ const setDialogForExport = (type: DialogForExportTypes) => {
       background-color: #f1f1f1;
     }
   }
+}
+.draft-state {
+  margin-left: 6px;
+  font-size: 13px; // 제목(마감재 제안서)과 같은 크기
+  color: #9a9aa3;
+  white-space: nowrap;
+  &.err { color: #d33; }
 }
 .github-link {
   display: inline-block;

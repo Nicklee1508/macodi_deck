@@ -83,7 +83,6 @@
           :elementIndex="index + 1"
           :isMultiSelect="activeElementIdList.length > 1"
           :selectElement="selectElement"
-          :openLinkDialog="openLinkDialog"
           v-show="!hiddenElementIdList.includes(element.id)"
         />
       </div>

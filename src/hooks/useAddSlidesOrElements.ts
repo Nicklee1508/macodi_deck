@@ -2,7 +2,7 @@ import { storeToRefs } from 'pinia'
 import { nanoid } from 'nanoid'
 import { useSlidesStore, useMainStore } from '@/store'
 import type { PPTElement, Slide } from '@/types/slides'
-import { createSlideIdMap, createElementIdMap, getElementRange } from '@/utils/element'
+import { createSlideIdMap, createElementIdMap, getElementRange, remapGroupIds } from '@/utils/element'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
 
 export default () => {
@@ -52,7 +52,7 @@ export default () => {
       element.left = element.left + offset
       element.top = element.top + offset
 
-      if (element.groupId) element.groupId = groupIdMap[element.groupId]
+      remapGroupIds(element, groupIdMap)
     }
     slidesStore.addElement(elements)
     mainStore.setActiveElementIdList(Object.values(elIdMap))
@@ -70,7 +70,7 @@ export default () => {
 
       for (const element of slide.elements) {
         element.id = elIdMap[element.id]
-        if (element.groupId) element.groupId = groupIdMap[element.groupId]
+        remapGroupIds(element, groupIdMap)
 		
         // 若元素绑定了页面跳转链接
         if (element.link && element.link.type === 'slide') {

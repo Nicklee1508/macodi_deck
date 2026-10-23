@@ -12,6 +12,7 @@
     :value="richTextAttrs.fontsize"
     search
     searchLabel="글자 크기 검색"
+    :customInput="customFontSize"
     @update:value="value => emitRichTextCommand('fontsize', value as string)"
     :options="fontSizeOptions.map(item => ({ label: item, value: item }))"
   />
@@ -67,6 +68,12 @@
     :class="{ active: (richTextAttrs.align as string) === 'justify' }"
     @click="emitRichTextCommand('align', 'justify')"
   ><i-icon-park-outline:align-text-both /></button>
+  <button
+    class="toolbar-btn"
+    :class="{ active: (richTextAttrs.align as string) === 'distributed' }"
+    v-tooltip="'균등 분할'"
+    @click="emitRichTextCommand('align', 'distributed')"
+  ><i-icon-park-outline:distribute-horizontal-spacing /></button>
 
   <div class="divider"></div>
 
@@ -82,6 +89,7 @@ import { useMainStore } from '@/store'
 import { FONTS } from '@/configs/font'
 import emitter, { EmitterEvents } from '@/utils/emitter'
 
+import { customFontSize } from '@/utils/customSelectInput'
 import Select from '@/components/Select.vue'
 import Popover from '@/components/Popover.vue'
 import ColorPicker from '@/components/ColorPicker/index.vue'

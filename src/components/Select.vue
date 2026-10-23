@@ -21,11 +21,13 @@
     v-else
   >
     <template #content>
-      <template v-if="search">
-        <Input ref="searchInputRef" simple :placeholder="searchLabel" v-model:value="searchKey" :style="{ width: width + 2 + 'px' }" />
+      <template v-if="search || customInput">
+        <Input ref="searchInputRef" simple :placeholder="customInput ? '직접 입력 후 Enter' : searchLabel" v-model:value="searchKey" :style="{ width: width + 2 + 'px' }" @enter="handleEnter" />
         <Divider :margin="0" />
       </template>
       <div class="options" ref="optionsRef" :style="{ width: width + 2 + 'px' }">
+        <!-- 직접 입력한 값(목록에 없을 때) -->
+        <div v-if="customOption" class="option custom" @click="handleSelect(customOption)">{{ customOption.label }} 적용</div>
         <div class="option" 
           :class="{
             'disabled': option.disabled,
@@ -68,6 +70,8 @@ const props = withDefaults(defineProps<{
   defaultLabel?: string
   search?: boolean
   searchLabel?: string
+  /** 숫자 직접 입력 — 입력값을 옵션으로 바꿔 줌(안 되면 null) */
+  customInput?: (text: string) => SelectOption | null
 }>(), {
   disabled: false,
   autofocus: false,
@@ -88,11 +92,19 @@ const optionsRef = useTemplateRef<HTMLElement>('optionsRef')
 const searchInputRef = useTemplateRef<InstanceType<typeof Input>>('searchInputRef')
 
 const showLabel = computed(() => {
-  return props.options.find(item => item.value === props.value)?.label || props.defaultLabel || props.value
+  return props.options.find(item => item.value === props.value)?.label || props.customInput?.(String(props.value))?.label || props.defaultLabel || props.value
+})
+
+// 입력한 값이 목록에 없으면 '직접 입력' 줄로 보여 줌
+const customOption = computed(() => {
+  if (!props.customInput || !searchKey.value.trim()) return null
+  const o = props.customInput(searchKey.value)
+  if (!o || props.options.some(item => item.value === o.value)) return null
+  return o
 })
 
 const showOptions = computed(() => {
-  if (!props.search) return props.options
+  if (!props.search && !props.customInput) return props.options
   if (!searchKey.value.trim()) return props.options
   const opts = props.options.filter(item => {
     return item.label.toLowerCase().indexOf(searchKey.value.toLowerCase()) !== -1
@@ -128,6 +140,14 @@ onUnmounted(() => {
   if (!selectRef.value) return
   resizeObserver.unobserve(selectRef.value)
 })
+
+// Enter = 입력한 숫자 적용(목록에 같은 값이 있으면 그것)
+const handleEnter = () => {
+  if (!props.customInput) return
+  const o = props.customInput(searchKey.value)
+  if (!o) return
+  handleSelect(props.options.find(item => item.value === o.value) || o)
+}
 
 const handleSelect = (option: SelectOption) => {
   if (option.disabled) return
@@ -196,6 +216,10 @@ const handleSelect = (option: SelectOption) => {
   &.selected {
     color: $themeColor;
     font-weight: 700;
+  }
+  &.custom {
+    color: $themeColor;
+    font-weight: 600;
   }
 }
 .icon {

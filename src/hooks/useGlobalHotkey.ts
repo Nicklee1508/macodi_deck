@@ -7,6 +7,8 @@ import { KEYS } from '@/configs/hotkey'
 import useSlideHandler from './useSlideHandler'
 import useLockElement from './useLockElement'
 import useDeleteElement from './useDeleteElement'
+import useDeckFiles from '@/macodi/useDeckFiles'
+import { fileState } from '@/macodi/autosave'
 import useCombineElement from './useCombineElement'
 import useCopyAndPasteElement from './useCopyAndPasteElement'
 import useSelectElement from './useSelectElement'
@@ -42,6 +44,7 @@ export default () => {
   } = useSlideHandler()
 
   const { combineElements, uncombineElements } = useCombineElement()
+  const { saveFile } = useDeckFiles()
   const { deleteElement } = useDeleteElement()
   const { lockElement } = useLockElement()
   const { copyElement, cutElement, quickCopyElement } = useCopyAndPasteElement()
@@ -136,6 +139,23 @@ export default () => {
     if (!disableHotkeys.value && key === KEYS.SPACE) keyboardStore.setSpaceKeyState(true)
 
     
+    // 내 파일(이 브라우저) — 저장 / 다른 이름으로 저장 / 열기. 브라우저의 '페이지 저장'은 막음
+    if (ctrlOrMetaKeyActive && key === KEYS.S) {
+      e.preventDefault()
+      if (shiftKey) fileState.dialog = 'saveAs'
+      else saveFile()
+      return
+    }
+    if (ctrlOrMetaKeyActive && key === KEYS.O) {
+      e.preventDefault()
+      fileState.dialog = 'open'
+      return
+    }
+    // 입력칸(검색창·이름 입력 등)에서 타이핑 중이거나 한글 조합 중이면 편집기 단축키를 쓰지 않음
+    //  (캔버스를 누른 뒤 오른쪽 패널 검색창에 쓰면 글자·Backspace·방향키를 단축키가 가로채던 문제)
+    const target = e.target as HTMLElement | null
+    if (e.isComposing || (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT'))) return
+
     if (ctrlOrMetaKeyActive && key === KEYS.P) {
       e.preventDefault()
       mainStore.setDialogForExport('pdf')

@@ -51,7 +51,8 @@ const style = computed(() => {
 
   return {
     left: screenWidth <= x + menuWidth ? x - menuWidth : x,
-    top: screenHeight <= y + menuHeight ? y - menuHeight : y,
+    // 메뉴가 길면(글자 메뉴 포함) 위로 뒤집었을 때 화면 위로 잘리지 않게 화면 안에 붙인다
+    top: Math.max(PADDING, Math.min(y, screenHeight - menuHeight - PADDING)),
   }
 })
 

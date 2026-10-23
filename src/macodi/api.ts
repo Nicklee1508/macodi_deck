@@ -1,7 +1,7 @@
 // 마코디 백엔드 호출 — dev 는 vite 프록시(/macodi-api → localhost:8008), 운영은 api2 직접.
 export const MACODI_API = import.meta.env.DEV ? '/macodi-api' : 'https://api2.macodi.co.kr:8000'
-// AI 서버 — dev 는 로컬 AI(8006), 운영은 apiai
-export const AI_URL = import.meta.env.DEV ? 'http://localhost:8006' : 'https://apiai.macodi.co.kr:8016'
+// AI 검색은 로컬 개발 때도 정식 AI 서버 사용(로컬 AI 서버 안 띄워도 됨)
+export const AI_URL = 'https://apiai.macodi.co.kr:8016'
 // 이미지 리사이즈 CDN(CORS 허용) — 삽입 이미지는 JPEG 로 받아 dataURL 로 넣는다(pptx 내보내기 안전).
 export const IMG_CDN = 'https://d3fa4re4p86i6s.cloudfront.net'
 

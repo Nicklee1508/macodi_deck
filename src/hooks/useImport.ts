@@ -1,3 +1,4 @@
+import { shrinkSlides } from '@/macodi/shrinkImages'
 import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { parse, type Shape, type Element, type ChartItem, type BaseElement } from 'pptxtojson'
@@ -143,13 +144,12 @@ const normalizeIndentValue = (indent: string, ratio: number) => {
   if (indent.indexOf('em') !== -1) {
     indentValue = parseInt(indent)
   }
+  // 반올림 — 아주 작은 여백(예: PPT marL 0.5mm)을 1글자 들여쓰기로 올려 가운데 정렬이 오른쪽으로 밀리던 문제
   else if (indent.indexOf('px') !== -1) {
-    indentValue = Math.floor(parseInt(indent) / 16)
-    if (!indentValue) indentValue = 1
+    indentValue = Math.round(value / 16)
   }
   else if (indent.indexOf('pt') !== -1) {
-    indentValue = Math.floor(value * ratio / 16)
-    if (!indentValue) indentValue = 1
+    indentValue = Math.round(value * ratio / 16)
   }
 
   if (indentValue > 8) indentValue = 8
@@ -648,7 +648,9 @@ export default () => {
   const importPPTXFile = (files: FileList | File[], options?: { cover?: boolean; fixedViewport?: boolean }) => {
     const defaultOptions = {
       cover: false,
-      fixedViewport: false, 
+      // 항상 편집기 기준 폭(1000)으로 맞춰 변환 — 임시 저장·내 파일·공유 링크는 기준 폭을 저장하지 않아서,
+      // PPT 원래 폭(예: 1920)을 쓰면 새로고침 뒤 배치가 깨짐
+      fixedViewport: true, 
     }
     const { cover, fixedViewport } = { ...defaultOptions, ...options }
 
@@ -1352,6 +1354,10 @@ export default () => {
         parseElements([...item.elements, ...item.layoutElements])
         slides.push(slide)
       }
+
+      // PPT 원본 그림을 화면에 필요한 크기로 줄임(그대로 두면 편집이 매우 느려짐)
+      const shrunk = await shrinkSlides(slides)
+      slides.splice(0, slides.length, ...shrunk.slides)
 
       if (cover) {
         slidesStore.updateSlideIndex(0)

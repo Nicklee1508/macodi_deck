@@ -33,3 +33,4 @@ coverage
 .env
 .env.*
 !.env.example
+public/mocks/sample-deck.upload.json

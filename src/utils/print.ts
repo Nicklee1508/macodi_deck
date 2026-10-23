@@ -22,12 +22,22 @@ const writeContent = (doc: Document, printNode: HTMLElement, size: PageSize) => 
   const docType = '<!DOCTYPE html>'
 
   let style = ''
+  let links = ''
   const styleSheets = document.styleSheets
   if (styleSheets) {
     for (const styleSheet of styleSheets) {
-      if (!styleSheet.cssRules) continue
+      // 다른 주소(CDN 글꼴 등) 스타일은 cssRules 를 읽으면 보안 오류 → 인쇄가 통째로 멈췄음. 링크로 그대로 넣는다
+      let rules: CSSRuleList | null = null
+      try {
+        rules = styleSheet.cssRules
+      }
+      catch {
+        if (styleSheet.href) links += `<link rel="stylesheet" href="${styleSheet.href}">`
+        continue
+      }
+      if (!rules) continue
 
-      for (const rule of styleSheet.cssRules) {
+      for (const rule of rules) {
         style += rule.cssText
       }
     }
@@ -36,6 +46,7 @@ const writeContent = (doc: Document, printNode: HTMLElement, size: PageSize) => 
   const { width, height, margin } = size
   const head = `
     <head>
+      ${links}
       <style type="text/css">
         ${style} 
         html, body {
@@ -51,7 +62,9 @@ const writeContent = (doc: Document, printNode: HTMLElement, size: PageSize) => 
       </style>
     </head>
   `
-  const body = '<body>' + printNode.innerHTML + '</body>'
+  // 선명도·색 온도 SVG 필터 정의(마코디 그림 서식)도 함께 — 없으면 인쇄에서 효과가 빠짐
+  const defs = document.getElementById('mcd-image-filter-defs')?.outerHTML || ''
+  const body = '<body>' + defs + printNode.innerHTML + '</body>'
 
   doc.open()
   doc.write(`

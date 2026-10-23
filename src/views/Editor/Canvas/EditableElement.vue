@@ -28,6 +28,8 @@ import useOrderElement from '@/hooks/useOrderElement'
 import useAlignElementToCanvas from '@/hooks/useAlignElementToCanvas'
 import useCopyAndPasteElement from '@/hooks/useCopyAndPasteElement'
 import useSelectElement from '@/hooks/useSelectElement'
+import emitter, { EmitterEvents } from '@/utils/emitter'
+import { FONTS } from '@/configs/font'
 
 import { ElementOrderCommands, ElementAlignCommands } from '@/types/edit'
 
@@ -46,7 +48,6 @@ const props = defineProps<{
   elementIndex: number
   isMultiSelect: boolean
   selectElement: (e: MouseEvent | TouchEvent, element: PPTElement, canMove?: boolean) => void
-  openLinkDialog: () => void
 }>()
 
 const currentElementComponent = computed<unknown>(() => {
@@ -66,7 +67,7 @@ const currentElementComponent = computed<unknown>(() => {
 
 const { orderElement } = useOrderElement()
 const { alignElementToCanvas } = useAlignElementToCanvas()
-const { combineElements, uncombineElements } = useCombineElement()
+const { canCombine, canUncombine, combineElements, uncombineElements } = useCombineElement()
 const { deleteElement } = useDeleteElement()
 const { lockElement, unlockElement } = useLockElement()
 const { copyElement, pasteElement, cutElement } = useCopyAndPasteElement()
@@ -80,7 +81,25 @@ const contextmenus = (): ContextmenuItem[] => {
     }]
   }
 
+  // 글자 서식(PPT 우클릭 메뉴처럼) — 글상자 또는 글자가 있는 도형, 하나만 선택했을 때. 편집 중이 아니면 글상자 전체에 적용
+  const isText = props.elementInfo.type === 'text' || (props.elementInfo.type === 'shape' && !!props.elementInfo.text?.content)
+  const rt = (command: string, value?: string) => () => emitter.emit(EmitterEvents.RICH_TEXT_COMMAND, { action: { command, value } })
+  const textMenus: ContextmenuItem[] = isText && !props.isMultiSelect ? [
+    { text: '글꼴', children: FONTS.map(f => ({ text: f.label, handler: rt('fontname', f.value) })) },
+    { text: '글자 크기', children: ['10', '12', '14', '16', '18', '20', '24', '28', '32', '36', '40', '48', '60', '72'].map(s => ({ text: s, handler: rt('fontsize', s + 'px') })) },
+    { text: '크게 / 작게', children: [{ text: '글자 크게', handler: rt('fontsize-add') }, { text: '글자 작게', handler: rt('fontsize-reduce') }] },
+    { text: '굵게', subText: 'Ctrl + B', handler: rt('bold') },
+    { text: '기울임꼴', subText: 'Ctrl + I', handler: rt('em') },
+    { text: '밑줄', subText: 'Ctrl + U', handler: rt('underline') },
+    { text: '글자 색', children: [
+      ['검정', '#1f1f1f'], ['진회색', '#555555'], ['회색', '#8a8a8a'], ['흰색', '#ffffff'], ['마코디 보라', '#6c2bd9'], ['빨강', '#d33b3b'], ['파랑', '#2e6fd9'],
+    ].map(([t, c]) => ({ text: t, handler: rt('color', c) })) },
+    { text: '정렬', children: [['왼쪽', 'left'], ['가운데', 'center'], ['오른쪽', 'right'], ['양쪽', 'justify'], ['균등 분할', 'distributed']].map(([t, v]) => ({ text: t, handler: rt('align', v) })) },
+    { divider: true },
+  ] : []
+
   return [
+    ...textMenus,
     {
       text: '잘라내기',
       subText: 'Ctrl + X',
@@ -138,13 +157,11 @@ const contextmenus = (): ContextmenuItem[] => {
     },
     { divider: true },
     {
-      text: '링크 설정',
-      handler: props.openLinkDialog,
-    },
-    {
-      text: props.elementInfo.groupId ? '그룹 해제' : '그룹',
-      subText: 'Ctrl + G',
-      handler: props.elementInfo.groupId ? uncombineElements : combineElements,
+      // 그룹 여러 개를 고르면 '그룹'(그룹 안의 그룹), 한 그룹만 고르면 '그룹 해제'
+      text: canCombine.value ? '그룹' : '그룹 해제',
+      subText: canCombine.value ? 'Ctrl + G' : 'Ctrl + Shift + G',
+      handler: canCombine.value ? combineElements : uncombineElements,
+      disable: !canCombine.value && !canUncombine.value,
       hide: !props.isMultiSelect,
     },
     {

@@ -461,13 +461,23 @@ export const createSlideIdMap = (slides: Slide[]) => {
    * 例如：原本两个组合的元素拥有相同的groupId，复制后依然会拥有另一个相同的groupId
    * @param elements 元素列表数据
    */
+/** 복사한 요소의 그룹 id 들(바깥·안쪽 그룹, 해제 잠금)을 새 id 로 바꾼다 */
+export const remapGroupIds = (element: PPTElement, groupIdMap: IdMap) => {
+  if (element.groupId) element.groupId = groupIdMap[element.groupId]
+  if (element.groupStack) element.groupStack = element.groupStack.map(id => groupIdMap[id])
+  if (element.groupLock) element.groupLock = groupIdMap[element.groupLock]
+}
+
+/** 그룹 해제가 가능한지 — 해제 잠금 그룹만 남은 요소는 불가 */
+export const canUngroupElement = (element: PPTElement) =>
+  !!element.groupId && !(element.groupLock === element.groupId && !element.groupStack?.length)
+
 export const createElementIdMap = (elements: PPTElement[]) => {
   const groupIdMap: IdMap = {}
   const elIdMap: IdMap = {}
   for (const element of elements) {
-    const groupId = element.groupId
-    if (groupId && !groupIdMap[groupId]) {
-      groupIdMap[groupId] = nanoid(10)
+    for (const groupId of [element.groupId, ...(element.groupStack || [])]) {
+      if (groupId && !groupIdMap[groupId]) groupIdMap[groupId] = nanoid(10)
     }
     elIdMap[element.id] = nanoid(10)
   }

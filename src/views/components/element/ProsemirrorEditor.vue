@@ -13,7 +13,7 @@ import { debounce } from 'lodash'
 import { storeToRefs } from 'pinia'
 import { useKeyboardStore, useMainStore } from '@/store'
 import type { EditorView } from 'prosemirror-view'
-import { toggleMark, wrapIn, lift } from 'prosemirror-commands'
+import { toggleMark, wrapIn, lift, selectAll } from 'prosemirror-commands'
 import { initProsemirrorEditor, createDocument } from '@/utils/prosemirror'
 import { isActiveOfParentNodeType, findNodesWithSameMark, getTextAttrs, autoSelectAll, addMark, markActive, getFontsize } from '@/utils/prosemirror/utils'
 import emitter, { EmitterEvents, type RichTextAction, type RichTextCommand } from '@/utils/emitter'
@@ -151,7 +151,7 @@ const execCommand = ({ target, action }: RichTextCommand) => {
       const step = item.value ? +item.value : 2
       autoSelectAll(editorView)
       let fontsize = getFontsize(editorView) - step
-      if (fontsize < 12) fontsize = 12
+      if (fontsize < 1) fontsize = 1 // 글자 크기는 1px 까지
       const mark = editorView.state.schema.marks.fontsize.create({ fontsize: fontsize + 'px' })
       addMark(editorView, mark)
       setListStyle(editorView, { key: 'fontsize', value: fontsize + 'px' })
@@ -198,6 +198,8 @@ const execCommand = ({ target, action }: RichTextCommand) => {
       toggleMark(editorView.state.schema.marks.code)(editorView.state, editorView.dispatch)
     }
     else if (item.command === 'align' && item.value) {
+      // 상자만 선택(글자 편집 중 아님)했으면 PPT 처럼 상자 안 모든 문단에 적용
+      if (!editorView.hasFocus()) selectAll(editorView.state, editorView.dispatch)
       alignmentCommand(editorView, item.value)
     }
     else if (item.command === 'indent' && item.value) {

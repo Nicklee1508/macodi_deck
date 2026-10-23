@@ -1,6 +1,7 @@
 /**
  * 캔버스 안 AI 검색 (PPT 애드인 aisearch 의 웹 PPT 판) — 대상은 "현재 슬라이드 화면 전체"
- *  - [AI 영역 검색] = 슬라이드 어디든 손으로 둘러 그리면(스마트 올가미) 실제 경계에 붙은 다각형 영역으로 검색.
+ *  - [AI 영역 검색] = 마코디 웹 AI 영역 검색과 같은 방식: 손으로 그린 궤적의 바깥 사각형이 라운드 박스가 되고
+ *    그 박스 안을 잘라 검색. 박스는 모서리로 크기 조절·안쪽 잡고 이동 → 놓으면 다시 검색.
  *    버튼을 누를 때마다 시범(튜토리얼) 선이 자동으로 그려진다(그리는 중에 직접 그리면 시범은 멈춤).
  *    ([AI 자동 검색]은 사용자 결정으로 제거 — 2026-10-22)
  *  - 슬라이드는 검색할 때마다 한 장으로 찍는다(AiRegionLayer 가 등록한 capturer, 편집 표시 없이 내용만)
@@ -10,15 +11,8 @@
  */
 import { reactive } from 'vue'
 import { AI_URL, type MacodiProduct, toCdn } from './api'
-import { demoStroke, lassoRegion } from './colorRegions'
+import { demoStroke } from './colorRegions'
 
-export interface AiRegion {
-  label: string
-  purpose?: string
-  hex?: string
-  box: [number, number, number, number]   // 슬라이드 기준 0~1 — 검색에 쓰는 영역 안 가장 큰 사각형
-  loops: [number, number][][]             // 슬라이드 기준 0~1 — 윤곽(바깥+구멍)
-}
 export interface SrcBox { x: number; y: number; w: number; h: number } // 슬라이드 기준 0~1
 
 // 현재 슬라이드를 한 장으로 찍는 함수 — AiRegionLayer 가 등록
@@ -36,19 +30,32 @@ const ITEMS_PER_PAGE = 30
 
 export const ai = reactive({
   active: false,
-  demo: null as [number, number][] | null, // 튜토리얼 시범 선(레이어가 그려 보인 뒤 searchLasso)
+  demo: null as [number, number][] | null, // 튜토리얼 시범 선(레이어가 그려 보인 뒤 그 박스로 검색)
   img: null as HTMLImageElement | null,
   msg: '',
-  regions: [] as AiRegion[],
-  activeLabel: null as string | null,
   box: null as SrcBox | null,
-  meta: null as { purpose?: string; hex?: string } | null,
-  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string; purpose?: string; hex?: string },
+  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string },
   results: [] as MacodiProduct[],
   searching: false,
   page: 1,
   hasMore: false,
+  /** 키워드가 있을 때, 키워드는 안 맞지만 비슷한 자재(목록 아래쪽에 이어서) */
+  others: [] as MacodiProduct[],
+  /** 추천 자재를 캔버스에 넣은 뒤 = 캔버스의 영역 표시는 끄고 추천 목록(순서·스크롤)은 그대로 둔 상태 */
+  paused: false,
+  /** 키워드 칩 — AI 영역 검색 결과도 모든 키워드를 포함한 것만(AND). 패널이 맞춰 줌 */
+  keywords: [] as string[],
 })
+
+// 키워드 AND — 띄어쓰기 무시(노출콘크리트 = 노출 콘크리트), 대소문자 무시
+const norm = (s: string) => s.toLowerCase().replace(/\s+/g, '')
+const matchesKeywords = (p: MacodiProduct, kws: string[]) => {
+  if (!kws.length) return true
+  const hay = norm([p.name, p.brand, p.store, p.companyName, p.category, p.subCategory, p.series].filter(Boolean).join(' '))
+  return kws.every(k => hay.includes(norm(k)))
+}
+const MIN_FILL = 12 // 키워드로 걸러 한 번에 이만큼은 보여 주려고
+const MAX_PAGES = 6 // 서버 페이지를 최대 이만큼 더 받아 본다
 
 let reqId = 0
 
@@ -70,8 +77,8 @@ export const loadImage = (src: string) => new Promise<HTMLImageElement>((resolve
 export const stopAi = () => {
   reqId++
   Object.assign(ai, {
-    active: false, img: null, msg: '', regions: [], activeLabel: null,
-    box: null, meta: null, post: null, results: [], demo: null, searching: false, page: 1, hasMore: false,
+    active: false, img: null, msg: '',
+    box: null, post: null, paused: false, others: [], results: [], demo: null, searching: false, page: 1, hasMore: false,
   })
 }
 
@@ -91,33 +98,37 @@ export const startManual = async () => {
   catch { /* 시범 생략 */ }
 }
 
-/** 스마트 올가미 — 손으로 그린 선(슬라이드 기준 0~1) → 실제 경계에 붙은 다각형 영역으로 검색 */
-export const searchLasso = async (stroke: [number, number][]) => {
+/** 손으로 그린 선(슬라이드 기준 0~1) → 그 바깥 사각형(라운드 박스)으로 검색 — 웹 onDrawEnd 와 같음 */
+export const searchStroke = async (stroke: [number, number][]) => {
   ai.demo = null
   ai.msg = ''
+  let x1 = 1, y1 = 1, x2 = 0, y2 = 0
+  for (const [x, y] of stroke) {
+    x1 = Math.min(x1, x)
+    y1 = Math.min(y1, y)
+    x2 = Math.max(x2, x)
+    y2 = Math.max(y2, y)
+  }
+  if (x2 - x1 < 0.01 || y2 - y1 < 0.01) {
+    ai.msg = '영역이 너무 작아요. 조금 더 크게 그려주세요.'
+    return
+  }
+  await searchArea({ x: x1, y: y1, w: x2 - x1, h: y2 - y1 })
+}
+
+/** 박스 영역 검색 — 그릴 때·박스를 옮기거나 키운 뒤 놓을 때. 슬라이드는 매번 새로 찍는다(내용이 바뀌었을 수 있음) */
+export const searchArea = async (b: SrcBox) => {
+  ai.box = b
   const my = ++reqId
   try {
     const im = await capture()
     if (my !== reqId || !ai.active) return
     ai.img = im
-    const r = lassoRegion(im, stroke)
-    if (!r) {
-      ai.msg = '영역을 잡지 못했어요. 조금 더 크게 둘러 그려주세요.'
-      return
-    }
-    ai.regions = [r]
-    pickRegion(r)
+    searchBox(b)
   }
   catch {
     if (my === reqId) ai.msg = '슬라이드를 읽지 못했어요. 외부 주소 그림이 있으면 다시 넣어 주세요.'
   }
-}
-
-/** 영역 선택 = 그 영역 안 가장 큰 사각형을 잘라 그 영역 색과 함께 검색 */
-const pickRegion = (r: AiRegion) => {
-  ai.activeLabel = r.label
-  ai.meta = { purpose: r.purpose, hex: r.hex }
-  searchBox({ x: r.box[0], y: r.box[1], w: r.box[2] - r.box[0], h: r.box[3] - r.box[1] }, true)
 }
 
 // 웹 getColorFromImage — 64px 다운샘플, 알파 16 미만 제외 평균
@@ -140,7 +151,7 @@ const avgColor = (canvas: HTMLCanvasElement) => {
   return n ? [Math.round(r / n), Math.round(g / n), Math.round(b / n)] : [0, 0, 0]
 }
 
-const searchBox = (b: SrcBox, fromRegion: boolean) => {
+const searchBox = (b: SrcBox) => {
   const im = ai.img
   if (!im) return
   ai.box = b
@@ -159,42 +170,58 @@ const searchBox = (b: SrcBox, fromRegion: boolean) => {
   ai.post = {
     rgb_r: rgb[0], rgb_g: rgb[1], rgb_b: rgb[2],
     cropdata: c.toDataURL('image/png'), // ⚠️ AI 서버는 PNG 접두사만 벗긴다
-    purpose: fromRegion ? ai.meta?.purpose : undefined,
-    hex: fromRegion ? ai.meta?.hex : undefined,
   }
   search(1)
 }
 
-/** /productai (웹 modalProduct.runImgSearch 와 같은 본문) */
-export const search = (page: number) => {
+const fetchPage = (page: number) => postJson<unknown>(AI_URL + '/productai', {
+  rgb_r: ai.post!.rgb_r, rgb_g: ai.post!.rgb_g, rgb_b: ai.post!.rgb_b,
+  page, categories: [], companyName: '',
+  cropdata: ai.post!.cropdata, txtSearch: '', isRandom: 0, storeName: '',
+}).then(raw => {
+  const r = raw as { data?: MacodiProduct[]; products?: MacodiProduct[]; results?: MacodiProduct[] } | MacodiProduct[] | null
+  return Array.isArray(r) ? r : (r?.data || r?.products || r?.results || [])
+})
+
+/** /productai (웹 modalProduct.runImgSearch 와 같은 본문) + 키워드 AND.
+ *  키워드를 모두 포함한 자재(results)를 먼저, 나머지 비슷한 자재(others)는 그 아래에 — 결과가 '없음'으로 끝나지 않고
+ *  스크롤하면 계속 이어짐. 비슷한 순서는 서버 순서 그대로 */
+export const search = async (page: number) => {
   if (!ai.post) return
   const my = ++reqId
   ai.searching = true
-  ai.page = page
-  if (page === 1) ai.results = []
-  postJson<unknown>(AI_URL + '/productai', {
-    rgb_r: ai.post.rgb_r, rgb_g: ai.post.rgb_g, rgb_b: ai.post.rgb_b,
-    page, categories: [], companyName: '',
-    cropdata: ai.post.cropdata, txtSearch: '', isRandom: 0, storeName: '',
-    purpose: ai.post.purpose || undefined, hex: ai.post.hex || undefined,
-  })
-    .then(raw => {
+  if (page === 1) {
+    ai.results = []
+    ai.others = []
+    ai.msg = ''
+  }
+  const kws = [...ai.keywords]
+  const seen = new Set([...ai.results, ...ai.others].map(p => p.id))
+  try {
+    let p = page, more = true, added = 0
+    // 첫 화면이 비지 않게 — 키워드에 맞는 게 적으면 몇 페이지 더 받아 맞는 것부터 채움
+    for (let n = 0; n < (page === 1 && kws.length ? MAX_PAGES : 1) && more; n++, p++) {
+      const arr = await fetchPage(p)
       if (my !== reqId) return
-      const r = raw as { data?: MacodiProduct[]; products?: MacodiProduct[]; results?: MacodiProduct[] } | MacodiProduct[] | null
-      const arr: MacodiProduct[] = Array.isArray(r) ? r : (r?.data || r?.products || r?.results || [])
-      const seen = new Set(ai.results.map(p => p.id))
-      const list = arr.filter(p => p && typeof p.id === 'number' && !seen.has(p.id) && seen.add(p.id))
-      ai.results = page === 1 ? list : ai.results.concat(list)
-      ai.hasMore = arr.length >= ITEMS_PER_PAGE
-    })
-    .catch(() => {
-      if (my !== reqId) return
-      ai.hasMore = false
-      ai.msg = 'AI 검색에 실패했어요. AI 서버 상태를 확인해 주세요.'
-    })
-    .finally(() => {
-      if (my === reqId) ai.searching = false
-    })
+      more = arr.length >= ITEMS_PER_PAGE
+      const fresh = arr.filter(x => x && typeof x.id === 'number' && !seen.has(x.id) && seen.add(x.id))
+      const hit = fresh.filter(x => matchesKeywords(x, kws))
+      ai.results = ai.results.concat(hit)
+      ai.others = ai.others.concat(fresh.filter(x => !hit.includes(x)))
+      added += hit.length
+      ai.page = p
+      if (added >= MIN_FILL) break
+    }
+    ai.hasMore = more
+  }
+  catch {
+    if (my !== reqId) return
+    ai.hasMore = false
+    ai.msg = 'AI 검색에 실패했어요. AI 서버 상태를 확인해 주세요.'
+  }
+  finally {
+    if (my === reqId) ai.searching = false
+  }
 }
 
 /** 선택 기록 — "이 영역으로 검색해서 이 제품을 넣었다"(특징값만 저장). 실패 무시 */
@@ -208,7 +235,7 @@ export const logPick = (productId: number) => {
     c.height = Math.max(1, Math.round(im.naturalHeight * sc))
     c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height)
     return postJson(AI_URL + '/productai/feedback', {
-      cropdata: c.toDataURL('image/jpeg', 0.85), productId, purpose: ai.post?.purpose || '', platform: 'deck',
+      cropdata: c.toDataURL('image/jpeg', 0.85), productId, purpose: '', platform: 'deck',
     })
   }).catch(() => { /* 무시 */ })
 }

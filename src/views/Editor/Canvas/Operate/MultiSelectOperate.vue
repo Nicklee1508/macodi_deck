@@ -67,11 +67,11 @@ const setRange = () => {
 }
 watchEffect(setRange)
 
-// 禁用多选状态下缩放：仅未旋转的图片和形状可以在多选状态下缩放
+// 여러 개 선택 시 크기 조절: 회전 안 한 그림·도형·가로 글상자(마코디 제품 카드 포함)
 const disableResize = computed(() => {
   return localActiveElementList.value.some(item => {
     if (
-      (item.type === 'image' || item.type === 'shape') && 
+      (item.type === 'image' || item.type === 'shape' || (item.type === 'text' && !item.vertical)) && 
       !item.rotate
     ) return false
     return true
