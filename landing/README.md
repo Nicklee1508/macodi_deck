@@ -1,11 +1,14 @@
-# Macodi Deck 랜딩페이지
+# moodeck(무드덱) 랜딩페이지
+
+> **브랜드**: moodeck — "무드보드가 제안서가 되는 순간" · 진녹색 `#23443A` / 머스터드 `#D4A24C` (흰 배경 글자는 `#94691C`)
+> 로고: `assets/img/logo-moodeck.svg`(기본) · `logo-moodeck-white.svg`(어두운 배경) · `logo-moodeck-mark.svg`(아이콘만) · `icon-moodeck.svg`(앱 아이콘·파비콘)
 
 > **이 폴더(`landing/`)는 Deck 앱과 분리되어 있습니다.**
 > - Deck 빌드(`vite build`)는 루트 `index.html`·`src/`·`public/`만 사용하고, 타입 검사는 `src/`만 합니다. 그래서 이 폴더는 **Deck 빌드·배포 결과물에 포함되지 않습니다.**
 > - `landing/.eslintrc.cjs`가 이 폴더를 루트 `npm run lint` 대상에서 제외합니다.
 > - Deck 쪽 파일은 하나도 수정하지 않았습니다. 필요 없어지면 이 폴더만 지우면 됩니다.
 
-Macodi Deck(https://deck.macodi.co.kr/) 홍보용 랜딩페이지입니다. 서비스 주소 뒤의 `/home/`에서 열리도록 만들었습니다.
+moodeck(현재 서비스 주소 https://deck.macodi.co.kr/) 홍보용 랜딩페이지입니다. 서비스 주소 뒤의 `/home/`에서 열리도록 만들었습니다.
 
 - 빌드 과정 없는 정적 사이트입니다(HTML · CSS · JS).
 - Deck 프로그램(`macodi_deck`)과는 완전히 분리되어 있습니다. **Deck 코드는 수정하지 않습니다.**
