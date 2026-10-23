@@ -149,7 +149,6 @@ declare module 'vue' {
     'IIconParkOutline:unlock': typeof import('~icons/icon-park-outline/unlock')['default']
     'IIconParkOutline:up': typeof import('~icons/icon-park-outline/up')['default']
     'IIconParkOutline:upload': typeof import('~icons/icon-park-outline/upload')['default']
-    'IIconParkOutline:uploadOne': typeof import('~icons/icon-park-outline/upload-one')['default']
     'IIconParkOutline:user': typeof import('~icons/icon-park-outline/user')['default']
     'IIconParkOutline:verticalSpacingBetweenItems': typeof import('~icons/icon-park-outline/vertical-spacing-between-items')['default']
     'IIconParkOutline:videoTwo': typeof import('~icons/icon-park-outline/video-two')['default']

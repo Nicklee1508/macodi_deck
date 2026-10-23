@@ -46,7 +46,7 @@ export const deviceId = (() => {
   return id
 })()
 
-export type DialogMode = '' | 'plan' | 'form' | 'success' | 'activate' | 'manage'
+export type DialogMode = '' | 'plan' | 'form' | 'success' | 'activate' | 'manage' | 'failed'
 
 export const subscribeState = reactive({
   /** 열린 화면(''=닫힘) */
@@ -65,6 +65,11 @@ export const subscribeState = reactive({
   mailed: false,
   /** 안내 문구(예: 다른 PC에서 활성화돼 이 PC는 꺼졌어요) */
   notice: '',
+  /** 카드 등록·첫 결제 실패 안내창(mode 'failed')의 제목·내용 */
+  failTitle: '',
+  failMsg: '',
+  /** 무료 체험 1개를 방금 썼음 → 패널이 안내 */
+  freeUsedNotice: false,
 })
 
 // ⚠️ 개발 전용 테스트 키 — npm run dev 에서만(운영 빌드엔 들어가지 않음). 서버·결제 없이 구독 상태를 흉내
@@ -98,6 +103,18 @@ const post = async <T>(path: string, body: unknown): Promise<T> => {
 
 interface Summary { active: boolean; reason: string; status?: string; nextBillingAt?: string; email?: string; card?: string; amount?: number }
 
+// 자동결제가 안 되는 카드 — 토스가 알기 어려운 문구로 내려옴 → 쉬운 안내로
+const CARD_ISSUE = /서브몰|안심클릭|ISP|지원하지\s*않는|지원되지\s*않는|사용할\s*수\s*없|등록되지\s*않은|카드사|NOT_SUPPORTED|ISSUER/i
+/** 결제 실패 → 확인 버튼이 있는 안내창(토스 창에서 돌아온 뒤) */
+const showFail = (raw: string, fallback: string) => {
+  const card = CARD_ISSUE.test(raw)
+  subscribeState.failTitle = card ? '이 카드는 자동결제(구독)에 쓸 수 없어요' : '구독을 시작하지 못했어요'
+  subscribeState.failMsg = card
+    ? '카드사 사정으로 자동결제(정기결제)가 지원되지 않는 카드일 수 있어요. 다른 카드로 다시 시도해 주세요.'
+    : (raw || fallback)
+  subscribeState.mode = 'failed'
+}
+
 const apply = (s: Summary) => {
   const wasActive = subscribeState.active
   subscribeState.active = !!s.active
@@ -130,9 +147,21 @@ export const refreshStatus = async () => {
   return subscribeState.active
 }
 
-/** 담기·새 프로젝트 직전 — 서버로 바로 확인하고, 아니면 구독 팝업 */
+/** 구독 없이 마감재 담기 무료 체험 — 이 브라우저에서 1개까지 */
+const FREE_INSERT_STORE = 'moodeck.freeInserts'
+export const FREE_INSERT_LIMIT = 1
+export const freeInsertsLeft = () => Math.max(0, FREE_INSERT_LIMIT - (Number(read(FREE_INSERT_STORE)) || 0))
+const useFreeInsert = () => write(FREE_INSERT_STORE, String((Number(read(FREE_INSERT_STORE)) || 0) + 1))
+
+/** 담기·새 프로젝트 직전 — 서버로 바로 확인하고, 아니면 구독 팝업(담기는 무료 1개까지 먼저 허용) */
 export const ensureSubscribed = async (reason: 'new' | 'insert') => {
   if (subscribeState.key && await refreshStatus()) return true
+  if (reason === 'insert' && freeInsertsLeft() > 0) {
+    useFreeInsert()
+    subscribeState.notice = ''
+    subscribeState.freeUsedNotice = true
+    return true
+  }
   subscribeState.reason = reason
   subscribeState.mode = 'plan'
   return false
@@ -170,7 +199,7 @@ export const handleBillingReturn = async () => {
   if (!flag) return false
   history.replaceState(null, '', location.pathname)
   if (flag === 'fail') {
-    if (!/USER_CANCEL|PAY_PROCESS_CANCELED/i.test(q.get('code') || '')) subscribeState.notice = q.get('message') || '카드 등록에 실패했어요.'
+    if (!/USER_CANCEL|PAY_PROCESS_CANCELED/i.test(q.get('code') || '')) showFail(`${q.get('code') || ''} ${q.get('message') || ''}`.trim(), '카드 등록에 실패했어요.')
     return true
   }
   const customerKey = q.get('customerKey') || ''
@@ -185,7 +214,7 @@ export const handleBillingReturn = async () => {
     subscribeState.mode = 'success'
   }
   catch (e) {
-    subscribeState.notice = (e as Error).message || '결제를 완료하지 못했어요.'
+    showFail((e as Error).message || '', '결제를 완료하지 못했어요.')
   }
   return true
 }

@@ -171,11 +171,15 @@ watch([products, loadingMore], () => nextTick(() => {
 }))
 
 const { insertSpecCard } = useInsertSpecCard()
-const insert = async (p: MacodiProduct) => {
-  if (!(await ensureSubscribed('insert'))) return // 자재 담기 = 구독 기능(서버로 바로 확인 — 다른 PC에 넘어갔으면 여기서 막힘)
+const insert = async (p: MacodiProduct, checked = false) => {
+  if (!checked && !(await ensureSubscribed('insert'))) return // 자재 담기 = 구독 기능(무료 1개 체험 후엔 구독 팝업)
+  const free = subscribeState.freeUsedNotice
+  subscribeState.freeUsedNotice = false
   setStatus(`"${p.name || '자재'}" 삽입 중…`)
   insertSpecCard(p)
-    .then(() => setStatus(`삽입 완료: ${p.name || '자재'}`))
+    .then(() => setStatus(free
+      ? `무료 체험으로 1개를 담았어요. 더 담으려면 구독해 주세요.`
+      : `삽입 완료: ${p.name || '자재'}`))
     .catch(e => setStatus((e && e.message) || '삽입하지 못했습니다.', true))
 }
 
@@ -223,7 +227,7 @@ const onColorOpen = () => {
 const insertAi = async (p: MacodiProduct) => {
   if (!(await ensureSubscribed('insert'))) return
   ai.paused = true
-  insert(p)
+  insert(p, true) // 위에서 이미 확인함(두 번 확인하면 무료 1개가 두 번 깎임)
   logPick(p.id)
 }
 

@@ -21,6 +21,7 @@
             <li>.pptx 불러오기 · 내보내기</li>
             <li>PDF · 이미지 내보내기</li>
             <li>슬라이드 쇼 · 발표자 모드</li>
+            <li>마감재 이미지 배치 1개 체험</li>
           </ul>
           <button type="button" class="sp-btn ghost" @click="close">무료로 계속 쓰기</button>
         </div>
@@ -71,6 +72,17 @@
       </div>
       <p class="sd-small center">이 PC는 바로 활성화되었어요. 다른 PC에서는 ☰ 메뉴 → [활성화 키 입력]에 키를 넣으면 되고,<br />키는 PC 1대에서만 쓸 수 있어 다른 PC에서 입력하면 이 PC는 비활성화돼요.</p>
       <button type="button" class="sd-btn narrow" @click="close">시작하기</button>
+    </div>
+
+    <!-- 카드 등록·첫 결제 실패(토스 창에서 돌아온 뒤) -->
+    <div v-else-if="subscribeState.mode === 'failed'" class="sd-one">
+      <div class="sd-ok fail">!</div>
+      <h3 class="sd-title center">{{ subscribeState.failTitle }}</h3>
+      <p class="sd-desc center">{{ subscribeState.failMsg }}<br /><b>결제는 되지 않았어요.</b></p>
+      <div class="sd-two">
+        <button type="button" class="sd-keep" @click="subscribeState.mode = 'form'">다른 카드로 다시 시도</button>
+        <button type="button" class="sd-ghost" @click="close">닫기</button>
+      </div>
     </div>
 
     <!-- 다른 PC에서 키 입력 -->
@@ -166,7 +178,7 @@ const close = () => {
 
 const headTitle = computed(() => (
   subscribeState.reason === 'new' ? '새 프로젝트를 만들려면 구독이 필요해요'
-    : subscribeState.reason === 'insert' ? '마감재를 슬라이드에 담으려면 구독이 필요해요'
+    : subscribeState.reason === 'insert' ? '무료 체험(마감재 1개)을 모두 썼어요'
       : 'moodeck 요금 안내'
 ))
 const canPay = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value) && agreeAuto.value && agreeTerms.value)
@@ -379,6 +391,7 @@ $navy: #23443A;
   font-weight: 800;
   line-height: 54px;
 }
+.sd-ok.fail { background: #fbeaea; color: #d33; }
 .sd-key {
   display: flex;
   align-items: center;
