@@ -491,6 +491,7 @@ button.mcard.is-used { border-color: var(--accent); }
 .faq summary::after { content: ''; position: absolute; right: 8px; top: 50%; width: 12px; height: 12px; margin-top: -9px; border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3); transform: rotate(45deg); transition: transform .25s, margin .25s; }
 .faq details[open] summary::after { transform: rotate(-135deg); margin-top: -3px; }
 .faq details p { padding: 0 48px 26px 4px; color: var(--ink-2); }
+.faq details a { color: var(--accent); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
 
 /* ---------- CTA 띠 ---------- */
 .cta { background: var(--primary); color: #fff; text-align: center;
@@ -567,6 +568,8 @@ button.mcard.is-used { border-color: var(--accent); }
   .hero__notes { gap: 10px 16px; }
   .hero__shot { margin-top: 40px; }
   .browser__url { display: none; }
+  /* .wrap 의 padding 이 위아래 여백을 0 으로 덮어쓰므로 다시 지정 */
+  .stats__in { padding-top: 40px; padding-bottom: 40px; row-gap: 32px; }
   .stat b { font-size: 30px; }
   .sec { padding: 72px 0; }
   .sec__head { margin-bottom: 36px; }
