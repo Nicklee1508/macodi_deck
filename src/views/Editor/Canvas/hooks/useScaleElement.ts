@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore, useKeyboardStore } from '@/store'
-import type { PPTElement, PPTImageElement, PPTLineElement, PPTShapeElement } from '@/types/slides'
+import type { PPTElement, PPTImageElement, PPTLineElement, PPTShapeElement, PPTTextElement } from '@/types/slides'
 import { OperateResizeHandlers, type AlignmentLineProps, type MultiSelectRange } from '@/types/edit'
 import { MIN_SIZE } from '@/configs/element'
 import { SHAPE_PATH_FORMULAS } from '@/configs/shapes'
@@ -131,7 +131,7 @@ export default (
   const slidesStore = useSlidesStore()
   const { activeElementIdList, activeGroupElementId } = storeToRefs(mainStore)
   const { viewportRatio, viewportSize } = storeToRefs(slidesStore)
-  const { ctrlOrShiftKeyActive } = storeToRefs(useKeyboardStore())
+  const { ctrlOrShiftKeyActive, ctrlKeyState, shiftKeyState } = storeToRefs(useKeyboardStore())
 
   const { addHistorySnapshot } = useHistorySnapshot()
 
@@ -154,7 +154,10 @@ export default (
     const elRotate = ('rotate' in element && element.rotate) ? element.rotate : 0
     const rotateRadian = Math.PI * elRotate / 180
 
-    const fixedRatio = ctrlOrShiftKeyActive.value || ('fixedRatio' in element && element.fixedRatio)
+    // 모서리로 조절 = 가로세로 비율 고정(PPT 처럼). Shift 를 누르고 끌면 비율 자유
+    const fixedRatio = isCornerResizeHandler(command)
+      ? !shiftKeyState.value
+      : (ctrlOrShiftKeyActive.value || ('fixedRatio' in element && element.fixedRatio))
     const aspectRatio = elOriginWidth / elOriginHeight
 
     const startPageX = isTouchEvent ? e.changedTouches[0].pageX : e.pageX
@@ -483,7 +486,16 @@ export default (
           height = getSizeWithinRange(elOriginHeight + moveY, 'height')
         }
       }
-      
+
+      // Ctrl 을 누르고 끌면 가운데를 기준으로 양쪽이 함께 커지고 작아짐(회전돼 있어도 가운데 고정)
+      if (ctrlKeyState.value) {
+        width = Math.max(minSize, elOriginWidth + (width - elOriginWidth) * 2)
+        height = Math.max(minSize, elOriginHeight + (height - elOriginHeight) * 2)
+        if (fixedRatio) height = width / aspectRatio
+        left = elOriginLeft + elOriginWidth / 2 - width / 2
+        top = elOriginTop + elOriginHeight / 2 - height / 2
+      }
+
       elementList.value = elementList.value.map(el => {
         if (element.id !== el.id) return el
         if (el.type === 'shape' && 'pathFormula' in el && el.pathFormula) {
@@ -521,6 +533,10 @@ export default (
             ...el, left, top, width, height,
             cellMinHeight: cellMinHeight < 36 ? 36 : cellMinHeight,
           }
+        }
+        // 글상자 높이를 직접 바꾸면(위·아래·모서리) 그 높이로 고정 — 글자 수에 따라 자동으로 줄지 않게
+        if (el.type === 'text' && !el.vertical && height !== elOriginHeight && command !== OperateResizeHandlers.LEFT && command !== OperateResizeHandlers.RIGHT) {
+          return { ...el, left, top, width, height, fixedHeight: true }
         }
         return { ...el, left, top, width, height }
       })
@@ -580,8 +596,8 @@ export default (
       const x = (currentPageX - startPageX) / canvasScale.value
       let y = (currentPageY - startPageY) / canvasScale.value
 
-      // 锁定宽高比例，逻辑同上
-      if (ctrlOrShiftKeyActive.value) {
+      // 모서리 = 비율 고정(Shift 를 누르면 자유)
+      if (isCornerResizeHandler(command) && !shiftKeyState.value) {
         if (command === OperateResizeHandlers.RIGHT_BOTTOM || command === OperateResizeHandlers.LEFT_TOP) y = x / aspectRatio
         if (command === OperateResizeHandlers.LEFT_BOTTOM || command === OperateResizeHandlers.RIGHT_TOP) y = -x / aspectRatio
       }
@@ -621,6 +637,17 @@ export default (
         currentMaxX = maxX + x
       }
 
+      // Ctrl = 가운데 기준으로 양쪽 함께
+      if (ctrlKeyState.value) {
+        const cx = (minX + maxX) / 2, cy = (minY + maxY) / 2
+        const w = Math.max(1, operateWidth + ((currentMaxX - currentMinX) - operateWidth) * 2)
+        const h = Math.max(1, operateHeight + ((currentMaxY - currentMinY) - operateHeight) * 2)
+        currentMinX = cx - w / 2
+        currentMaxX = cx + w / 2
+        currentMinY = cy - h / 2
+        currentMaxY = cy + h / 2
+      }
+
       // 所有选中元素的整体宽高
       const currentOppositeWidth = currentMaxX - currentMinX
       const currentOppositeHeight = currentMaxY - currentMinY
@@ -642,6 +669,18 @@ export default (
             height: originElement.height * heightScale,
             left: currentMinX + (originElement.left - minX) * widthScale,
             top: currentMinY + (originElement.top - minY) * heightScale,
+          }
+        }
+        // 글상자도 함께 — 늘린 높이를 유지하도록 고정 높이로(글자 크기는 그대로, PPT 와 같음)
+        if (el.type === 'text' && !el.vertical && activeElementIdList.value.includes(el.id)) {
+          const originElement = originElementList.find(originEl => originEl.id === el.id) as PPTTextElement
+          return {
+            ...el,
+            width: originElement.width * widthScale,
+            height: originElement.height * heightScale,
+            left: currentMinX + (originElement.left - minX) * widthScale,
+            top: currentMinY + (originElement.top - minY) * heightScale,
+            fixedHeight: true,
           }
         }
         return el

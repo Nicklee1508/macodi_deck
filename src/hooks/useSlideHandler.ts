@@ -5,7 +5,7 @@ import { useMainStore, useSlidesStore } from '@/store'
 import type { Slide } from '@/types/slides'
 import { copyText, readClipboard } from '@/utils/clipboard'
 import { encrypt } from '@/utils/crypto'
-import { createElementIdMap } from '@/utils/element'
+import { createElementIdMap, remapGroupIds } from '@/utils/element'
 import { KEYS } from '@/configs/hotkey'
 import message from '@/utils/message'
 import usePasteTextClipboardData from '@/hooks/usePasteTextClipboardData'
@@ -96,7 +96,7 @@ export default () => {
 
     for (const element of slide.elements) {
       element.id = elIdMap[element.id]
-      if (element.groupId) element.groupId = groupIdMap[element.groupId]
+      remapGroupIds(element, groupIdMap)
     }
     const newSlide = {
       ...slide,

@@ -1,14 +1,18 @@
-import { computed } from 'vue'
+import { computed, reactive } from 'vue'
 import { storeToRefs } from 'pinia'
 import { nanoid } from 'nanoid'
 import { useMainStore, useSlidesStore } from '@/store'
 import type { PPTElement } from '@/types/slides'
 import useHistorySnapshot from '@/hooks/useHistorySnapshot'
+import { canUngroupElement } from '@/utils/element'
+
+/** 마지막으로 그룹 해제한 요소들 — PPT '재그룹' 용 */
+export const lastUngroup = reactive({ ids: [] as string[] })
 
 export default () => {
   const mainStore = useMainStore()
   const slidesStore = useSlidesStore()
-  const { activeElementIdList, activeElementList, handleElementId } = storeToRefs(mainStore)
+  const { activeElementIdList, activeElementList } = storeToRefs(mainStore)
   const { currentSlide } = storeToRefs(slidesStore)
 
   const { addHistorySnapshot } = useHistorySnapshot()
@@ -26,6 +30,9 @@ export default () => {
     return !inSameGroup
   })
 
+  /** 그룹 해제 가능 — 한 그룹만 골랐고, 해제 잠금(마코디 카드 이미지+링크)만 남은 게 아닐 때 */
+  const canUncombine = computed(() => !canCombine.value && activeElementList.value.some(canUngroupElement))
+
   /**
    * 组合当前选中的元素：给当前选中的元素赋予一个相同的分组ID
    */
@@ -42,6 +49,8 @@ export default () => {
     const combineElementList: PPTElement[] = []
     for (const element of newElementList) {
       if (activeElementIdList.value.includes(element.id)) {
+        // 이미 그룹이면 안쪽 그룹으로 기억해 두었다가, 해제할 때 그대로 되살린다(그룹 안의 그룹)
+        if (element.groupId) element.groupStack = [...(element.groupStack || []), element.groupId]
         element.groupId = groupId
         combineElementList.push(element)
       }
@@ -66,25 +75,33 @@ export default () => {
    */
   const uncombineElements = () => {
     if (!activeElementList.value.length) return
-    const hasElementInGroup = activeElementList.value.some(item => item.groupId)
-    if (!hasElementInGroup) return
+    // 고른 그룹(바깥 그룹) 단위로 푼다 — 일부만 선택돼 있어도 그룹 전체가 함께 풀림
+    const targetGroupIds = new Set(activeElementList.value.filter(canUngroupElement).map(el => el.groupId))
+    if (!targetGroupIds.size) return
     
     const newElementList: PPTElement[] = JSON.parse(JSON.stringify(currentSlide.value.elements))
+    const memberIds: string[] = []
     for (const element of newElementList) {
-      if (activeElementIdList.value.includes(element.id) && element.groupId) delete element.groupId
+      if (!targetGroupIds.has(element.groupId) || !canUngroupElement(element)) continue
+      memberIds.push(element.id)
+      // 바깥 그룹만 풀고 안쪽 그룹은 유지
+      const inner = element.groupStack?.pop()
+      if (element.groupStack && !element.groupStack.length) delete element.groupStack
+      if (inner) element.groupId = inner
+      else delete element.groupId
     }
     slidesStore.updateSlide({ elements: newElementList })
 
-    // 取消组合后，需要重置激活元素状态
-    // 默认重置为当前正在操作的元素,如果不存在则重置为空
-    const handleElementIdList = handleElementId.value ? [handleElementId.value] : []
-    mainStore.setActiveElementIdList(handleElementIdList)
+    // PPT 처럼 풀린 요소들은 선택된 채로 둔다
+    mainStore.setActiveElementIdList(memberIds)
+    lastUngroup.ids = memberIds
 
     addHistorySnapshot()
   }
 
   return {
     canCombine,
+    canUncombine,
     combineElements,
     uncombineElements,
   }

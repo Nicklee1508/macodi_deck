@@ -51,9 +51,9 @@
     </div>
 
     <Divider />
+    <!-- PPT 그림 형식: 수정 · 색(투명한 색 설정) · 꾸밈 효과 -->
+    <ImageFormatControls />
     <ElementColorMask />
-    <Divider />
-    <ElementFilter />
     <Divider />
     <ElementOutline />
     <Divider />
@@ -80,8 +80,8 @@ import useImageHandler from '@/hooks/useImageHandler'
 import ElementOutline from '../common/ElementOutline.vue'
 import ElementShadow from '../common/ElementShadow.vue'
 import ElementFlip from '../common/ElementFlip.vue'
-import ElementFilter from '../common/ElementFilter.vue'
 import ElementColorMask from '../common/ElementColorMask.vue'
+import ImageFormatControls from '@/macodi/ImageFormatControls.vue'
 import FileInput from '@/components/FileInput.vue'
 import Divider from '@/components/Divider.vue'
 import Button from '@/components/Button.vue'

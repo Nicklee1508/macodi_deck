@@ -150,3 +150,7 @@ textarea {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+// 균등 분할(PPT) — 띄어쓰기 없는 한 단어(EXPANSION, 확장성)도 글자 사이를 벌려 상자 폭에 맞춤
+p[style*='text-align-last: justify'] {
+  text-justify: inter-character;
+}

@@ -2,15 +2,21 @@
   <div class="macodi-panel">
     <form class="mp-search" @submit.prevent="submitSearch">
       <!-- AI 영역 검색 — 컬러 필터와 같은 크기 정사각형(회색 점선). 켜진 상태에서 다시 누르면 끝내기 -->
+      <!-- 처음 온 사람: AI 버튼 강조 + 안내 말풍선(한 번 누르거나 닫으면 다시 안 뜸) -->
+      <div v-if="aiTip" class="ai-tip" @click.stop>
+        <template v-if="ai.active && !ai.paused"><b>AI 영역 검색</b> — 슬라이드 위 찾고 싶은 마감재를 펜으로 그려 보세요. 비슷한 실제 제품을 오른쪽에 찾아 드려요.</template>
+        <template v-else><b>AI 영역 검색</b> — 눌러서 슬라이드 속 마감재를 그려 보세요. 비슷한 실제 제품을 찾아 드려요.</template>
+        <span class="ai-tip-x" title="닫기" @click="closeAiTip">×</span>
+      </div>
       <button
         type="button"
         class="ai-sq"
-        :class="{ on: ai.active }"
-        :title="ai.active ? 'AI 영역 검색 끝내기' : 'AI 영역 검색 — 슬라이드 위에서 찾을 곳을 둘러 그리기'"
+        :class="{ on: ai.active && !ai.paused, pulse: aiTip }"
+        :title="ai.active && !ai.paused ? 'AI 영역 검색 끝내기' : 'AI 영역 검색 — 슬라이드 위에서 찾을 곳을 둘러 그리기'"
         @click="toggle"
-      >AI</button>
-      <!-- 컬러 필터 — 색과 검색어를 함께 적용 -->
-      <ColorFilter v-model="color" />
+      >AI<span v-if="ai.active && !ai.paused" class="clr" title="AI 영역 검색 끝내기" @click.stop="stopAi">×</span></button>
+      <!-- 컬러 필터 — 색과 검색어를 함께 적용. 버튼을 누르는 순간 AI 영역 검색은 꺼짐 -->
+      <ColorFilter v-model="color" @open="onColorOpen" />
       <!-- 키워드 칩: 입력 후 Enter/검색 = 칩으로 고정(우상단 × 로 삭제), 여러 개면 모두 만족하는 자재(AND) -->
       <div class="kw-box" @click="kwInputRef?.focus()">
         <span v-for="(k, i) in keywords" :key="k" class="kw-chip">
@@ -18,21 +24,23 @@
         </span>
         <input
           ref="kwInputRef"
-          v-model="q"
+          :value="q"
           type="text"
           :placeholder="keywords.length ? '키워드 추가' : '자재명·브랜드 검색 (예: 대리석)'"
           autocomplete="off"
+          @input="e => (q = (e.target as HTMLInputElement).value)"
           @keydown.backspace="onKwBackspace"
-          @keydown.enter.prevent="submitSearch"
+          @keydown.enter.prevent="onKwEnter"
+          @compositionend="onKwCompositionEnd"
         />
       </div>
     </form>
     <div class="mp-status" :class="{ err: isErr }">{{ status }}</div>
 
     <!-- AI 영역 검색 결과 (캔버스의 그림 위에서 영역을 고르면 여기 표시) -->
-    <div v-if="ai.active" class="mp-ai">
+    <div v-if="ai.active" ref="aiListRef" class="mp-ai" @scroll="onAiScroll">
       <div class="mp-sec">
-        {{ ai.searching && !ai.results.length ? 'AI 추천 검색 중…' : ai.results.length ? 'AI 추천 자재' : ai.post ? '추천 결과가 없어요' : '슬라이드 위에서 찾을 곳을 둘러 그려주세요' }}
+        {{ ai.results.length || ai.others.length ? 'AI 추천 자재' : ai.post || ai.searching ? 'AI 추천 검색 중…' : '슬라이드 위에서 찾을 곳을 둘러 그려주세요' }}
       </div>
       <div class="mp-grid">
         <button v-for="p in ai.results" :key="'ai' + p.id" type="button" class="mp-card" :title="p.name" @click="insertAi(p)">
@@ -41,7 +49,15 @@
           <span class="brand">{{ [p.category, p.subCategory].filter(Boolean).join(' / ') }}</span>
           <span v-if="sizeWxL(p.size)" class="size">{{ sizeWxL(p.size) }}</span>
         </button>
-        <button v-if="ai.hasMore && !ai.searching" type="button" class="mp-more" @click="search(ai.page + 1)">더 보기</button>
+        <!-- 키워드는 안 맞지만 비슷한 자재 — 맞는 자재 아래에 이어서(무한 스크롤) -->
+        <div v-if="ai.others.length" class="mp-loose">{{ ai.results.length ? '그 밖의 비슷한 자재' : `‘${ai.keywords.join(' ')}’이(가) 들어간 자재가 없어 가장 비슷한 자재를 보여 드려요` }}</div>
+        <button v-for="p in ai.others" :key="'ao' + p.id" type="button" class="mp-card" :title="p.name" @click="insertAi(p)">
+          <span class="thumb" :style="{ backgroundImage: `url('${thumbOf(p)}')` }"></span>
+          <span class="name">{{ p.name || '자재' }}</span>
+          <span class="brand">{{ [p.category, p.subCategory].filter(Boolean).join(' / ') }}</span>
+          <span v-if="sizeWxL(p.size)" class="size">{{ sizeWxL(p.size) }}</span>
+        </button>
+        <div v-if="ai.searching && (ai.results.length || ai.others.length)" class="mp-more-msg">불러오는 중…</div>
       </div>
     </div>
 
@@ -73,7 +89,8 @@ import { type MacodiProduct, colorSearchProducts, searchProducts, toCdn } from '
 import useInsertSpecCard from './useInsertSpecCard'
 import ColorFilter from './ColorFilter.vue'
 import { sizeWxL } from './sizeFormat'
-import { ai, logPick, search, startManual, stopAi, thumbOf } from './aiRegion'
+import { ai, logPick, search as aiSearch, startManual, stopAi, thumbOf } from './aiRegion'
+import { fixKoreanTypo } from './hangulFix'
 
 const q = ref('') // 입력 중인 글자
 const keywords = ref<string[]>([]) // 고정된 키워드 칩
@@ -136,6 +153,13 @@ const loadMore = () => {
 }
 const gridRef = ref<HTMLElement>()
 const nearEnd = (el: HTMLElement) => el.scrollTop + el.clientHeight > el.scrollHeight - 600
+// AI 추천도 무한 스크롤 — 끝에 가까우면 다음 결과를 이어 붙임(화면이 덜 차도 자동으로)
+const aiListRef = ref<HTMLElement>()
+const onAiScroll = () => {
+  const el = aiListRef.value
+  if (el && ai.hasMore && !ai.searching && nearEnd(el)) aiSearch(ai.page + 1)
+}
+watch(() => [ai.results.length, ai.others.length, ai.searching], () => nextTick(onAiScroll))
 const onGridScroll = () => {
   if (gridRef.value && nearEnd(gridRef.value)) loadMore()
 }
@@ -154,8 +178,27 @@ const insert = (p: MacodiProduct) => {
 
 // AI 검색 대상 = 현재 슬라이드 화면 전체
 const { currentSlide } = storeToRefs(useSlidesStore())
+// 첫 방문 안내 — 이 브라우저에서 한 번만
+const AI_TIP_KEY = 'macodi.deck.aiTipSeen'
+const aiTip = ref((() => {
+  try {
+    return !localStorage.getItem(AI_TIP_KEY)
+  }
+  catch {
+    return false
+  }
+})())
+const closeAiTip = () => {
+  aiTip.value = false
+  try {
+    localStorage.setItem(AI_TIP_KEY, '1')
+  }
+  catch { /* 저장 불가 = 다음에 또 보임 */ }
+}
+
 const toggle = () => {
-  if (ai.active) {
+  if (aiTip.value) closeAiTip()
+  if (ai.active && !ai.paused) { // 켜져 있으면 끄기(쉬는 중이면 새 영역 검색 시작)
     stopAi()
     return
   }
@@ -165,10 +208,17 @@ const toggle = () => {
 }
 // 슬라이드를 바꾸면 AI 모드 종료(대상 화면이 바뀜)
 watch(() => currentSlide.value?.id, () => {
-  if (ai.active) stopAi()
+  if (ai.active && !ai.paused) stopAi() // 쉬는 중(자재 넣은 뒤)이면 추천 목록은 그대로
 })
 
+const onColorOpen = () => {
+  if (ai.active && !ai.paused) stopAi() // 쉬는 중이면 색을 실제로 고를 때(watch color) 새로 검색
+}
+
+// AI 추천 자재를 넣으면: 캔버스의 영역 검색은 끄고(넣은 카드가 보이게) 추천 목록은 순서·스크롤 그대로 둠.
+//  이후 컬러 선택·새 AI 영역·키워드 입력이 들어오면 그때 새로 검색
 const insertAi = (p: MacodiProduct) => {
+  ai.paused = true
   insert(p)
   logPick(p.id)
 }
@@ -178,25 +228,72 @@ watch(color, v => {
   if (v && ai.active) stopAi()
   load()
 })
-// 텍스트 검색도 일반 목록으로 — 영역 검색 중이면 끝냄
+// 키워드 칩은 일반 목록과 AI 영역 검색 결과에 모두 AND 로 걸림 — AI 영역 검색 중이면 끄지 않고 그 결과를 다시 거름
+watch(keywords, k => {
+  ai.keywords = [...k]
+  // 자재를 넣고 쉬는 중이면 → AI 추천은 끝내고 일반 키워드 검색으로 새로
+  if (ai.active && ai.paused) {
+    stopAi()
+    load()
+  }
+  else if (ai.active && ai.post) aiSearch(1)
+}, { immediate: true })
 const submitSearch = () => {
-  if (ai.active) stopAi()
-  // 입력한 글자를 칩으로 고정(띄어쓴 단어는 각각 칩), 중복 제외
-  const add = q.value.trim().split(/\s+/).filter(w => w && !keywords.value.includes(w))
-  keywords.value = [...keywords.value, ...add]
+  // 입력한 글자를 칩으로 고정(띄어쓴 단어는 각각 칩), 중복 제외.
+  // 한글 입력기가 꺼진 채 친 단어(vpdlsxm)는 한글(페인트)로 바로잡음
+  const fixed: string[] = []
+  const words = q.value.trim().split(/\s+/).filter(Boolean).map(w => {
+    const ko = fixKoreanTypo(w)
+    if (ko) fixed.push(`${w} → ${ko}`)
+    return ko || w
+  })
+  const add = words.filter((w, i) => !keywords.value.includes(w) && words.indexOf(w) === i)
   q.value = ''
-  load()
+  if (fixed.length) setStatus(`한/영 전환을 바로잡아 검색했어요: ${fixed.join(', ')}`)
+  if (!add.length) return
+  keywords.value = [...keywords.value, ...add]
+  if (!ai.active) load()
 }
 const removeKeyword = (i: number) => {
   keywords.value = keywords.value.filter((_, j) => j !== i)
-  if (ai.active) stopAi()
-  load()
+  if (!ai.active) load()
 }
-// 빈 입력칸에서 Backspace = 마지막 칩 삭제
-const onKwBackspace = () => {
+// 빈 입력칸에서 Backspace = 마지막 칩 삭제 (한글 조합 중인 글자 지우기는 제외)
+const onKwBackspace = (e: KeyboardEvent) => {
+  if (e.isComposing) return
   if (!q.value && keywords.value.length) removeKeyword(keywords.value.length - 1)
 }
+// 한글 조합 중 Enter = 마지막 글자가 확정된 뒤에 칩으로(안 그러면 '타일'이 '타'로 잘림)
+let submitAfterCompose = false
+const onKwEnter = (e: KeyboardEvent) => {
+  if (e.isComposing) {
+    submitAfterCompose = true
+    return
+  }
+  submitSearch()
+}
+const onKwCompositionEnd = (e: CompositionEvent) => {
+  q.value = (e.target as HTMLInputElement).value
+  if (!submitAfterCompose) return
+  submitAfterCompose = false
+  setTimeout(submitSearch) // 조합 확정이 입력칸에 반영된 다음
+}
 onMounted(load)
+
+// 처음 온 사람: 첫 화면(샘플 제안서)이 뜨면 AI 영역 검색 튜토리얼을 자동으로 한 번 보여 줌(시범 선 → 박스 → 추천)
+if (aiTip.value) {
+  let started = false
+  watch(() => currentSlide.value?.elements.length || 0, n => {
+    if (!n || started) return
+    started = true
+    setTimeout(() => {
+      if (!ai.active && aiTip.value) {
+        color.value = null
+        startManual()
+      }
+    }, 800) // 슬라이드 그림이 그려진 뒤
+  }, { immediate: true })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -223,8 +320,31 @@ onMounted(load)
   font-weight: 800;
   letter-spacing: -0.5px;
   cursor: pointer;
+  position: relative;
+  &.pulse {
+    border-style: solid;
+    border-color: #6c2bd9;
+    color: #6c2bd9;
+    animation: ai-pulse 1.4s ease-out infinite;
+  }
   &:hover { border-color: #6c2bd9; color: #6c2bd9; }
   &.on { border-style: solid; border-color: #6c2bd9; background: #6c2bd9; color: #fff; }
+  // 끄기 × — 컬러 필터의 색상 해제 × 와 같은 모양·위치
+  .clr {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #333;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0;
+    line-height: 16px;
+    text-align: center;
+  }
 }
 .mp-ai {
   flex: 1;
@@ -232,6 +352,16 @@ onMounted(load)
   display: flex;
   flex-direction: column;
   .mp-grid { flex: none; overflow: visible; }
+}
+.mp-loose {
+  grid-column: 1 / -1;
+  margin: 4px 0 2px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: #f3effc;
+  color: #6c2bd9;
+  font-size: 11px;
+  line-height: 1.5;
 }
 .mp-sec {
   padding: 8px 12px 6px;
@@ -245,15 +375,6 @@ onMounted(load)
   text-align: center;
   font-size: 12px;
   color: #999;
-}
-.mp-more {
-  grid-column: 1 / -1;
-  padding: 8px;
-  border: 1px solid #e7e7ee;
-  border-radius: 8px;
-  background: #fff;
-  font: inherit;
-  cursor: pointer;
 }
 .mp-search {
   display: flex;
@@ -383,6 +504,44 @@ onMounted(load)
     font-size: 11px;
     color: #6c6c76;
     @include ellipsis-oneline();
+  }
+}
+@keyframes ai-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(108, 43, 217, .55); }
+  70% { box-shadow: 0 0 0 10px rgba(108, 43, 217, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(108, 43, 217, 0); }
+}
+.mp-search { position: relative; }
+.ai-tip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  z-index: 50;
+  width: 250px;
+  padding: 10px 26px 10px 12px;
+  border-radius: 8px;
+  background: #6c2bd9;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.6;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+  &::before { // 말풍선 꼬리 → AI 버튼
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: -6px;
+    border: 6px solid transparent;
+    border-top: 0;
+    border-bottom-color: #6c2bd9;
+  }
+  .ai-tip-x {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    opacity: .85;
+    &:hover { opacity: 1; }
   }
 }
 </style>

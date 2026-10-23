@@ -13,6 +13,7 @@ export const enum KEYS {
   O = 'O',
   R = 'R',
   T = 'T',
+  S = 'S',
   MINUS = '-',
   EQUAL = '=',
   DIGIT_0 = '0',
@@ -43,6 +44,9 @@ export const HOTKEY_DOC: HotkeyItem[] = [
   {
     type: '일반',
     children: [
+      { label: '저장', value: 'Ctrl + S' },
+      { label: '다른 이름으로 저장', value: 'Ctrl + Shift + S' },
+      { label: '내 파일 열기', value: 'Ctrl + O' },
       { label: '잘라내기', value: 'Ctrl + X' },
       { label: '복사', value: 'Ctrl + C' },
       { label: '붙여넣기', value: 'Ctrl + V' },

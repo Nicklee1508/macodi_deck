@@ -19,6 +19,7 @@
         :value="textAttrs.fontsize"
         search
         searchLabel="글자 크기 검색"
+    :customInput="customFontSize"
         autofocus
         @update:value="value => updateTextAttrs({ fontsize: value as string })"
         :options="fontSizeOptions.map(item => ({
@@ -215,6 +216,7 @@ import Button from '@/components/Button.vue'
 import ButtonGroup from '@/components/ButtonGroup.vue'
 import RadioButton from '@/components/RadioButton.vue'
 import RadioGroup from '@/components/RadioGroup.vue'
+import { customFontSize } from '@/utils/customSelectInput'
 import Select from '@/components/Select.vue'
 import SelectGroup from '@/components/SelectGroup.vue'
 import Popover from '@/components/Popover.vue'

@@ -19,6 +19,7 @@
         :value="richTextAttrs.fontsize"
         search
         searchLabel="글자 크기 검색"
+    :customInput="customFontSize"
         autofocus
         @update:value="value => emitRichTextCommand('fontsize', value as string)"
         :options="fontSizeOptions.map(item => ({
@@ -168,6 +169,7 @@
       <RadioButton value="center" v-tooltip="'가운데 맞춤'" style="flex: 1;"><i-icon-park-outline:align-text-center /></RadioButton>
       <RadioButton value="right" v-tooltip="'오른쪽 맞춤'" style="flex: 1;"><i-icon-park-outline:align-text-right /></RadioButton>
       <RadioButton value="justify" v-tooltip="'양쪽 맞춤'" style="flex: 1;"><i-icon-park-outline:align-text-both /></RadioButton>
+      <RadioButton value="distributed" v-tooltip="'균등 분할'" style="flex: 1;"><i-icon-park-outline:distribute-horizontal-spacing /></RadioButton>
     </RadioGroup>
 
     <div class="row" passive>
@@ -261,6 +263,7 @@ import ColorPicker from '@/components/ColorPicker/index.vue'
 import Input from '@/components/Input.vue'
 import Button from '@/components/Button.vue'
 import ButtonGroup from '@/components/ButtonGroup.vue'
+import { customFontSize } from '@/utils/customSelectInput'
 import Select from '@/components/Select.vue'
 import SelectGroup from '@/components/SelectGroup.vue'
 import Divider from '@/components/Divider.vue'

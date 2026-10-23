@@ -1,4 +1,5 @@
 import { fileURLToPath, URL } from 'node:url'
+import { writeFileSync } from 'node:fs'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Icons from 'unplugin-icons/vite'
@@ -11,6 +12,22 @@ export default defineConfig({
   base: '',
   plugins: [
     vue(),
+    // (개발 전용) 편집기에서 지금 제안서를 기본 샘플 원본으로 저장 → 개발자가 그림을 정리해 sample-deck.json 으로 반영
+    {
+      name: 'macodi-save-sample',
+      apply: 'serve',
+      configureServer(server) {
+        server.middlewares.use('/__save-sample', (req, res) => {
+          if (req.method !== 'POST') return res.end()
+          const chunks: Buffer[] = []
+          req.on('data', c => chunks.push(c))
+          req.on('end', () => {
+            writeFileSync('public/mocks/sample-deck.upload.json', Buffer.concat(chunks))
+            res.end('ok')
+          })
+        })
+      },
+    },
     Components({
       dirs: [],
       resolvers: [

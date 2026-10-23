@@ -30,7 +30,7 @@ export interface SlidesState {
 
 export const useSlidesStore = defineStore('slides', {
   state: (): SlidesState => ({
-    title: '마감재 제안서', // 幻灯片标题
+    title: '샘플 제안서', // 기본 제목
     theme: {
       themeColors: ['#5b9bd5', '#ed7d31', '#a5a5a5', '#ffc000', '#4472c4', '#70ad47'],
       fontColor: '#333',

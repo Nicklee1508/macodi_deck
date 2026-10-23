@@ -6,7 +6,7 @@
       :class="{ on: !!modelValue }"
       :style="modelValue ? { background: '#' + modelValue } : undefined"
       :title="modelValue ? `컬러 필터 #${modelValue.toUpperCase()}` : '컬러 필터'"
-      @click="open = !open"
+      @click="toggleOpen"
     >
       <span v-if="modelValue" class="clr" title="색상 해제" @click.stop="clear">×</span>
     </button>
@@ -68,12 +68,17 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props = defineProps<{ modelValue: string | null }>()
-const emit = defineEmits<{ (e: 'update:modelValue', v: string | null): void }>()
+const emit = defineEmits<{ (e: 'update:modelValue', v: string | null): void; (e: 'open'): void }>()
 
 const SIZE = 240
 const PASTEL_MAX_SAT = 0.5
 
 const open = ref(false)
+// 팝업을 여는 순간 알림(패널이 AI 영역 검색을 끔)
+const toggleOpen = () => {
+  open.value = !open.value
+  if (open.value) emit('open')
+}
 const rootRef = ref<HTMLElement>()
 const wheelRef = ref<HTMLCanvasElement>()
 const valuePct = ref(100)
@@ -192,6 +197,7 @@ const eyedrop = () => {
     msg.value = '이 브라우저는 스포이드를 지원하지 않아요. Chrome 또는 Edge 에서 사용해 주세요.'
     return
   }
+  open.value = false // 스포이드로 화면을 찍는 동안 팝업이 가리지 않게 닫음
   new ED().open()
     .then(r => {
       const n = normalize(r?.sRGBHex)

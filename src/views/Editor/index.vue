@@ -21,7 +21,6 @@
   <SelectPanel v-if="showSelectPanel" />
   <SearchPanel v-if="showSearchPanel" />
   <NotesPanel v-if="showNotesPanel" />
-  <SymbolPanel v-if="showSymbolPanel" />
   <ChartDataEditorDialog />
   <LatexEditorDialog />
 
@@ -32,6 +31,8 @@
   >
     <ExportDialog />
   </Modal>
+  <!-- 내 파일: 저장(다른 이름으로) / 열기 -->
+  <FilesDialog />
 
 </template>
 
@@ -51,10 +52,10 @@ import Remark from './Remark/index.vue'
 import ChartDataEditorDialog from './ChartDataEditorDialog.vue'
 import LatexEditorDialog from './LatexEditorDialog.vue'
 import ExportDialog from './ExportDialog/index.vue'
+import FilesDialog from '@/macodi/FilesDialog.vue'
 import SelectPanel from './SelectPanel.vue'
 import SearchPanel from './SearchPanel.vue'
 import NotesPanel from './NotesPanel.vue'
-import SymbolPanel from './SymbolPanel.vue'
 import Modal from '@/components/Modal.vue'
 
 const mainStore = useMainStore()
@@ -63,7 +64,6 @@ const {
   showSelectPanel,
   showSearchPanel,
   showNotesPanel,
-  showSymbolPanel,
 } = storeToRefs(mainStore)
 
 const closeExportDialog = () => mainStore.setDialogForExport('')

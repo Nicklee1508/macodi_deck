@@ -57,8 +57,8 @@ const scaleWidth = computed(() => props.elementInfo.width * canvasScale.value)
 const scaleHeight = computed(() => props.elementInfo.height * canvasScale.value)
 
 const { resizeHandlers: normalResizeHandlers, textElementResizeHandlers, verticalTextElementResizeHandlers, borderLines } = useCommonOperate(scaleWidth, scaleHeight)
-const resizeHandlers = computed(() => {
-  if (props.elementInfo.fixedHeight) return normalResizeHandlers.value
-  return props.elementInfo.vertical ? verticalTextElementResizeHandlers.value : textElementResizeHandlers.value
-})
+// 일반 도형처럼 8방향 모두 — 위·아래(모서리 포함)를 끌면 useScaleElement 가 높이 고정(fixedHeight)으로 바꾼다
+const resizeHandlers = computed(() => normalResizeHandlers.value)
+void textElementResizeHandlers
+void verticalTextElementResizeHandlers
 </script>

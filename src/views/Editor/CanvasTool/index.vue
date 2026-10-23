@@ -113,9 +113,15 @@
           <i-icon-park-outline:video-two class="icon" /> <span class="text">오디오/동영상</span>
         </div>
       </Popover>
-      <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'기호 삽입'" @click="toggleSymbolPanel()">
-        <i-icon-park-outline:symbol class="icon" /> <span class="text">기호</span>
-      </div>
+      <!-- 위치: 선택한 개체의 순서(맨 앞/뒤)·맞춤·크기 — 오른쪽 '위치' 탭과 같은 패널 -->
+      <Popover trigger="click" v-model:value="positionVisible" :offset="10">
+        <template #content>
+          <ArrangeMenu @done="positionVisible = false" />
+        </template>
+        <div class="insert-handler-item" v-tooltip="'개체 순서·그룹·맞춤·회전'">
+          <i-icon-park-outline:align-left-two class="icon" /> <span class="text">위치</span>
+        </div>
+      </Popover>
     </div>
 
     <div class="right-handler">
@@ -171,6 +177,7 @@ import LinePool from './LinePool.vue'
 import ChartPool from './ChartPool.vue'
 import TableGenerator from './TableGenerator.vue'
 import MediaInput from './MediaInput.vue'
+import ArrangeMenu from '@/macodi/ArrangeMenu.vue'
 import SVGPathEditor from './SVGPathEditor.vue'
 import FileInput from '@/components/FileInput.vue'
 import Modal from '@/components/Modal.vue'
@@ -180,7 +187,10 @@ import PopoverMenuItem from '@/components/PopoverMenuItem.vue'
 
 const mainStore = useMainStore()
 const slidesStore = useSlidesStore()
-const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel, showSymbolPanel } = storeToRefs(mainStore)
+const { creatingElement, creatingCustomShape, showSelectPanel, showSearchPanel, showNotesPanel } = storeToRefs(mainStore)
+
+// 위치 버튼 = PPT '정렬' 메뉴(개체 순서·그룹·맞춤·회전·선택 창)
+const positionVisible = ref(false)
 const { canUndo, canRedo } = storeToRefs(useSnapshotStore())
 const { theme, viewportRatio, viewportSize } = storeToRefs(slidesStore)
 
@@ -301,10 +311,6 @@ const toggleNotesPanel = () => {
   mainStore.setNotesPanelState(!showNotesPanel.value)
 }
 
-// 打开符号面板
-const toggleSymbolPanel = () => {
-  mainStore.setSymbolPanelState(!showSymbolPanel.value)
-}
 
 // 打开图库面板
 </script>

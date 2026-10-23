@@ -19,6 +19,7 @@
       <Select style="width: 60%;"
         :value="lineHeight || 1"
         @update:value="value => updateText({ lineHeight: value as number })"
+        :customInput="customLineHeight"
         :options="lineHeightOptions.map(item => ({
           label: item + '배', value: item
         }))"
@@ -33,6 +34,7 @@
       <Select style="width: 60%;"
         :value="paragraphSpace || 0"
         @update:value="value => updateText({ paragraphSpace: value as number })"
+        :customInput="customParagraphSpace"
         :options="paragraphSpaceOptions.map(item => ({
           label: item + 'px', value: item
         }))"
@@ -47,6 +49,7 @@
       <Select style="width: 60%;"
         :value="wordSpace || 0"
         @update:value="value => updateText({ wordSpace: value as number })"
+        :customInput="customWordSpace"
         :options="wordSpaceOptions.map(item => ({
           label: item + 'px', value: item
         }))"
@@ -162,6 +165,7 @@ import Divider from '@/components/Divider.vue'
 import NumberInput from '@/components/NumberInput.vue'
 import RadioButton from '@/components/RadioButton.vue'
 import RadioGroup from '@/components/RadioGroup.vue'
+import { customLineHeight, customParagraphSpace, customWordSpace } from '@/utils/customSelectInput'
 import Select from '@/components/Select.vue'
 import Switch from '@/components/Switch.vue'
 import Popover from '@/components/Popover.vue'

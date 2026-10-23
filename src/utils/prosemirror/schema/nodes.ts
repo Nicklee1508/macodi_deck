@@ -116,10 +116,12 @@ const paragraph: NodeSpec = {
     {
       tag: 'p',
       getAttrs: dom => {
-        const { textAlign, textIndent } = (dom as HTMLElement).style
+        const { textAlign, textIndent, textAlignLast } = (dom as HTMLElement).style
 
         let align = (dom as HTMLElement).getAttribute('align') || textAlign || ''
         align = /(left|right|center|justify)/.test(align) ? align : ''
+        // 균등 분할 = 마지막 줄·한 줄짜리도 양 끝에 맞춤(PPT '균등 분할')
+        if (align === 'justify' && textAlignLast === 'justify') align = 'distributed'
 
         let textIndentLevel = 0
         if (textIndent) {
@@ -149,7 +151,8 @@ const paragraph: NodeSpec = {
   toDOM: (node: Node) => {
     const { align, indent, textIndent } = node.attrs
     let style = ''
-    if (align && align !== 'left') style += `text-align: ${align};`
+    if (align === 'distributed') style += 'text-align: justify;text-align-last: justify;'
+    else if (align && align !== 'left') style += `text-align: ${align};`
     if (textIndent) style += `text-indent: ${textIndent}em;`
 
     const attr: Attr = { style }

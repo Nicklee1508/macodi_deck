@@ -137,6 +137,10 @@ interface PPTBaseElement {
   top: number
   lock?: boolean
   groupId?: string
+  /** 그룹 안의 그룹 — 그룹 해제하면 바로 안쪽 그룹(마지막 값)으로 돌아간다 */
+  groupStack?: string[]
+  /** 이 그룹은 해제 불가(마코디 카드의 이미지+링크 버튼) */
+  groupLock?: string
   width: number
   height: number
   rotate: number
@@ -234,7 +238,7 @@ export interface ImageOrShapeFlip {
  * 
  * 'opacity'?: 不透明度，默认100（%）
  */
-export type ImageElementFilterKeys = 'blur' | 'brightness' | 'contrast' | 'grayscale' | 'saturate' | 'hue-rotate' | 'opacity' | 'sepia' | 'invert'
+export type ImageElementFilterKeys = 'blur' | 'brightness' | 'contrast' | 'grayscale' | 'saturate' | 'hue-rotate' | 'opacity' | 'sepia' | 'invert' | 'sharp' | 'temp'
 export interface ImageElementFilters {
   'blur'?: string
   'brightness'?: string
@@ -245,6 +249,10 @@ export interface ImageElementFilters {
   'sepia'?: string
   'invert'?: string
   'opacity'?: string
+  /** 선명도 +1~+100(PPT 그림 수정). 흐리게는 blur */
+  'sharp'?: string
+  /** 색 온도 1500~11500K(PPT 그림 색, 6500 = 원래) */
+  'temp'?: string
 }
 
 export type ImageClipDataRange = [[number, number], [number, number]]

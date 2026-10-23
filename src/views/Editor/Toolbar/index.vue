@@ -22,7 +22,6 @@ import ElementStylePanel from './ElementStylePanel/index.vue'
 import ElementPositionPanel from './ElementPositionPanel.vue'
 import ElementAnimationPanel from './ElementAnimationPanel.vue'
 import SlideDesignPanel from './SlideDesignPanel/index.vue'
-import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import MultiStylePanel from './MultiStylePanel.vue'
 import Tabs from '@/components/Tabs.vue'
@@ -44,7 +43,6 @@ const elementTabs = [
 ]
 const slideTabs = [
   macodiTab,
-  { label: '전환', key: ToolbarStates.SLIDE_ANIMATION },
   { label: '애니메이션', key: ToolbarStates.EL_ANIMATION },
   { label: '디자인', key: ToolbarStates.SLIDE_DESIGN },
 ]
@@ -84,7 +82,6 @@ const currentPanelComponent = computed(() => {
     [ToolbarStates.EL_POSITION]: ElementPositionPanel,
     [ToolbarStates.EL_ANIMATION]: ElementAnimationPanel,
     [ToolbarStates.SLIDE_DESIGN]: SlideDesignPanel,
-    [ToolbarStates.SLIDE_ANIMATION]: SlideAnimationPanel,
     [ToolbarStates.MULTI_STYLE]: MultiStylePanel,
     [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
     [ToolbarStates.MACODI]: MacodiPanel,

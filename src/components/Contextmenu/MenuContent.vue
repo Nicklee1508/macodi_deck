@@ -133,6 +133,8 @@ $subMenuWidth: 120px;
     display: none;
     left: 112%;
     top: -6px;
+    max-height: 70vh; // 글꼴 목록처럼 긴 하위 메뉴는 스크롤
+    overflow-y: auto;
   }
 }
 </style>

@@ -1,3 +1,4 @@
+import { bakeImageEffects } from '@/macodi/imageEffects'
 import { createVNode, render, computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { saveAs } from 'file-saver'
@@ -28,18 +29,20 @@ export default () => {
 
   const defaultFontSize = 16
 
+  // 마코디: PowerPoint 기본 '와이드스크린'(가로 13.333in = 33.867cm)과 같은 크기로 내보낸다.
+  //  (원본 PPTist 는 가로 10in 라 실무 PPT 양식에 붙이면 요소·글자가 작아 보였다) 모든 요소·글자는 같은 비율로 커진다.
+  const SLIDE_WIDTH_INCH = 13.333
   const ratioPx2Inch = computed(() => {
-    return 96 * (viewportSize.value / 960)
+    return viewportSize.value / SLIDE_WIDTH_INCH
   })
   const ratioPx2Pt = computed(() => {
-    return 96 / 72 * (viewportSize.value / 960)
+    return ratioPx2Inch.value / 72
   })
 
   const exporting = ref(false)
 
   const setPPTXLayout = (pptx: pptxgen) => {
-    if (viewportRatio.value === 0.625) pptx.layout = 'LAYOUT_16x10'
-    else if (viewportRatio.value === 0.75) pptx.layout = 'LAYOUT_4x3'
+    if (viewportRatio.value === 0.5625) pptx.layout = 'LAYOUT_WIDE' // 13.333 x 7.5in = PowerPoint 기본 16:9
     else {
       const layoutName = 'PPTIST_CUSTOM_LAYOUT'
       pptx.defineLayout({
@@ -481,8 +484,10 @@ export default () => {
   }
 
   // 导出PPTX文件
-  const exportPPTX = (_slides: Slide[], masterOverwrite: boolean, ignoreMedia: boolean) => {
+  const exportPPTX = async (_slides: Slide[], masterOverwrite: boolean, ignoreMedia: boolean) => {
     exporting.value = true
+    // 그림 서식(밝기·색·꾸밈 효과)은 PPT 가 모르는 형식 → 그림에 직접 입혀서 넣는다
+    _slides = await bakeImageEffects(_slides)
     const pptx = new pptxgen()
     setPPTXLayout(pptx)
 
@@ -553,7 +558,7 @@ export default () => {
             w: el.width / ratioPx2Inch.value,
             h: el.height / ratioPx2Inch.value,
             fontSize: defaultFontSize / ratioPx2Pt.value,
-            fontFace: '微软雅黑',
+            fontFace: '맑은 고딕',
             color: '#000000',
             valign: el.vAlign || 'top',
             margin: [inset[3], inset[1], inset[2], inset[0]].map(item => item / ratioPx2Pt.value) as [number, number, number, number],
@@ -699,7 +704,7 @@ export default () => {
               w: el.width / ratioPx2Inch.value,
               h: el.height / ratioPx2Inch.value,
               fontSize: defaultFontSize / ratioPx2Pt.value,
-              fontFace: '微软雅黑',
+              fontFace: '맑은 고딕',
               color: '#000000',
               paraSpaceBefore: 5 / ratioPx2Pt.value,
               margin: [inset[3], inset[1], inset[2], inset[0]].map(item => item / ratioPx2Pt.value) as [number, number, number, number],
@@ -891,7 +896,7 @@ export default () => {
                 underline: { style: cell.style?.underline ? 'sng' : 'none' },
                 align: cell.style?.align || 'left',
                 valign: 'middle',
-                fontFace: cell.style?.fontname || '微软雅黑',
+                fontFace: cell.style?.fontname || '맑은 고딕',
                 fontSize: (cell.style?.fontsize ? parseInt(cell.style?.fontsize) : 14) / ratioPx2Pt.value,
               }
               let fillColor: FormatColor | null = null

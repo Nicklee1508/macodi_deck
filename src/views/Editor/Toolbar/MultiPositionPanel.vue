@@ -19,7 +19,7 @@
 
     <ButtonGroup class="row">
       <Button :disabled="!canCombine" @click="combineElements()" style="flex: 1;"><i-icon-park-outline:group style="margin-right: 3px;" />그룹</Button>
-      <Button :disabled="canCombine" @click="uncombineElements()" style="flex: 1;"><i-icon-park-outline:ungroup style="margin-right: 3px;" />그룹 해제</Button>
+      <Button :disabled="!canUncombine" @click="uncombineElements()" style="flex: 1;"><i-icon-park-outline:ungroup style="margin-right: 3px;" />그룹 해제</Button>
     </ButtonGroup>
   </div>
 </template>
@@ -34,7 +34,7 @@ import Divider from '@/components/Divider.vue'
 import Button from '@/components/Button.vue'
 import ButtonGroup from '@/components/ButtonGroup.vue'
 
-const { canCombine, combineElements, uncombineElements } = useCombineElement()
+const { canCombine, canUncombine, combineElements, uncombineElements } = useCombineElement()
 const { alignActiveElement } = useAlignActiveElement()
 const { alignElementToCanvas } = useAlignElementToCanvas()
 const { displayItemCount, uniformHorizontalDisplay, uniformVerticalDisplay } = useUniformDisplayElement()

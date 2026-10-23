@@ -75,9 +75,12 @@ export default () => {
     const left = (viewportSize.value - IMG) / 2 + offset
     const top = Math.max(10, (viewportSize.value * viewportRatio.value - IMG - TEXT_H) / 2) + offset
     const groupId = nanoid(10)
+    // 이미지+링크 버튼은 해제 못 하는 안쪽 그룹 — 카드 그룹을 풀어도 둘은 붙어 다닌다
+    const imgGroupId = nanoid(10)
+    const imgGroup = p.id ? { groupStack: [imgGroupId], groupLock: imgGroupId } : {}
 
     const image: PPTImageElement = {
-      type: 'image', id: nanoid(10), groupId,
+      type: 'image', id: nanoid(10), groupId, ...imgGroup,
       src, left, top, width: IMG, height: IMG, fixedRatio: true, rotate: 0,
     }
     const html =
@@ -94,7 +97,7 @@ export default () => {
     const elements: (PPTImageElement | PPTTextElement)[] = [image, text]
     if (p.id) {
       elements.push({
-        type: 'image', id: nanoid(10), groupId,
+        type: 'image', id: nanoid(10), groupId, ...imgGroup,
         src: linkIconPng(), left: left + IMG - BTN - GAP, top: top + IMG - BTN - GAP, width: BTN, height: BTN, fixedRatio: true, rotate: 0,
         link: { type: 'web', target: productUrl(p.id) },
       })
