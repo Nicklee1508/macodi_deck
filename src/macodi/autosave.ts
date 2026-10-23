@@ -24,6 +24,8 @@ export interface DeckDraft {
   /** 지금 열린 내 파일(새로고침해도 Ctrl+S 가 같은 파일에 저장되게) */
   fileId?: string
   fileName?: string
+  /** 샘플 제안서에서 시작한 작업(내 파일 열기에서 샘플 카드를 '선택됨'으로) */
+  sample?: boolean
 }
 
 /** 내 파일 한 개 */
@@ -68,6 +70,8 @@ export const fileState = reactive({
   name: '',
   savedAt: 0,
   dirty: false,
+  /** 지금 열린 게 샘플 제안서(저장 전) */
+  sample: false,
   /** 다음 한 번의 변경은 '변경됨'으로 치지 않음(파일 열기·새 제안서처럼 통째로 바꿀 때) */
   suppressDirty: false,
   dialog: '' as '' | 'saveAs' | 'open',

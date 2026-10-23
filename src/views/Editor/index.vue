@@ -33,6 +33,8 @@
   </Modal>
   <!-- 내 파일: 저장(다른 이름으로) / 열기 -->
   <FilesDialog />
+  <!-- 구독 신청(새 프로젝트·자재 담기) -->
+  <SubscribeDialog />
 
 </template>
 
@@ -53,6 +55,7 @@ import ChartDataEditorDialog from './ChartDataEditorDialog.vue'
 import LatexEditorDialog from './LatexEditorDialog.vue'
 import ExportDialog from './ExportDialog/index.vue'
 import FilesDialog from '@/macodi/FilesDialog.vue'
+import SubscribeDialog from '@/macodi/SubscribeDialog.vue'
 import SelectPanel from './SelectPanel.vue'
 import SearchPanel from './SearchPanel.vue'
 import NotesPanel from './NotesPanel.vue'
@@ -143,6 +146,6 @@ usePasteEvent()
   height: 100%;
   flex-shrink: 0;
   cursor: col-resize;
-  &:hover, &.dragging { background: rgba(108, 43, 217, .35); }
+  &:hover, &.dragging { background: rgba(35, 68, 58, .35); }
 }
 </style>

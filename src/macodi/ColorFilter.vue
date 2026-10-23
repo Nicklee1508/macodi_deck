@@ -230,7 +230,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocDown))
   cursor: pointer;
   background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
 
-  &.on { border-color: #6c2bd9; box-shadow: 0 0 0 2px #fff inset; }
+  &.on { border-color: #23443A; box-shadow: 0 0 0 2px #fff inset; }
   .clr {
     position: absolute;
     top: -6px;

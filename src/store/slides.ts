@@ -53,14 +53,14 @@ export const useSlidesStore = defineStore('slides', {
     viewportSize: 1000, // 可视区域宽度基数
     viewportRatio: 0.5625, // 可视区域比例，默认16:9
     templates: [
-      { name: '붉은 산하', id: 'template_1', cover: './imgs/template_1.webp', origin: '공식 제작' },
-      { name: '도시의 블루', id: 'template_2', cover: './imgs/template_2.webp', origin: '공식 제작' },
-      { name: '스마트 기하', id: 'template_3', cover: './imgs/template_3.webp', origin: '공식 제작' },
-      { name: '부드러운 모란디', id: 'template_4', cover: './imgs/template_4.webp', origin: '공식 제작' },
-      { name: '심플 그린', id: 'template_5', cover: './imgs/template_5.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
-      { name: '따뜻한 레트로', id: 'template_6', cover: './imgs/template_6.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
-      { name: '깊고 차분한', id: 'template_7', cover: './imgs/template_7.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
-      { name: '산뜻한 하늘색', id: 'template_8', cover: './imgs/template_8.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
+      { name: '붉은 산하', id: 'template_1', cover: '/imgs/template_1.webp', origin: '공식 제작' },
+      { name: '도시의 블루', id: 'template_2', cover: '/imgs/template_2.webp', origin: '공식 제작' },
+      { name: '스마트 기하', id: 'template_3', cover: '/imgs/template_3.webp', origin: '공식 제작' },
+      { name: '부드러운 모란디', id: 'template_4', cover: '/imgs/template_4.webp', origin: '공식 제작' },
+      { name: '심플 그린', id: 'template_5', cover: '/imgs/template_5.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
+      { name: '따뜻한 레트로', id: 'template_6', cover: '/imgs/template_6.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
+      { name: '깊고 차분한', id: 'template_7', cover: '/imgs/template_7.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
+      { name: '산뜻한 하늘색', id: 'template_8', cover: '/imgs/template_8.webp', origin: '커뮤니티 기여+공식 보완·최적화' },
     ], // 模板
   }),
 

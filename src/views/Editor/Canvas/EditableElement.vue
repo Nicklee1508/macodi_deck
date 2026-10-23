@@ -92,7 +92,7 @@ const contextmenus = (): ContextmenuItem[] => {
     { text: '기울임꼴', subText: 'Ctrl + I', handler: rt('em') },
     { text: '밑줄', subText: 'Ctrl + U', handler: rt('underline') },
     { text: '글자 색', children: [
-      ['검정', '#1f1f1f'], ['진회색', '#555555'], ['회색', '#8a8a8a'], ['흰색', '#ffffff'], ['마코디 보라', '#6c2bd9'], ['빨강', '#d33b3b'], ['파랑', '#2e6fd9'],
+      ['검정', '#1f1f1f'], ['진회색', '#555555'], ['회색', '#8a8a8a'], ['흰색', '#ffffff'], ['moodeck 녹색', '#23443A'], ['머스터드', '#D4A24C'], ['빨강', '#d33b3b'], ['파랑', '#2e6fd9'],
     ].map(([t, c]) => ({ text: t, handler: rt('color', c) })) },
     { text: '정렬', children: [['왼쪽', 'left'], ['가운데', 'center'], ['오른쪽', 'right'], ['양쪽', 'justify'], ['균등 분할', 'distributed']].map(([t, v]) => ({ text: t, handler: rt('align', v) })) },
     { divider: true },

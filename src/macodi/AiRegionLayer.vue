@@ -259,6 +259,16 @@ const onKey = (e: KeyboardEvent) => {
 }
 onMounted(() => window.addEventListener('keydown', onKey))
 onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
+
+// 켜진 상태에서 캔버스의 영역 잡기·마코디 패널(키워드·추천 결과·AI 버튼) 말고 다른 곳을 누르면 끔
+const onOutsideDown = (e: PointerEvent) => {
+  if (!ai.active || ai.paused) return
+  const t = e.target as Element | null
+  if (t && t.closest && t.closest('.ai-layer, .macodi-panel')) return
+  stopAi()
+}
+onMounted(() => window.addEventListener('pointerdown', onOutsideDown, true))
+onBeforeUnmount(() => window.removeEventListener('pointerdown', onOutsideDown, true))
 </script>
 
 <style lang="scss" scoped>
@@ -271,7 +281,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
   position: absolute;
   inset: 0;
   // 펜 모양 포인터(펜 끝 = 왼쪽 아래가 찍히는 점)
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 24 24'%3E%3Cpath d='M3 21l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L7.6 19.8z' fill='%23ffffff' stroke='%23222222' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M14.8 5.8l3.4 3.4' stroke='%23222222' stroke-width='1.6'/%3E%3Cpath d='M3 21l1.2-4.6 3.4 3.4z' fill='%236c2bd9'/%3E%3C/svg%3E") 2 24, crosshair;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26' viewBox='0 0 24 24'%3E%3Cpath d='M3 21l1.2-4.6L16.6 4a2 2 0 0 1 2.8 0l.6.6a2 2 0 0 1 0 2.8L7.6 19.8z' fill='%23ffffff' stroke='%23222222' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M14.8 5.8l3.4 3.4' stroke='%23222222' stroke-width='1.6'/%3E%3Cpath d='M3 21l1.2-4.6 3.4 3.4z' fill='%23D4A24C'/%3E%3C/svg%3E") 2 24, crosshair;
   touch-action: none;
   outline: 2px dashed rgba(46, 144, 250, .7); // 색 채움 없음 — 마감재 색이 달라 보이지 않게
 }

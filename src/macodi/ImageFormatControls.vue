@@ -299,7 +299,7 @@ onBeforeUnmount(stopPick)
   border-radius: 4px;
   cursor: pointer;
   background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 50% / 10px 10px; // 투명 부분 표시
-  &:hover { border-color: #c9b8ef; }
+  &:hover { border-color: #CFD9D3; }
   &.on { border-color: $themeColor; }
   img {
     display: block;
@@ -334,7 +334,7 @@ onBeforeUnmount(stopPick)
   border-radius: 4px;
   font-size: 13px;
   cursor: pointer;
-  &:hover { background: #f3effc; color: $themeColor; }
+  &:hover { background: #EEF2EE; color: $themeColor; }
   .ic { font-size: 16px; }
 }
 

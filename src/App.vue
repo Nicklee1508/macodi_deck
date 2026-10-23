@@ -22,6 +22,7 @@ import { clearDraft, draftState, fileState, getFile, loadDraft, putFile, saveDra
 import { shrinkSlides } from '@/macodi/shrinkImages'
 import ImageFilterDefs from '@/macodi/ImageFilterDefs.vue'
 import { isFirstVisit, loadSampleDeck } from '@/macodi/sampleDeck'
+import { handleBillingReturn, startSubscriptionWatch, subscribeState } from '@/macodi/subscription'
 
 import Editor from './views/Editor/index.vue'
 import Screen from './views/Screen/index.vue'
@@ -61,7 +62,7 @@ onMounted(async () => {
       if (d.theme) slidesStore.setTheme(d.theme)
       if (d.viewportRatio) slidesStore.setViewportRatio(d.viewportRatio)
       slidesStore.setSlides(d.slides)
-      document.title = `${d.title || '마감재 제안서'} · 마코디`
+      document.title = `${d.title || '마감재 제안서'} · moodeck`
       screenStore.setScreening(true)
     }
     catch {
@@ -76,6 +77,12 @@ onMounted(async () => {
     snapshotStore.initSnapshotDatabase()
   }
   else {
+    // /editor 로 들어오면 첫 화면 = 내 파일 열기(지금 열린 프로젝트가 '선택됨'으로 강조).
+    //  슬라이드를 불러오기 전에 열어 둬야 첫 방문 AI 튜토리얼이 이 창을 닫은 뒤에 시작됨
+    const fromBilling = new URLSearchParams(location.search).has('billing')
+    // 랜딩 요금 안내의 구독 버튼 = /editor?subscribe → 들어오자마자 구독 창
+    const wantSubscribe = new URLSearchParams(location.search).has('subscribe')
+    if (!fromBilling && !wantSubscribe) fileState.dialog = 'open'
     // 이 브라우저에 임시 저장된 작업이 있으면 이어서, 없거나 처음 온 사람이면 샘플 제안서
     const draft = await loadDraft()
     const first = isFirstVisit()
@@ -92,6 +99,7 @@ onMounted(async () => {
       const { slides: light } = await shrinkSlides(draft.slides as never)
       slidesStore.setSlides(light)
       draftState.savedAt = draft.savedAt
+      fileState.sample = !!draft.sample
       // 열려 있던 내 파일 이어서(Ctrl+S 가 같은 파일로)
       const file = draft.fileId ? await getFile(draft.fileId) : undefined
       if (file) {
@@ -110,6 +118,13 @@ onMounted(async () => {
     await deleteDiscardedDB()
     snapshotStore.initSnapshotDatabase()
     startAutosave()
+    // 구독: 결제창에서 돌아왔으면 첫 결제·키 발급 → 안내창, 그리고 이 PC 구독 상태 수시 확인
+    if (fromBilling) await handleBillingReturn()
+    else if (wantSubscribe) {
+      history.replaceState(null, '', location.pathname)
+      subscribeState.mode = 'plan'
+    }
+    startSubscriptionWatch()
   }
 })
 
@@ -123,7 +138,7 @@ const startAutosave = () => {
     else fileState.dirty = true
     if (saveTimer) clearTimeout(saveTimer)
     saveTimer = setTimeout(() => {
-      saveDraft({ title: title.value, theme: theme.value, viewportRatio: viewportRatio.value, slides: slides.value, fileId: fileState.id, fileName: fileState.name })
+      saveDraft({ title: title.value, theme: theme.value, viewportRatio: viewportRatio.value, slides: slides.value, fileId: fileState.id, fileName: fileState.name, sample: fileState.sample })
         .then(t => {
           draftState.savedAt = t
           draftState.error = false

@@ -26,13 +26,13 @@ import MultiPositionPanel from './MultiPositionPanel.vue'
 import MultiStylePanel from './MultiStylePanel.vue'
 import Tabs from '@/components/Tabs.vue'
 import MacodiPanel from '@/macodi/MacodiPanel.vue'
-import macodiLogo from '@/assets/macodi-logo.svg'
 
 const mainStore = useMainStore()
 const { activeElementIdList, activeElementList, activeGroupElementId, toolbarState } = storeToRefs(mainStore)
 
 // 마코디 탭 — 모든 탭 묶음 끝에 붙여, 요소를 선택해도 마코디 탭이 유지되게
-const macodiTab = { label: '마코디', key: ToolbarStates.MACODI, img: macodiLogo }
+// 마감재 검색 탭 — 이름은 '머티리얼'(로고 대신 글자)
+const macodiTab = { label: '머티리얼', key: ToolbarStates.MACODI }
 
 // 마코디 탭은 맨 앞, 원래 맨 앞 탭은 맨 뒤로(자리 바꿈)
 const elementTabs = [

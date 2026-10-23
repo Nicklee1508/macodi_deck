@@ -141,8 +141,11 @@ onUnmounted(() => {
   resizeObserver.unobserve(selectRef.value)
 })
 
-// Enter = 입력한 숫자 적용(목록에 같은 값이 있으면 그것)
-const handleEnter = () => {
+// Enter = 입력한 숫자 적용(목록에 같은 값이 있으면 그것).
+//  Enter 는 여기서 끝냄 — 안 막으면 목록이 닫히며 글상자로 돌아간 입력 위치에 Enter(줄바꿈)가 들어가 선택한 글자가 지워졌음
+const handleEnter = (e?: Event) => {
+  e?.preventDefault()
+  e?.stopPropagation()
   if (!props.customInput) return
   const o = props.customInput(searchKey.value)
   if (!o) return

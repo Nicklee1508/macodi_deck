@@ -91,6 +91,8 @@ import ColorFilter from './ColorFilter.vue'
 import { sizeWxL } from './sizeFormat'
 import { ai, logPick, search as aiSearch, startManual, stopAi, thumbOf } from './aiRegion'
 import { fixKoreanTypo } from './hangulFix'
+import { ensureSubscribed, subscribeState } from './subscription'
+import { fileState } from './autosave'
 
 const q = ref('') // 입력 중인 글자
 const keywords = ref<string[]>([]) // 고정된 키워드 칩
@@ -169,7 +171,8 @@ watch([products, loadingMore], () => nextTick(() => {
 }))
 
 const { insertSpecCard } = useInsertSpecCard()
-const insert = (p: MacodiProduct) => {
+const insert = async (p: MacodiProduct) => {
+  if (!(await ensureSubscribed('insert'))) return // 자재 담기 = 구독 기능(서버로 바로 확인 — 다른 PC에 넘어갔으면 여기서 막힘)
   setStatus(`"${p.name || '자재'}" 삽입 중…`)
   insertSpecCard(p)
     .then(() => setStatus(`삽입 완료: ${p.name || '자재'}`))
@@ -217,7 +220,8 @@ const onColorOpen = () => {
 
 // AI 추천 자재를 넣으면: 캔버스의 영역 검색은 끄고(넣은 카드가 보이게) 추천 목록은 순서·스크롤 그대로 둠.
 //  이후 컬러 선택·새 AI 영역·키워드 입력이 들어오면 그때 새로 검색
-const insertAi = (p: MacodiProduct) => {
+const insertAi = async (p: MacodiProduct) => {
+  if (!(await ensureSubscribed('insert'))) return
   ai.paused = true
   insert(p)
   logPick(p.id)
@@ -225,10 +229,12 @@ const insertAi = (p: MacodiProduct) => {
 
 // 색을 고르거나 해제하면 검색어와 함께 바로 다시 검색. 색을 고르면 영역 검색은 끝냄(둘은 서로 리셋)
 watch(color, v => {
+  gridStale = false // 아래 load() 가 새로 검색하므로 AI 끔 처리에서 또 하지 않음
   if (v && ai.active) stopAi()
   load()
 })
 // 키워드 칩은 일반 목록과 AI 영역 검색 결과에 모두 AND 로 걸림 — AI 영역 검색 중이면 끄지 않고 그 결과를 다시 거름
+let gridStale = false // AI 중에 키워드가 바뀌어 일반 목록이 예전 것인지
 watch(keywords, k => {
   ai.keywords = [...k]
   // 자재를 넣고 쉬는 중이면 → AI 추천은 끝내고 일반 키워드 검색으로 새로
@@ -236,8 +242,17 @@ watch(keywords, k => {
     stopAi()
     load()
   }
-  else if (ai.active && ai.post) aiSearch(1)
+  else if (ai.active) {
+    gridStale = true // 아래 일반 목록은 AI 를 끌 때 이 키워드로 다시 검색
+    if (ai.post) aiSearch(1)
+  }
 }, { immediate: true })
+// AI 영역 검색 중에 키워드가 바뀌었으면, AI 를 끄는 순간 일반 목록을 그 키워드로 다시 검색
+watch(() => ai.active, on => {
+  if (on || !gridStale) return
+  gridStale = false
+  load()
+})
 const submitSearch = () => {
   // 입력한 글자를 칩으로 고정(띄어쓴 단어는 각각 칩), 중복 제외.
   // 한글 입력기가 꺼진 채 친 단어(vpdlsxm)는 한글(페인트)로 바로잡음
@@ -283,8 +298,8 @@ onMounted(load)
 // 처음 온 사람: 첫 화면(샘플 제안서)이 뜨면 AI 영역 검색 튜토리얼을 자동으로 한 번 보여 줌(시범 선 → 박스 → 추천)
 if (aiTip.value) {
   let started = false
-  watch(() => currentSlide.value?.elements.length || 0, n => {
-    if (!n || started) return
+  watch(() => [currentSlide.value?.elements.length || 0, fileState.dialog, subscribeState.mode] as const, ([n, dialog, sub]) => {
+    if (!n || dialog || sub || started) return // 첫 화면(내 파일 열기)·구독 안내창을 닫은 뒤에
     started = true
     setTimeout(() => {
       if (!ai.active && aiTip.value) {
@@ -323,12 +338,12 @@ if (aiTip.value) {
   position: relative;
   &.pulse {
     border-style: solid;
-    border-color: #6c2bd9;
-    color: #6c2bd9;
+    border-color: #23443A;
+    color: #23443A;
     animation: ai-pulse 1.4s ease-out infinite;
   }
-  &:hover { border-color: #6c2bd9; color: #6c2bd9; }
-  &.on { border-style: solid; border-color: #6c2bd9; background: #6c2bd9; color: #fff; }
+  &:hover { border-color: #23443A; color: #23443A; }
+  &.on { border-style: solid; border-color: #23443A; background: #23443A; color: #fff; }
   // 끄기 × — 컬러 필터의 색상 해제 × 와 같은 모양·위치
   .clr {
     position: absolute;
@@ -358,8 +373,8 @@ if (aiTip.value) {
   margin: 4px 0 2px;
   padding: 6px 8px;
   border-radius: 6px;
-  background: #f3effc;
-  color: #6c2bd9;
+  background: #EEF2EE;
+  color: #23443A;
   font-size: 11px;
   line-height: 1.5;
 }
@@ -394,7 +409,7 @@ if (aiTip.value) {
     border: 1px solid #e7e7ee;
     border-radius: 8px;
     cursor: text;
-    &:focus-within { border-color: #6c2bd9; }
+    &:focus-within { border-color: #23443A; }
     input {
       flex: 1;
       min-width: 60px;
@@ -433,13 +448,13 @@ if (aiTip.value) {
     line-height: 16px;
     text-align: center;
     cursor: pointer;
-    &:hover { background: #6c2bd9; }
+    &:hover { background: #23443A; }
   }
   button {
     padding: 8px 12px;
     border: none;
     border-radius: 8px;
-    background: #6c2bd9;
+    background: #23443A;
     color: #fff;
     font: inherit;
     font-weight: 600;
@@ -474,7 +489,7 @@ if (aiTip.value) {
   cursor: pointer;
   text-align: left;
   font: inherit;
-  &:hover { box-shadow: 0 4px 14px rgba(108, 43, 217, .18); }
+  &:hover { box-shadow: 0 4px 14px rgba(35, 68, 58, .18); }
 
   .thumb {
     width: 100%;
@@ -507,9 +522,9 @@ if (aiTip.value) {
   }
 }
 @keyframes ai-pulse {
-  0% { box-shadow: 0 0 0 0 rgba(108, 43, 217, .55); }
-  70% { box-shadow: 0 0 0 10px rgba(108, 43, 217, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(108, 43, 217, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(35, 68, 58, .55); }
+  70% { box-shadow: 0 0 0 10px rgba(35, 68, 58, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(35, 68, 58, 0); }
 }
 .mp-search { position: relative; }
 .ai-tip {
@@ -520,7 +535,7 @@ if (aiTip.value) {
   width: 250px;
   padding: 10px 26px 10px 12px;
   border-radius: 8px;
-  background: #6c2bd9;
+  background: #23443A;
   color: #fff;
   font-size: 12px;
   line-height: 1.6;
@@ -532,7 +547,7 @@ if (aiTip.value) {
     top: -6px;
     border: 6px solid transparent;
     border-top: 0;
-    border-bottom-color: #6c2bd9;
+    border-bottom-color: #23443A;
   }
   .ai-tip-x {
     position: absolute;
