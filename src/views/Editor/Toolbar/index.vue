@@ -6,7 +6,7 @@
       card 
       @update:value="key => setToolbarState(key as ToolbarStates)"
     />
-    <div class="content">
+    <div class="content" :class="{ 'macodi-content': toolbarState === ToolbarStates.MACODI }">
       <component :is="currentPanelComponent"></component>
     </div>
   </div>
@@ -26,23 +26,32 @@ import SlideAnimationPanel from './SlideAnimationPanel.vue'
 import MultiPositionPanel from './MultiPositionPanel.vue'
 import MultiStylePanel from './MultiStylePanel.vue'
 import Tabs from '@/components/Tabs.vue'
+import MacodiPanel from '@/macodi/MacodiPanel.vue'
+import macodiLogo from '@/assets/macodi-logo.svg'
 
 const mainStore = useMainStore()
 const { activeElementIdList, activeElementList, activeGroupElementId, toolbarState } = storeToRefs(mainStore)
 
+// 마코디 탭 — 모든 탭 묶음 끝에 붙여, 요소를 선택해도 마코디 탭이 유지되게
+const macodiTab = { label: '마코디', key: ToolbarStates.MACODI, img: macodiLogo }
+
+// 마코디 탭은 맨 앞, 원래 맨 앞 탭은 맨 뒤로(자리 바꿈)
 const elementTabs = [
-  { label: '样式', key: ToolbarStates.EL_STYLE },
-  { label: '位置', key: ToolbarStates.EL_POSITION },
-  { label: '动画', key: ToolbarStates.EL_ANIMATION },
+  macodiTab,
+  { label: '위치', key: ToolbarStates.EL_POSITION },
+  { label: '애니메이션', key: ToolbarStates.EL_ANIMATION },
+  { label: '스타일', key: ToolbarStates.EL_STYLE },
 ]
 const slideTabs = [
-  { label: '设计', key: ToolbarStates.SLIDE_DESIGN },
-  { label: '切换', key: ToolbarStates.SLIDE_ANIMATION },
-  { label: '动画', key: ToolbarStates.EL_ANIMATION },
+  macodiTab,
+  { label: '전환', key: ToolbarStates.SLIDE_ANIMATION },
+  { label: '애니메이션', key: ToolbarStates.EL_ANIMATION },
+  { label: '디자인', key: ToolbarStates.SLIDE_DESIGN },
 ]
 const multiSelectTabs = [
-  { label: '样式（多选）', key: ToolbarStates.MULTI_STYLE },
-  { label: '位置（多选）', key: ToolbarStates.MULTI_POSITION },
+  macodiTab,
+  { label: '위치(여러 개)', key: ToolbarStates.MULTI_POSITION },
+  { label: '스타일(여러 개)', key: ToolbarStates.MULTI_STYLE },
 ]
 
 const setToolbarState = (value: ToolbarStates) => {
@@ -64,7 +73,8 @@ const currentTabs = computed(() => {
 watch(currentTabs, () => {
   const currentTabsValue: ToolbarStates[] = currentTabs.value.map(tab => tab.key)
   if (!currentTabsValue.includes(toolbarState.value)) {
-    mainStore.setToolbarState(currentTabsValue[0])
+    // 맨 앞이 마코디라, 다른 탭에 있다가 선택이 바뀌면 원래 첫 탭(맨 뒤: 样式/设计)으로
+    mainStore.setToolbarState(currentTabsValue[currentTabsValue.length - 1])
   }
 })
 
@@ -77,6 +87,7 @@ const currentPanelComponent = computed(() => {
     [ToolbarStates.SLIDE_ANIMATION]: SlideAnimationPanel,
     [ToolbarStates.MULTI_STYLE]: MultiStylePanel,
     [ToolbarStates.MULTI_POSITION]: MultiPositionPanel,
+    [ToolbarStates.MACODI]: MacodiPanel,
   }
   return panelMap[toolbarState.value] || null
 })
@@ -94,5 +105,12 @@ const currentPanelComponent = computed(() => {
   font-size: 13px;
 
   @include overflow-overlay();
+
+  &.macodi-content {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
 }
 </style>

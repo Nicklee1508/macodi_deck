@@ -2,18 +2,18 @@
   <div class="export-pptist-dialog">
     <div class="configs">
       <div class="row">
-        <div class="title">导出范围：</div>
+        <div class="title">내보내기 범위:</div>
         <RadioGroup
           class="config-item"
           v-model:value="rangeType"
         >
-          <RadioButton style="width: 33.33%;" value="all">全部</RadioButton>
-          <RadioButton style="width: 33.33%;" value="current">当前页</RadioButton>
-          <RadioButton style="width: 33.33%;" value="custom">自定义</RadioButton>
+          <RadioButton style="width: 33.33%;" value="all">전체</RadioButton>
+          <RadioButton style="width: 33.33%;" value="current">현재 페이지</RadioButton>
+          <RadioButton style="width: 33.33%;" value="custom">직접 설정</RadioButton>
         </RadioGroup>
       </div>
       <div class="row" v-if="rangeType === 'custom'">
-        <div class="title" :data-range="`（${range[0]} ~ ${range[1]}）`">自定义范围：</div>
+        <div class="title" :data-range="`(${range[0]} ~ ${range[1]})`">직접 지정한 범위:</div>
         <Slider
           class="config-item"
           range
@@ -24,12 +24,12 @@
         />
       </div>
       <div class="tip">
-        提示：.pptist 是本应用的特有文件后缀，支持将该类型的文件导入回应用中。
+        안내: .pptist 는 이 편집기 전용 파일 형식이며, 다시 가져와 편집할 수 있습니다.
       </div>
     </div>
     <div class="btns">
-      <Button class="btn export" type="primary" @click="exportSpecificFile(selectedSlides)"><i-icon-park-outline:download /> 导出 PPTIST 文件</Button>
-      <Button class="btn close" @click="emit('close')">关闭</Button>
+      <Button class="btn export" type="primary" @click="exportSpecificFile(selectedSlides)"><i-icon-park-outline:download /> 작업 파일 저장</Button>
+      <Button class="btn close" @click="emit('close')">닫기</Button>
     </div>
   </div>
 </template>
@@ -77,7 +77,7 @@ const selectedSlides = computed(() => {
   overflow: hidden;
 }
 .configs {
-  width: 350px;
+  width: 520px; // 글자가 줄바꿈되지 않게 넓힘(원래 350/300)
   height: calc(100% - 80px);
   display: flex;
   flex-direction: column;
@@ -91,7 +91,8 @@ const selectedSlides = computed(() => {
   }
 
   .title {
-    width: 100px;
+    width: 150px;
+    white-space: nowrap;
     position: relative;
 
     &::after {
@@ -113,7 +114,7 @@ const selectedSlides = computed(() => {
   }
 }
 .btns {
-  width: 300px;
+  width: 400px;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -123,7 +124,7 @@ const selectedSlides = computed(() => {
     flex: 1;
   }
   .close {
-    width: 100px;
+    width: 110px;
     margin-left: 10px;
   }
 }

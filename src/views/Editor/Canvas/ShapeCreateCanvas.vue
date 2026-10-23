@@ -165,7 +165,7 @@ const keydownListener = (e: KeyboardEvent) => {
   if (key === KEYS.ENTER) create()
 }
 onMounted(() => {
-  message.success('点击绘制任意形状，首尾闭合完成绘制，按 ESC 键或鼠标右键取消，按 ENTER 键提前完成', {
+  message.success('클릭해서 원하는 도형을 그리세요. 시작점과 끝점을 이으면 완성되고, ESC 키나 마우스 오른쪽 버튼으로 취소, ENTER 키로 바로 완성합니다', {
     duration: 0,
   })
   document.addEventListener('keydown', keydownListener)

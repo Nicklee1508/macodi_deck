@@ -1,27 +1,27 @@
 <template>
   <div class="element-positopn-panel">
-    <div class="title">层级：</div>
+    <div class="title">순서:</div>
     <ButtonGroup class="row">
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)"><i-icon-park-outline:send-to-back /> 置顶</Button>
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)"><i-icon-park-outline:bring-to-front-one /> 置底</Button>
+      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.TOP)"><i-icon-park-outline:send-to-back /> 맨 앞으로</Button>
+      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.BOTTOM)"><i-icon-park-outline:bring-to-front-one /> 맨 뒤로</Button>
     </ButtonGroup>
     <ButtonGroup class="row">
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)"><i-icon-park-outline:BringToFront /> 上移</Button>
-      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)"><i-icon-park-outline:SentToBack /> 下移</Button>
+      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.UP)"><i-icon-park-outline:BringToFront /> 위로</Button>
+      <Button style="flex: 1;" @click="orderElement(handleElement!, ElementOrderCommands.DOWN)"><i-icon-park-outline:SentToBack /> 아래로</Button>
     </ButtonGroup>
 
     <Divider />
     
-    <div class="title">对齐：</div>
+    <div class="title">맞춤:</div>
     <ButtonGroup class="row">
-      <Button style="flex: 1;" v-tooltip="'左对齐'" @click="alignElementToCanvas(ElementAlignCommands.LEFT)"><i-icon-park-outline:align-left /></Button>
-      <Button style="flex: 1;" v-tooltip="'水平居中'" @click="alignElementToCanvas(ElementAlignCommands.HORIZONTAL)"><i-icon-park-outline:align-vertically /></Button>
-      <Button style="flex: 1;" v-tooltip="'右对齐'" @click="alignElementToCanvas(ElementAlignCommands.RIGHT)"><i-icon-park-outline:align-right /></Button>
+      <Button style="flex: 1;" v-tooltip="'왼쪽 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.LEFT)"><i-icon-park-outline:align-left /></Button>
+      <Button style="flex: 1;" v-tooltip="'가로 가운데 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.HORIZONTAL)"><i-icon-park-outline:align-vertically /></Button>
+      <Button style="flex: 1;" v-tooltip="'오른쪽 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.RIGHT)"><i-icon-park-outline:align-right /></Button>
     </ButtonGroup>
     <ButtonGroup class="row">
-      <Button style="flex: 1;" v-tooltip="'上对齐'" @click="alignElementToCanvas(ElementAlignCommands.TOP)"><i-icon-park-outline:align-top /></Button>
-      <Button style="flex: 1;" v-tooltip="'垂直居中'" @click="alignElementToCanvas(ElementAlignCommands.VERTICAL)"><i-icon-park-outline:align-horizontally /></Button>
-      <Button style="flex: 1;" v-tooltip="'下对齐'" @click="alignElementToCanvas(ElementAlignCommands.BOTTOM)"><i-icon-park-outline:align-bottom /></Button>
+      <Button style="flex: 1;" v-tooltip="'위쪽 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.TOP)"><i-icon-park-outline:align-top /></Button>
+      <Button style="flex: 1;" v-tooltip="'세로 가운데 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.VERTICAL)"><i-icon-park-outline:align-horizontally /></Button>
+      <Button style="flex: 1;" v-tooltip="'아래쪽 맞춤'" @click="alignElementToCanvas(ElementAlignCommands.BOTTOM)"><i-icon-park-outline:align-bottom /></Button>
     </ButtonGroup>
 
     <Divider />
@@ -35,7 +35,7 @@
         style="width: 45%;"
       >
         <template #prefix>
-          水平：
+          가로:
         </template>
       </NumberInput>
       <div style="width: 10%;"></div>
@@ -47,7 +47,7 @@
         style="width: 45%;"
       >
         <template #prefix>
-          垂直：
+          세로:
         </template>
       </NumberInput>
     </div>
@@ -64,11 +64,11 @@
           style="width: 45%;"
         >
           <template #prefix>
-            宽度：
+            너비:
           </template>
         </NumberInput>
         <template v-if="['image', 'shape', 'audio'].includes(handleElement!.type)">
-          <span style="width: 10%;" class="icon-btn" :class="{ 'active': fixedRatio }" v-tooltip="fixedRatio ? '解除宽高比锁定' : '宽高比锁定'" @click="updateFixedRatio(!fixedRatio)">
+          <span style="width: 10%;" class="icon-btn" :class="{ 'active': fixedRatio }" v-tooltip="fixedRatio ? '가로세로 비율 고정 해제' : '가로세로 비율 고정'" @click="updateFixedRatio(!fixedRatio)">
             <i-icon-park-outline:lock v-if="fixedRatio" />
             <i-icon-park-outline:unlock v-else />
           </span>
@@ -84,7 +84,7 @@
           style="width: 45%;"
         >
           <template #prefix>
-            高度：
+            높이:
           </template>
         </NumberInput>
       </div>
@@ -103,7 +103,7 @@
           style="width: 45%;" 
         >
           <template #prefix>
-            旋转：
+            회전:
           </template>
         </NumberInput>
         <div style="width: 7%;"></div>

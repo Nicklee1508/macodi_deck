@@ -72,7 +72,7 @@ export default () => {
         saveAs(dataUrl, `${title.value}.${format}`)
       }).catch(() => {
         exporting.value = false
-        message.error('导出图片失败')
+        message.error('그림으로 내보내지 못했습니다')
       })
     }, 200)
   }
@@ -113,7 +113,7 @@ export default () => {
         pptx.writeFile({ fileName: `${title.value}.pptx` }).then(() => exporting.value = false)
       }).catch(() => {
         exporting.value = false
-        message.error('导出失败')
+        message.error('내보내지 못했습니다')
       })
     }, 200)
   }
@@ -764,7 +764,7 @@ export default () => {
           for (let i = 0; i < el.data.series.length; i++) {
             const item = el.data.series[i]
             chartData.push({
-              name: `系列${i + 1}`,
+              name: `계열${i + 1}`,
               labels: el.data.labels,
               values: item,
             })
@@ -1001,7 +1001,7 @@ export default () => {
     setTimeout(() => {
       pptx.writeFile({ fileName: `${title.value}.pptx` }).then(() => exporting.value = false).catch(() => {
         exporting.value = false
-        message.error('导出失败')
+        message.error('내보내지 못했습니다')
       })
     }, 200)
   }

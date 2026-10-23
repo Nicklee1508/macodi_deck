@@ -8,46 +8,46 @@
     />
     <div class="content">
       <div class="config-item" v-if="themeStyles.fontNames.length">
-        <div class="label">字体：</div>
+        <div class="label">글꼴:</div>
         <div class="values">
           <div class="value-wrap" v-for="(item, index) in themeStyles.fontNames" :key="item">
             <div class="value" :style="{ fontFamily: item }">{{ fontMap[item] || item }}</div>
             <div class="handler">
               <div class="state" :class="{ 'active': selectedIndex.fontName === index }"><i-icon-park-outline:check /></div>
-              <div class="config-btn" @click="selectedIndex.fontName = index">选择</div>
-              <div class="config-btn" @click="updateTheme({ fontName: item }); selectedIndex.fontName = index">应用到主题</div>
+              <div class="config-btn" @click="selectedIndex.fontName = index">선택</div>
+              <div class="config-btn" @click="updateTheme({ fontName: item }); selectedIndex.fontName = index">테마에 적용</div>
             </div>
           </div>
         </div>
       </div>
       <div class="config-item" v-if="themeStyles.fontColors.length">
-        <div class="label">文字颜色：</div>
+        <div class="label">글자 색:</div>
         <div class="values">
           <div class="value-wrap" v-for="(item, index) in themeStyles.fontColors" :key="item">
             <div class="value" :style="{ backgroundColor: item, color: getMostReadableColor(item) }">{{ getHexColor(item) }}</div>
             <div class="handler">
               <div class="state" :class="{ 'active': selectedIndex.fontColor === index }"><i-icon-park-outline:check /></div>
-              <div class="config-btn" @click="selectedIndex.fontColor = index">选择</div>
-              <div class="config-btn" @click="updateTheme({ fontColor: item }); selectedIndex.fontColor = index">应用到主题</div>
+              <div class="config-btn" @click="selectedIndex.fontColor = index">선택</div>
+              <div class="config-btn" @click="updateTheme({ fontColor: item }); selectedIndex.fontColor = index">테마에 적용</div>
             </div>
           </div>
         </div>
       </div>
       <div class="config-item" v-if="themeStyles.backgroundColors.length">
-        <div class="label">背景颜色：</div>
+        <div class="label">배경 색:</div>
         <div class="values">
           <div class="value-wrap" v-for="(item, index) in themeStyles.backgroundColors" :key="item">
             <div class="value" :style="{ backgroundColor: item, color: getMostReadableColor(item) }">{{ getHexColor(item) }}</div>
             <div class="handler">
               <div class="state" :class="{ 'active': selectedIndex.backgroundColor === index }"><i-icon-park-outline:check /></div>
-              <div class="config-btn" @click="selectedIndex.backgroundColor = index">选择</div>
-              <div class="config-btn" @click="updateTheme({ backgroundColor: item }); selectedIndex.backgroundColor = index">应用到主题</div>
+              <div class="config-btn" @click="selectedIndex.backgroundColor = index">선택</div>
+              <div class="config-btn" @click="updateTheme({ backgroundColor: item }); selectedIndex.backgroundColor = index">테마에 적용</div>
             </div>
           </div>
         </div>
       </div>
       <div class="config-item" v-if="themeStyles.themeColors.length">
-        <div class="label">主题色：<span class="tip">（点击色块排除不要的颜色）</span></div>
+        <div class="label">테마 색:<span class="tip">(필요 없는 색은 클릭해서 빼세요)</span></div>
         <div class="values inline">
           <div class="value-wrap" v-for="(item, index) in themeStyles.themeColors" :key="item" @click="removeThemeColor(index)">
             <div class="value" :class="{ 'disabled': !selectedIndex.themeColors.includes(index) }" :style="{ backgroundColor: item }"></div>
@@ -57,7 +57,7 @@
     </div>
 
     <div class="btns">
-      <Button class="btn" type="primary" @click="updateAllThemes()"><i-icon-park-outline:check /> 将选中配置保存为主题</Button>
+      <Button class="btn" type="primary" @click="updateAllThemes()"><i-icon-park-outline:check /> 선택한 설정을 테마로 저장</Button>
     </div>
   </div>
 </template>
@@ -88,8 +88,8 @@ interface TabItem {
 }
 
 const tabs: TabItem[] = [
-  { key: 'single', label: '从当前页中提取' },
-  { key: 'all', label: '从全部幻灯片提取' },
+  { key: 'single', label: '현재 페이지에서 추출' },
+  { key: 'all', label: '모든 슬라이드에서 추출' },
 ]
 const activeTab = ref<'single' | 'all'>('single')
 
@@ -140,7 +140,7 @@ const updateAllThemes = () => {
   let themeColors = themeStyles.value.themeColors.filter((item, index) => selectedIndex.value.themeColors.includes(index))
   if (themeColors.length > 6) {
     themeColors = themeColors.slice(0, 6)
-    message.warning('主题色超出数量限制，已自动选取前6个')
+    message.warning('테마 색이 너무 많아 앞의 6개만 골랐습니다')
   }
 
   const backgroundColor = themeStyles.value.backgroundColors[selectedIndex.value.backgroundColor]

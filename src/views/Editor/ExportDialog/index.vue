@@ -19,10 +19,10 @@ import { useMainStore } from '@/store'
 import type { DialogForExportTypes } from '@/types/export'
 
 import ExportImage from './ExportImage.vue'
-import ExportJSON from './ExportJSON.vue'
 import ExportPDF from './ExportPDF.vue'
 import ExportPPTX from './ExportPPTX.vue'
 import ExportSpecificFile from './ExportSpecificFile.vue'
+import ExportURL from './ExportURL.vue'
 import Tabs from '@/components/Tabs.vue'
 
 interface TabItem {
@@ -36,20 +36,20 @@ const { dialogForExport } = storeToRefs(mainStore)
 const setDialogForExport = mainStore.setDialogForExport
 
 const tabs: TabItem[] = [
-  { key: 'pptist', label: '导出 PPTIST 文件' },
-  { key: 'pptx', label: '导出 PPTX' },
-  { key: 'image', label: '导出图片' },
-  { key: 'json', label: '导出 JSON' },
-  { key: 'pdf', label: '打印 / 导出 PDF' },
+  { key: 'url', label: 'URL 링크' },
+  { key: 'pptx', label: 'PowerPoint(PPTX)' },
+  { key: 'pdf', label: 'PDF / 인쇄' },
+  { key: 'image', label: '그림(JPG·PNG)' },
+  { key: 'pptist', label: '작업 파일 저장' },
 ]
 
 const currentDialogComponent = computed<unknown>(() => {
   const dialogMap = {
     'image': ExportImage,
-    'json': ExportJSON,
     'pdf': ExportPDF,
     'pptx': ExportPPTX,
     'pptist': ExportSpecificFile,
+    'url': ExportURL,
   }
   if (dialogForExport.value) return dialogMap[dialogForExport.value] || null
   return null
@@ -66,5 +66,10 @@ const currentDialogComponent = computed<unknown>(() => {
   font-size: 13px;
 
   @include overflow-overlay();
+
+  // 버튼·선택지 글자가 두 줄로 깨지지 않게
+  :deep(.radio-button), :deep(.button), :deep(button) {
+    white-space: nowrap;
+  }
 }
 </style>

@@ -4,7 +4,7 @@
     <Editor v-else-if="_isPC" />
     <Mobile v-else />
   </template>
-  <FullscreenSpin tip="数据初始化中，请稍等 ..." v-else  loading :mask="false" />
+  <FullscreenSpin tip="데이터를 준비하는 중입니다. 잠시만 기다려 주세요 ..." v-else  loading :mask="false" />
 </template>
 
 <script lang="ts" setup>
@@ -16,6 +16,7 @@ import { LOCALSTORAGE_KEY_DISCARDED_DB } from '@/configs/storage'
 import { deleteDiscardedDB } from '@/utils/database'
 import { isPC } from '@/utils/common'
 import api from '@/services'
+import { MACODI_API } from '@/macodi/api'
 
 import Editor from './views/Editor/index.vue'
 import Screen from './views/Screen/index.vue'
@@ -33,8 +34,10 @@ const { slides } = storeToRefs(slidesStore)
 const { screening } = storeToRefs(screenStore)
 
 const isAudienceMode = new URLSearchParams(window.location.search).get('mode') === 'audience'
+// URL 링크 공유로 들어온 사람(?v=공유키) — 로그인 없이 보기
+const shareKey = new URLSearchParams(window.location.search).get('v')
 
-if (import.meta.env.MODE !== 'development') {
+if (import.meta.env.MODE !== 'development' && !shareKey) {
   window.onbeforeunload = () => false
 }
 
@@ -45,6 +48,28 @@ onMounted(async () => {
       elements: [],
     }])
     screenStore.setScreening(true)
+  }
+  else if (shareKey) {
+    try {
+      const r = await fetch(`${MACODI_API}/deck-share/${encodeURIComponent(shareKey)}`)
+      if (!r.ok) throw new Error()
+      const d = await r.json()
+      if (d.title) slidesStore.setTitle(d.title)
+      if (d.theme) slidesStore.setTheme(d.theme)
+      if (d.viewportRatio) slidesStore.setViewportRatio(d.viewportRatio)
+      slidesStore.setSlides(d.slides)
+      document.title = `${d.title || '마감재 제안서'} · 마코디`
+      screenStore.setScreening(true)
+    }
+    catch {
+      slidesStore.setSlides([{ id: nanoid(10), elements: [{
+        type: 'text', id: nanoid(10), left: 200, top: 240, width: 600, height: 60, rotate: 0,
+        content: '<p style="text-align: center;"><span style="font-size: 22px;">링크가 없거나 삭제된 제안서입니다.</span></p>',
+        defaultFontName: 'Pretendard', defaultColor: '#333',
+      }] }])
+    }
+    await deleteDiscardedDB()
+    snapshotStore.initSnapshotDatabase()
   }
   else {
     const slides = await api.getMockData('slides')

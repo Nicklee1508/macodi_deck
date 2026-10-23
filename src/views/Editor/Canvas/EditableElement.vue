@@ -75,90 +75,90 @@ const { selectAllElements } = useSelectElement()
 const contextmenus = (): ContextmenuItem[] => {
   if (props.elementInfo.lock) {
     return [{
-      text: '解锁', 
+      text: '잠금 해제', 
       handler: () => unlockElement(props.elementInfo),
     }]
   }
 
   return [
     {
-      text: '剪切',
+      text: '잘라내기',
       subText: 'Ctrl + X',
       handler: cutElement,
     },
     {
-      text: '复制',
+      text: '복사',
       subText: 'Ctrl + C',
       handler: copyElement,
     },
     {
-      text: '粘贴',
+      text: '붙여넣기',
       subText: 'Ctrl + V',
       handler: pasteElement,
     },
     { divider: true },
     {
-      text: '水平居中',
+      text: '가로 가운데 맞춤',
       handler: () => alignElementToCanvas(ElementAlignCommands.HORIZONTAL),
       children: [
-        { text: '水平垂直居中', handler: () => alignElementToCanvas(ElementAlignCommands.CENTER), },
-        { text: '水平居中', handler: () => alignElementToCanvas(ElementAlignCommands.HORIZONTAL) },
-        { text: '左对齐', handler: () => alignElementToCanvas(ElementAlignCommands.LEFT) },
-        { text: '右对齐', handler: () => alignElementToCanvas(ElementAlignCommands.RIGHT) },
+        { text: '가로·세로 가운데 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.CENTER), },
+        { text: '가로 가운데 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.HORIZONTAL) },
+        { text: '왼쪽 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.LEFT) },
+        { text: '오른쪽 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.RIGHT) },
       ],
     },
     {
-      text: '垂直居中',
+      text: '세로 가운데 맞춤',
       handler: () => alignElementToCanvas(ElementAlignCommands.VERTICAL),
       children: [
-        { text: '水平垂直居中', handler: () => alignElementToCanvas(ElementAlignCommands.CENTER) },
-        { text: '垂直居中', handler: () => alignElementToCanvas(ElementAlignCommands.VERTICAL) },
-        { text: '顶部对齐', handler: () => alignElementToCanvas(ElementAlignCommands.TOP) },
-        { text: '底部对齐', handler: () => alignElementToCanvas(ElementAlignCommands.BOTTOM) },
+        { text: '가로·세로 가운데 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.CENTER) },
+        { text: '세로 가운데 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.VERTICAL) },
+        { text: '위쪽 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.TOP) },
+        { text: '아래쪽 맞춤', handler: () => alignElementToCanvas(ElementAlignCommands.BOTTOM) },
       ],
     },
     { divider: true },
     {
-      text: '置于顶层',
+      text: '맨 앞으로 가져오기',
       disable: props.isMultiSelect && !props.elementInfo.groupId,
       handler: () => orderElement(props.elementInfo, ElementOrderCommands.TOP),
       children: [
-        { text: '置于顶层', handler: () => orderElement(props.elementInfo, ElementOrderCommands.TOP) },
-        { text: '上移一层', handler: () => orderElement(props.elementInfo, ElementOrderCommands.UP) },
+        { text: '맨 앞으로 가져오기', handler: () => orderElement(props.elementInfo, ElementOrderCommands.TOP) },
+        { text: '앞으로 가져오기', handler: () => orderElement(props.elementInfo, ElementOrderCommands.UP) },
       ],
     },
     {
-      text: '置于底层',
+      text: '맨 뒤로 보내기',
       disable: props.isMultiSelect && !props.elementInfo.groupId,
       handler: () => orderElement(props.elementInfo, ElementOrderCommands.BOTTOM),
       children: [
-        { text: '置于底层', handler: () => orderElement(props.elementInfo, ElementOrderCommands.BOTTOM) },
-        { text: '下移一层', handler: () => orderElement(props.elementInfo, ElementOrderCommands.DOWN) },
+        { text: '맨 뒤로 보내기', handler: () => orderElement(props.elementInfo, ElementOrderCommands.BOTTOM) },
+        { text: '뒤로 보내기', handler: () => orderElement(props.elementInfo, ElementOrderCommands.DOWN) },
       ],
     },
     { divider: true },
     {
-      text: '设置链接',
+      text: '링크 설정',
       handler: props.openLinkDialog,
     },
     {
-      text: props.elementInfo.groupId ? '取消组合' : '组合',
+      text: props.elementInfo.groupId ? '그룹 해제' : '그룹',
       subText: 'Ctrl + G',
       handler: props.elementInfo.groupId ? uncombineElements : combineElements,
       hide: !props.isMultiSelect,
     },
     {
-      text: '全选',
+      text: '모두 선택',
       subText: 'Ctrl + A',
       handler: selectAllElements,
     },
     {
-      text: '锁定',
+      text: '잠금',
       subText: 'Ctrl + L',
       handler: lockElement,
     },
     {
-      text: '删除',
+      text: '삭제',
       subText: 'Delete',
       handler: deleteElement,
     },

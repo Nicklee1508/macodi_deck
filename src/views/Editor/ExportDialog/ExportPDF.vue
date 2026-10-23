@@ -22,17 +22,17 @@
     </div>
     <div class="configs">
       <div class="row">
-        <div class="title">导出范围：</div>
+        <div class="title">내보내기 범위:</div>
         <RadioGroup
           class="config-item"
           v-model:value="rangeType"
         >
-          <RadioButton style="width: 50%;" value="all">全部</RadioButton>
-          <RadioButton style="width: 50%;" value="current">当前页</RadioButton>
+          <RadioButton style="width: 50%;" value="all">전체</RadioButton>
+          <RadioButton style="width: 50%;" value="current">현재 페이지</RadioButton>
         </RadioGroup>
       </div>
       <div class="row">
-        <div class="title">每页数量：</div>
+        <div class="title">페이지당 개수:</div>
         <Select 
           class="config-item"
           v-model:value="count"
@@ -44,19 +44,19 @@
         />
       </div>
       <div class="row">
-        <div class="title">边缘留白：</div>
+        <div class="title">가장자리 여백:</div>
         <div class="config-item">
           <Switch v-model:value="padding" />
         </div>
       </div>
       <div class="tip">
-        建议：请在弹出的打印窗口中勾选「背景图形」选项，边距选择「默认」。
+        권장: 인쇄 창에서 「배경 그래픽」을 켜고 여백은 「기본」을 고르세요.
       </div>
     </div>
 
     <div class="btns">
-      <Button class="btn export" type="primary" @click="expPDF()"><i-icon-park-outline:download /> 打印 / 导出 PDF</Button>
-      <Button class="btn close" @click="emit('close')">关闭</Button>
+      <Button class="btn export" type="primary" @click="expPDF()"><i-icon-park-outline:download /> 인쇄 / 내보내기 PDF</Button>
+      <Button class="btn close" @click="emit('close')">닫기</Button>
     </div>
   </div>
 </template>
@@ -121,7 +121,7 @@ const expPDF = () => {
   }
 }
 .configs {
-  width: 300px;
+  width: 520px; // 글자가 줄바꿈되지 않게 넓힘(원래 350/300)
   height: calc(100% - 80px);
   display: flex;
   flex-direction: column;
@@ -136,7 +136,8 @@ const expPDF = () => {
   }
 
   .title {
-    width: 100px;
+    width: 150px;
+    white-space: nowrap;
   }
   .config-item {
     flex: 1;
@@ -150,7 +151,7 @@ const expPDF = () => {
   }
 }
 .btns {
-  width: 300px;
+  width: 400px;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -161,7 +162,7 @@ const expPDF = () => {
     flex: 1;
   }
   .close {
-    width: 100px;
+    width: 110px;
     margin-left: 10px;
   }
 }

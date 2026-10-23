@@ -1,8 +1,8 @@
 <template>
   <div class="table-generator">
     <div class="title">
-      <div class="lef">表格 {{endCell.length ? `${endCell[0]} x ${endCell[1]}` : ''}}</div>
-      <div class="right" @click="isCustom = !isCustom">{{ isCustom ? '返回' : '自定义'}}</div>
+      <div class="lef">표 {{endCell.length ? `${endCell[0]} x ${endCell[1]}` : ''}}</div>
+      <div class="right" @click="isCustom = !isCustom">{{ isCustom ? '돌아가기' : '직접 설정'}}</div>
     </div>
     <table 
       @mouseleave="endCell = []" 
@@ -26,7 +26,7 @@
 
     <div class="custom" v-else>
       <div class="row">
-        <div class="label" style="width: 25%;">行数：</div>
+        <div class="label" style="width: 25%;">행 수:</div>
         <NumberInput
           :min="1"
           :max="20"
@@ -35,7 +35,7 @@
         />
       </div>
       <div class="row">
-        <div class="label" style="width: 25%;">列数：</div>
+        <div class="label" style="width: 25%;">열 수:</div>
         <NumberInput
           :min="1"
           :max="20"
@@ -44,8 +44,8 @@
         />
       </div>
       <div class="btns">
-        <Button class="btn" @click="close()">取消</Button>
-        <Button class="btn" type="primary" @click="insertCustomTable()">确认</Button>
+        <Button class="btn" @click="close()">취소</Button>
+        <Button class="btn" type="primary" @click="insertCustomTable()">확인</Button>
       </div>
     </div>
   </div>
@@ -79,8 +79,8 @@ const handleClickTable = () => {
 }
 
 const insertCustomTable = () => {
-  if (customRow.value < 1 || customRow.value > 20) return message.warning('行数/列数必须在0~20之间！')
-  if (customCol.value < 1 || customCol.value > 20) return message.warning('行数/列数必须在0~20之间！')
+  if (customRow.value < 1 || customRow.value > 20) return message.warning('행/열 수는0~20사이여야 합니다!')
+  if (customCol.value < 1 || customCol.value > 20) return message.warning('행/열 수는0~20사이여야 합니다!')
   emit('insert', { row: customRow.value, col: customCol.value })
   isCustom.value = false
 }

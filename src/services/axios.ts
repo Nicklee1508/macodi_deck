@@ -9,7 +9,7 @@ instance.interceptors.response.use(
       return Promise.resolve(response.data)
     }
 
-    message.error('未知的请求错误！')
+    message.error('알 수 없는 요청 오류입니다!')
     return Promise.reject(response)
   },
   error => {
@@ -21,11 +21,11 @@ instance.interceptors.response.use(
         return Promise.reject(error.message)
       }
       
-      message.error('服务器遇到未知错误！')
+      message.error('서버에서 알 수 없는 오류가 발생했습니다!')
       return Promise.reject(error.message)
     }
 
-    message.error('连接到服务器失败 或 服务器响应超时！')
+    message.error('서버에 연결하지 못했거나 응답 시간이 초과됐습니다!')
     return Promise.reject(error)
   }
 )

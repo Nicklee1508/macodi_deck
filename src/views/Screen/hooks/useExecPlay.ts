@@ -190,7 +190,7 @@ export default () => {
     }
     else {
       if (loopPlay.value) turnSlideToIndex(slides.value.length - 1)
-      else throttleMassage('已经是第一页了')
+      else throttleMassage('첫 페이지입니다')
     }
     inAnimation.value = false
   }
@@ -207,7 +207,7 @@ export default () => {
     else {
       if (loopPlay.value) turnSlideToIndex(0)
       else {
-        throttleMassage('已经是最后一页了')
+        throttleMassage('마지막 페이지입니다')
         closeAutoPlay()
       }
       inAnimation.value = false
@@ -218,7 +218,7 @@ export default () => {
   const autoPlayInterval = ref(2500)
   const autoPlay = () => {
     closeAutoPlay()
-    message.success('开始自动放映')
+    message.success('자동 쇼 시작')
     autoPlayTimer.value = setInterval(execNext, autoPlayInterval.value)
   }
 

@@ -7,27 +7,27 @@
     />
 
     <template v-if="type === 'video'">
-      <Input v-model:value="videoSrc" placeholder="请输入视频地址，e.g. https://xxx.mp4"></Input>
+      <Input v-model:value="videoSrc" placeholder="동영상 주소를 입력하세요.e.g. https://xxx.mp4"></Input>
       <div class="btns">
         <FileInput accept="video/*" @change="files => uploadVideo(files)">
-          <Button><i-icon-park-outline:upload /> 上传本地视频</Button>
+          <Button><i-icon-park-outline:upload /> 내 PC 동영상 올리기</Button>
         </FileInput>
         <div class="group">
-          <Button @click="emit('close')" style="margin-right: 10px;">取消</Button>
-          <Button type="primary" @click="insertVideo()">确认</Button>
+          <Button @click="emit('close')" style="margin-right: 10px;">취소</Button>
+          <Button type="primary" @click="insertVideo()">확인</Button>
         </div>
       </div>
     </template>
 
     <template v-if="type === 'audio'">
-      <Input v-model:value="audioSrc" placeholder="请输入音频地址，e.g. https://xxx.mp3"></Input>
+      <Input v-model:value="audioSrc" placeholder="오디오 주소를 입력하세요.e.g. https://xxx.mp3"></Input>
       <div class="btns">
         <FileInput accept="audio/*" @change="files => uploadAudio(files)">
-          <Button><i-icon-park-outline:upload /> 上传本地音频</Button>
+          <Button><i-icon-park-outline:upload /> 내 PC 오디오 올리기</Button>
         </FileInput>
         <div class="group">
-          <Button @click="emit('close')" style="margin-right: 10px;">取消</Button>
-          <Button type="primary" @click="insertAudio()">确认</Button>
+          <Button @click="emit('close')" style="margin-right: 10px;">취소</Button>
+          <Button type="primary" @click="insertAudio()">확인</Button>
         </div>
       </div>
     </template>
@@ -61,17 +61,17 @@ const videoSrc = ref('https://videos.pexels.com/video-files/29261597/12623866_64
 const audioSrc = ref('https://freesound.org/data/previews/614/614107_11861866-lq.mp3')
 
 const tabs: TabItem[] = [
-  { key: 'video', label: '视频' },
-  { key: 'audio', label: '音频' },
+  { key: 'video', label: '동영상' },
+  { key: 'audio', label: '오디오' },
 ]
 
 const insertVideo = () => {
-  if (!videoSrc.value) return message.error('请先输入正确的视频地址')
+  if (!videoSrc.value) return message.error('올바른 동영상 주소를 먼저 입력해 주세요')
   emit('insertVideo', { src: videoSrc.value })
 }
 
 const insertAudio = () => {
-  if (!audioSrc.value) return message.error('请先输入正确的音频地址')
+  if (!audioSrc.value) return message.error('올바른 오디오 주소를 먼저 입력해 주세요')
   emit('insertAudio', { src: audioSrc.value })
 }
 

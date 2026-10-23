@@ -13,24 +13,24 @@
     />
 
     <div class="content" :class="type" @mousedown.stop>
-      <Input class="input" v-model:value="searchWord" placeholder="输入查找内容" @enter="searchNext()" ref="searchInpRef">
+      <Input class="input" v-model:value="searchWord" placeholder="찾을 내용 입력" @enter="searchNext()" ref="searchInpRef">
         <template #suffix>
           <span class="count">{{searchIndex + 1}}/{{searchResults.length}}</span>
           <Divider type="vertical" />
           <span class="ignore-case"
             :class="{ 'active': modifiers === 'g' }"
-            v-tooltip="'忽略大小写'"
+            v-tooltip="'대소문자 무시'"
             @click="toggleModifiers()"
           >Aa</span>
           <Divider type="vertical" />
-          <span class="next-btn left" @click="searchPrev()" v-tooltip="'上一个'"><i-icon-park-outline:left /></span>
-          <span class="next-btn right" @click="searchNext()" v-tooltip="'下一个'"><i-icon-park-outline:right /></span>
+          <span class="next-btn left" @click="searchPrev()" v-tooltip="'이전'"><i-icon-park-outline:left /></span>
+          <span class="next-btn right" @click="searchNext()" v-tooltip="'다음'"><i-icon-park-outline:right /></span>
         </template>
       </Input>
-      <Input class="input" v-model:value="replaceWord" placeholder="输入替换内容" @enter="replace()" v-if="type === 'replace'"></Input>
+      <Input class="input" v-model:value="replaceWord" placeholder="바꿀 내용 입력" @enter="replace()" v-if="type === 'replace'"></Input>
       <div class="footer" v-if="type === 'replace'">
-        <Button :disabled="!searchWord" style="margin-left: 5px;" @click="replace()">替换</Button>
-        <Button :disabled="!searchWord" type="primary" style="margin-left: 5px;" @click="replaceAll()">全部替换</Button>
+        <Button :disabled="!searchWord" style="margin-left: 5px;" @click="replace()">바꾸기</Button>
+        <Button :disabled="!searchWord" type="primary" style="margin-left: 5px;" @click="replaceAll()">모두 바꾸기</Button>
       </div>
     </div>
   </MoveablePanel>
@@ -69,8 +69,8 @@ const {
 
 const type = ref<TypeKey>('search')
 const tabs: TabItem[] = [
-  { key: 'search', label: '查找' },
-  { key: 'replace', label: '替换' },
+  { key: 'search', label: '찾기' },
+  { key: 'replace', label: '바꾸기' },
 ]
 
 const close = () => {

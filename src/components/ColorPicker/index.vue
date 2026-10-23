@@ -62,7 +62,7 @@
       ></div>
     </div>
 
-    <div class="recent-colors-title" v-if="recentColors.length">最近使用：</div>
+    <div class="recent-colors-title" v-if="recentColors.length">최근 사용:</div>
     <div class="picker-presets">
       <div
         class="picker-presets-color alpha"
@@ -217,7 +217,7 @@ const openEyeDropper = () => {
 
 // 原生取色吸管
 const browserEyeDropper = () => {
-  message.success('按 ESC 键关闭取色吸管', { duration: 0 })
+  message.success('ESC 키를 누르면 스포이드가 닫힙니다', { duration: 0 })
 
   // eslint-disable-next-line
   const eyeDropper = new (window as any).EyeDropper()
@@ -302,7 +302,7 @@ const customEyeDropper = () => {
     canvasRef.addEventListener('mouseleave', handleMouseleave)
     window.addEventListener('mousedown', handleMousedown)
   }).catch(() => {
-    message.error('取色吸管初始化失败')
+    message.error('스포이드를 시작하지 못했습니다')
     document.body.removeChild(maskRef)
   })
 }

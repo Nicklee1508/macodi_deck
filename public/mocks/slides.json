@@ -1,337 +1,1892 @@
 [
-    {
-      "id": "test-slide-1",
-      "elements": [
-        {
-          "type": "shape",
-          "id": "4cbRxp",
-          "left": 0,
-          "top": 200,
-          "width": 546,
-          "height": 362.5,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 0 0 L 0 200 L 200 200 Z",
-          "fill": "#5b9bd5",
-          "fixedRatio": false,
-          "opacity": 0.5,
-          "rotate": 0
-        },
-        {
-          "type": "shape",
-          "id": "ookHrf",
-          "left": 0,
-          "top": 0,
-          "width": 300,
-          "height": 320,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 0 0 L 0 200 L 200 200 Z",
-          "fill": "#5b9bd5",
-          "fixedRatio": false,
-          "flipV": true,
-          "rotate": 0
-        },
-        {
-          "type": "text",
-          "id": "idn7Mx",
-          "left": 355,
-          "top": 65,
-          "width": 585,
-          "height": 154.390625,
-          "lineHeight": 1.2,
-          "content": "<p><strong><span style=\"font-size: 112px;\">PPTist</span></strong></p>",
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333"
-        },
-        {
-          "type": "text",
-          "id": "7stmVP",
-          "left": 355,
-          "top": 238,
-          "width": 585,
-          "height": 86,
-          "content": "<p><strong><span style=\"font-size: 22px;\">PowerPoint-ist</span></strong><span style=\"font-size: 22px;\"> </span><em><span style=\"font-size: 22px;\">(/'pauəpɔintist/)</span></em><span style=\"font-size: 22px;\">，基于 Web 的开源演示文稿（幻灯片）应用，可以在浏览器中编辑/演示幻灯片。</span></p>",
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333"
-        },
-        {
-          "type": "line",
-          "id": "FnpZs4",
-          "left": 367,
-          "top": 220,
-          "start": [
-            0,
-            0
-          ],
-          "end": [
-            555.6725978647687,
-            0
-          ],
-          "points": [
-            "",
-            ""
-          ],
-          "color": "#5b9bd5",
-          "style": "solid",
-          "width": 2
-        }
-      ],
-      "background": {
-        "type": "solid",
-        "color": "#ffffff"
-      }
-    },
-    {
-      "id": "T2flB5Ms6N",
-      "elements": [
-        {
-          "type": "shape",
-          "id": "tgOHYFL9OJ",
-          "left": 0,
-          "top": 0,
-          "width": 1000,
-          "height": 281.25,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
-          "fill": "rgb(91, 155, 213)",
-          "fixedRatio": false,
-          "rotate": 0,
-          "lock": false
-        },
-        {
-          "type": "shape",
-          "id": "7GFmEv6oB_",
-          "left": 0,
-          "top": 281.25,
-          "width": 1000,
-          "height": 281.25,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
-          "fill": "rgb(242, 242, 242)",
-          "fixedRatio": false,
-          "rotate": 0,
-          "lock": false
-        },
-        {
-          "type": "shape",
-          "id": "rdxiACCJuV",
-          "left": 40,
-          "top": 39,
-          "width": 920,
-          "height": 482,
-          "viewBox": [
-            920,
-            482
-          ],
-          "path": "M 25.40421115065243 0 L 894.5957888493476 0 Q 920 0 920 25.40421115065243 L 920 456.59578884934757 Q 920 482 894.5957888493476 482 L 25.40421115065243 482 Q 0 482 0 456.59578884934757 L 0 25.40421115065243 Q 0 0 25.40421115065243 0 Z",
-          "fill": "#ffffff",
-          "fixedRatio": false,
-          "rotate": 0,
-          "shadow": {
-            "h": 4,
-            "v": 4,
-            "blur": 8,
-            "color": "rgba(128, 128, 128, 0.13)"
-          },
-          "lock": false,
-          "pathFormula": "roundRect",
-          "keypoints": [
-            0.052705832262764374
-          ]
-        },
-        {
-          "type": "text",
-          "id": "Tn6kkOFntr",
-          "left": 80,
-          "top": 71.5,
-          "width": 716.9,
-          "height": 74,
-          "content": "<p><span style=\"font-size: 36px;\">✨项目特点</span></p>",
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333",
-          "vertical": false,
-          "textType": "title"
-        },
-        {
-          "type": "text",
-          "id": "oU7uzQkPpO",
-          "left": 80,
-          "top": 160,
-          "width": 830,
-          "height": 213,
-          "content": "<ul style=\"font-size: 18px;color: rgb(51, 51, 51);\"><li><p style=\"text-align: justify;\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">易开发：</span></span></strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">基于 </span><code><span style=\"color: rgb(51, 51, 51);\">Vue3.x</span></code><span style=\"color: rgb(51, 51, 51);\"> + </span><code><span style=\"color: rgb(51, 51, 51);\">TypeScript</span></code><span style=\"color: rgb(51, 51, 51);\"> 构建，不依赖UI组件库，样式定制、功能扩展更方便；</span></span></p></li><li><p style=\"text-align: justify;\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">易使用：</span></span></strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">随处可见的右键菜单、数十种快捷操作方式、持续深入打磨编辑细节，力求还原桌面应用级的交互体验；</span></span></p></li><li><p style=\"text-align: justify;\"><strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">功能丰富：</span></span></strong><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">支持 </span></span><em><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\">Office PPT</span></span></em><span style=\"font-size: 18px;\"><span style=\"color: rgb(51, 51, 51);\"> 大部分常用元素和功能，支持模板式AIPPT、支持多种格式导出、支持移动端基础编辑和预览；</span></span></p></li><li><p style=\"\"><strong>代码可控：</strong>非 <em>vibe coding</em>&nbsp;的临时产物，代码稳健、可控、易维护，不留技术债。</p></li></ul>",
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333",
-          "vertical": false,
-          "textType": "content",
-          "paragraphSpace": 10,
-          "lineHeight": 1.5
-        },
-        {
-          "type": "line",
-          "id": "0pCV4mHRO5",
-          "left": 140,
-          "top": 138,
-          "start": [
-            0,
-            0
-          ],
-          "end": [
-            140.12455516014234,
-            0
-          ],
-          "points": [
-            "",
-            ""
-          ],
-          "color": "rgb(91, 155, 213)",
-          "style": "solid",
-          "width": 2,
-          "lock": false
-        },
-        {
-          "type": "shape",
-          "id": "-5LJXtU4dt",
-          "left": 0,
-          "top": 450,
-          "width": 1000,
-          "height": 150,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 0 20 C 40 -40 60 60 100 20 C 140 -40 160 60 200 20 L 200 180 C 140 240 160 140 100 180 C 40 240 60 140 0 180 L 0 20 Z",
-          "fill": "rgb(91, 155, 213)",
-          "fixedRatio": false,
-          "rotate": 0,
-          "lock": false,
-          "opacity": 0.2
-        }
-      ],
-      "background": {
-        "type": "solid",
-        "color": "#fff"
-      },
-      "type": "cover"
-    },
-    {
-      "id": "iqg6iGnei-",
-      "elements": [
-        {
-          "type": "shape",
-          "id": "78IHuud1fL",
-          "left": 850,
-          "top": 412.5,
-          "width": 300,
-          "height": 300,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
-          "fill": "rgb(91, 155, 213)",
-          "fixedRatio": true,
-          "rotate": 0,
-          "lock": false,
-          "opacity": 0.2
-        },
-        {
-          "type": "shape",
-          "id": "qBDphekubT",
-          "left": -180,
-          "top": -180,
-          "width": 360,
-          "height": 360,
-          "viewBox": [
-            200,
-            200
-          ],
-          "path": "M 100 0 A 50 50 0 1 1 100 200 A 50 50 0 1 1 100 0 Z",
-          "fill": "rgb(91, 155, 213)",
-          "fixedRatio": true,
-          "rotate": 0,
-          "lock": false
-        },
-        {
-          "type": "text",
-          "id": "2y_IZ-pmfY",
-          "width": 500,
-          "height": 101,
-          "left": 250,
-          "top": 160,
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333",
-          "content": "<p style=\"text-align: center;\"><strong><span style=\"font-size: 54px;\"><span style=\"color: rgb(91, 155, 213);\">谢谢观看</span></span></strong></p>",
-          "vertical": false
-        },
-        {
-          "type": "text",
-          "id": "pOa5by-tWB",
-          "width": 500,
-          "height": 56,
-          "left": 250,
-          "top": 250,
-          "rotate": 0,
-          "defaultFontName": "",
-          "defaultColor": "#333",
-          "content": "<p style=\"text-align: center;\"><em><span style=\"font-size: 24px;\"><span style=\"color: rgb(51, 51, 51);\">-THANKS-</span></span></em></p>",
-          "vertical": false
-        },
-        {
-          "type": "shape",
-          "id": "dQo7Qrwmqd",
-          "width": 500,
-          "height": 44,
-          "left": 250,
-          "top": 316,
-          "viewBox": [
-            500,
-            44
-          ],
-          "path": "M 5.5 0 L 494.5 0 Q 500 0 500 5.5 L 500 38.5 Q 500 44 494.5 44 L 5.5 44 Q 0 44 0 38.5 L 0 5.5 Q 0 0 5.5 0 Z",
-          "fill": "rgb(91, 155, 213)",
-          "fixedRatio": false,
-          "rotate": 0,
-          "text": {
-            "content": "<p style=\"text-align: center;\"><span style=\"font-size: 16px;\"><span style=\"color: rgb(255, 255, 255);\">AGPL-3.0 License | Copyright © 2020-PRESENT pipipi-pikachu</span></span></p>",
-            "defaultFontName": "",
-            "defaultColor": "#333",
-            "align": "middle"
-          },
-          "flipH": false,
-          "flipV": false,
-          "pathFormula": "roundRect",
-          "keypoints": [
-            0.125
-          ],
-          "opacity": 0.5,
-          "link": {
-            "type": "web",
-            "target": "https://github.com/pipipi-pikachu"
-          }
-        }
-      ],
-      "background": {
-        "type": "solid",
-        "color": "#FFFFFF"
-      },
-      "remark": "",
-      "type": "end"
+ {
+  "id": "mcd0007",
+  "elements": [
+   {
+    "type": "shape",
+    "id": "mcd0001",
+    "left": 520,
+    "top": 0,
+    "width": 480,
+    "height": 562.5,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">대표 투시도 / 외관 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
     }
-  ]
+   },
+   {
+    "type": "text",
+    "id": "mcd0002",
+    "left": 56,
+    "top": 64,
+    "width": 400,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a; letter-spacing: 2px;\">INTERIOR DESIGN PROPOSAL</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0003",
+    "left": 56,
+    "top": 180,
+    "width": 440,
+    "height": 110,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 40px; color: #1f1f1f;\">프로젝트명</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 18px; color: #8a8a8a;\">인테리어 마감재 제안서</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.3
+   },
+   {
+    "type": "line",
+    "id": "mcd0004",
+    "left": 56,
+    "top": 312,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     40,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#1f1f1f",
+    "style": "solid",
+    "width": 2
+   },
+   {
+    "type": "text",
+    "id": "mcd0005",
+    "left": 56,
+    "top": 330,
+    "width": 420,
+    "height": 90,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">클라이언트&nbsp;&nbsp;&nbsp;고객사명</span></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">위치&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;서울시 OO구</span></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">날짜&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2026. 00. 00</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.8
+   },
+   {
+    "type": "text",
+    "id": "mcd0006",
+    "left": 56,
+    "top": 500,
+    "width": 400,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 11px; color: #1f1f1f;\">회사명 · 담당 디자이너</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ },
+ {
+  "id": "mcd0031",
+  "elements": [
+   {
+    "type": "text",
+    "id": "mcd0008",
+    "left": 56,
+    "top": 34,
+    "width": 520,
+    "height": 30,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 18px; color: #1f1f1f;\"><span style=\"color: #6c2bd9;\">01</span>&nbsp;&nbsp;프로젝트 개요</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0009",
+    "left": 640,
+    "top": 38,
+    "width": 304,
+    "height": 24,
+    "content": "<p style=\"text-align: right;\"><span style=\"font-size: 11px; color: #8a8a8a;\">프로젝트명</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0010",
+    "left": 56,
+    "top": 74,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     888,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0011",
+    "left": 56,
+    "top": 522,
+    "width": 400,
+    "height": 20,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 9px; color: #8a8a8a; letter-spacing: 0.5px;\">회사명  |  Interior Design Proposal</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0012",
+    "left": 56,
+    "top": 112,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">프로젝트명</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0013",
+    "left": 166,
+    "top": 112,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">프로젝트명을 입력하세요</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0014",
+    "left": 56,
+    "top": 150,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0015",
+    "left": 56,
+    "top": 164,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">위치</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0016",
+    "left": 166,
+    "top": 164,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">서울시 OO구 OO로 00</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0017",
+    "left": 56,
+    "top": 202,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0018",
+    "left": 56,
+    "top": 216,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">용도</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0019",
+    "left": 166,
+    "top": 216,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">오피스 / 상업 / 주거</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0020",
+    "left": 56,
+    "top": 254,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0021",
+    "left": 56,
+    "top": 268,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">면적</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0022",
+    "left": 166,
+    "top": 268,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">000㎡ (00평)</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0023",
+    "left": 56,
+    "top": 306,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0024",
+    "left": 56,
+    "top": 320,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">공사 범위</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0025",
+    "left": 166,
+    "top": 320,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">바닥 · 벽 · 천장 마감 전체</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0026",
+    "left": 56,
+    "top": 358,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0027",
+    "left": 56,
+    "top": 372,
+    "width": 110,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">일정</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0028",
+    "left": 166,
+    "top": 372,
+    "width": 300,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #1f1f1f;\">2026. 00 ~ 2026. 00</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0029",
+    "left": 56,
+    "top": 410,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     410,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "shape",
+    "id": "mcd0030",
+    "left": 510,
+    "top": 104,
+    "width": 434,
+    "height": 392,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">평면도 / 현장 사진</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ },
+ {
+  "id": "mcd0049",
+  "elements": [
+   {
+    "type": "text",
+    "id": "mcd0032",
+    "left": 56,
+    "top": 34,
+    "width": 520,
+    "height": 30,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 18px; color: #1f1f1f;\"><span style=\"color: #6c2bd9;\">02</span>&nbsp;&nbsp;디자인 컨셉</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0033",
+    "left": 640,
+    "top": 38,
+    "width": 304,
+    "height": 24,
+    "content": "<p style=\"text-align: right;\"><span style=\"font-size: 11px; color: #8a8a8a;\">프로젝트명</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0034",
+    "left": 56,
+    "top": 74,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     888,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0035",
+    "left": 56,
+    "top": 522,
+    "width": 400,
+    "height": 20,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 9px; color: #8a8a8a; letter-spacing: 0.5px;\">회사명  |  Interior Design Proposal</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0036",
+    "left": 56,
+    "top": 104,
+    "width": 330,
+    "height": 90,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 26px; color: #1f1f1f;\">Warm Minimal</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 13px; color: #8a8a8a;\">따뜻한 소재감과 절제된 선으로<br>머물고 싶은 공간을 만듭니다.</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "text",
+    "id": "mcd0037",
+    "left": 56,
+    "top": 250,
+    "width": 60,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">01</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0038",
+    "left": 100,
+    "top": 250,
+    "width": 300,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 14px; color: #1f1f1f;\">소재</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">자연스러운 질감의 우드 · 석재</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "text",
+    "id": "mcd0039",
+    "left": 56,
+    "top": 326,
+    "width": 60,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">02</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0040",
+    "left": 100,
+    "top": 326,
+    "width": 300,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 14px; color: #1f1f1f;\">색감</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">웜 그레이와 베이지 톤</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "text",
+    "id": "mcd0041",
+    "left": 56,
+    "top": 402,
+    "width": 60,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">03</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0042",
+    "left": 100,
+    "top": 402,
+    "width": 300,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 14px; color: #1f1f1f;\">빛</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 12px; color: #8a8a8a;\">간접 조명으로 부드럽게</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "shape",
+    "id": "mcd0043",
+    "left": 430,
+    "top": 104,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "shape",
+    "id": "mcd0044",
+    "left": 604,
+    "top": 104,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "shape",
+    "id": "mcd0045",
+    "left": 778,
+    "top": 104,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "shape",
+    "id": "mcd0046",
+    "left": 430,
+    "top": 302,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "shape",
+    "id": "mcd0047",
+    "left": 604,
+    "top": 302,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "shape",
+    "id": "mcd0048",
+    "left": 778,
+    "top": 302,
+    "width": 164,
+    "height": 188,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">무드 이미지</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ },
+ {
+  "id": "mcd0067",
+  "elements": [
+   {
+    "type": "text",
+    "id": "mcd0050",
+    "left": 56,
+    "top": 34,
+    "width": 520,
+    "height": 30,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 18px; color: #1f1f1f;\"><span style=\"color: #6c2bd9;\">03</span>&nbsp;&nbsp;공간 제안 — 공간명</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0051",
+    "left": 640,
+    "top": 38,
+    "width": 304,
+    "height": 24,
+    "content": "<p style=\"text-align: right;\"><span style=\"font-size: 11px; color: #8a8a8a;\">프로젝트명</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0052",
+    "left": 56,
+    "top": 74,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     888,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0053",
+    "left": 56,
+    "top": 522,
+    "width": 400,
+    "height": 20,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 9px; color: #8a8a8a; letter-spacing: 0.5px;\">회사명  |  Interior Design Proposal</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "shape",
+    "id": "mcd0054",
+    "left": 56,
+    "top": 96,
+    "width": 600,
+    "height": 400,
+    "viewBox": [
+     200,
+     200
+    ],
+    "path": "M 0 0 L 200 0 L 200 200 L 0 200 Z",
+    "fill": "#f1f0ee",
+    "fixedRatio": false,
+    "rotate": 0,
+    "text": {
+     "content": "<p style=\"text-align: center;\"><span style=\"font-size: 12px; color: #a9a6a1;\">투시도 (그림을 넣거나 붙여넣기)</span></p>",
+     "defaultFontName": "Pretendard",
+     "defaultColor": "#a9a6a1",
+     "align": "middle"
+    }
+   },
+   {
+    "type": "text",
+    "id": "mcd0055",
+    "left": 684,
+    "top": 96,
+    "width": 260,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 13px; color: #1f1f1f;\">적용 마감재</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0056",
+    "left": 684,
+    "top": 126,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     260,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0057",
+    "left": 684,
+    "top": 142,
+    "width": 70,
+    "height": 22,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">F-01</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0058",
+    "left": 744,
+    "top": 142,
+    "width": 200,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #1f1f1f;\">바닥</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">품명 / 브랜드 / 규격</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "line",
+    "id": "mcd0059",
+    "left": 684,
+    "top": 208,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     260,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0060",
+    "left": 684,
+    "top": 218,
+    "width": 70,
+    "height": 22,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">W-01</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0061",
+    "left": 744,
+    "top": 218,
+    "width": 200,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #1f1f1f;\">벽</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">품명 / 브랜드 / 규격</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "line",
+    "id": "mcd0062",
+    "left": 684,
+    "top": 284,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     260,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0063",
+    "left": 684,
+    "top": 294,
+    "width": 70,
+    "height": 22,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #6c2bd9;\">C-01</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0064",
+    "left": 744,
+    "top": 294,
+    "width": 200,
+    "height": 50,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 12px; color: #1f1f1f;\">천장</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">품명 / 브랜드 / 규격</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.5
+   },
+   {
+    "type": "line",
+    "id": "mcd0065",
+    "left": 684,
+    "top": 360,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     260,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0066",
+    "left": 684,
+    "top": 384,
+    "width": 260,
+    "height": 110,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 10px; color: #6c2bd9; letter-spacing: 1px;\">TIP</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">오른쪽 마코디 탭에서 자재를 누르면 스펙 카드가 들어갑니다. <strong>AI</strong> 버튼으로 투시도 위를 둘러 그리면 비슷한 자재를 찾아줍니다.</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.6
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ },
+ {
+  "id": "mcd0123",
+  "elements": [
+   {
+    "type": "text",
+    "id": "mcd0068",
+    "left": 56,
+    "top": 34,
+    "width": 520,
+    "height": 30,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 18px; color: #1f1f1f;\"><span style=\"color: #6c2bd9;\">04</span>&nbsp;&nbsp;마감재 리스트</span></strong></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "text",
+    "id": "mcd0069",
+    "left": 640,
+    "top": 38,
+    "width": 304,
+    "height": 24,
+    "content": "<p style=\"text-align: right;\"><span style=\"font-size: 11px; color: #8a8a8a;\">프로젝트명</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0070",
+    "left": 56,
+    "top": 74,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     888,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#d9d9d9",
+    "style": "solid",
+    "width": 1
+   },
+   {
+    "type": "text",
+    "id": "mcd0071",
+    "left": 56,
+    "top": 522,
+    "width": 400,
+    "height": 20,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 9px; color: #8a8a8a; letter-spacing: 0.5px;\">회사명  |  Interior Design Proposal</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "table",
+    "id": "mcd0121",
+    "left": 56,
+    "top": 100,
+    "width": 888,
+    "height": 238,
+    "colWidths": [
+     0.07882882882882883,
+     0.09009009009009009,
+     0.16891891891891891,
+     0.19144144144144143,
+     0.15765765765765766,
+     0.1463963963963964,
+     0.16666666666666666
+    ],
+    "cellMinHeight": 34,
+    "rotate": 0,
+    "data": [
+     [
+      {
+       "id": "mcd0072",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "구분",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "center",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0073",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "코드",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "center",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0074",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "위치",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "left",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0075",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "품명",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "left",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0076",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "브랜드",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "left",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0077",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "규격(mm)",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "left",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      },
+      {
+       "id": "mcd0078",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "비고",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#ffffff",
+        "align": "left",
+        "vAlign": "middle",
+        "bold": true,
+        "backcolor": "#2b2b2b"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0079",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "바닥",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0080",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "F-01",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0081",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "오피스 전체",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0082",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0083",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0084",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0085",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0086",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "바닥",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0087",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "F-02",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0088",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "라운지",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0089",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0090",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0091",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0092",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0093",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "벽",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0094",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "W-01",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0095",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "메인 벽",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0096",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0097",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0098",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0099",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0100",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "벽",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0101",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "W-02",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0102",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "회의실",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0103",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0104",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0105",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0106",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0107",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "천장",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0108",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "C-01",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0109",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "전체",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0110",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0111",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0112",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0113",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ],
+     [
+      {
+       "id": "mcd0114",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "기타",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0115",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "E-01",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "center",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0116",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "가구 / 몰딩",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0117",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0118",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0119",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      },
+      {
+       "id": "mcd0120",
+       "colspan": 1,
+       "rowspan": 1,
+       "text": "",
+       "style": {
+        "fontname": "Pretendard",
+        "fontsize": "11px",
+        "color": "#1f1f1f",
+        "align": "left",
+        "vAlign": "middle"
+       }
+      }
+     ]
+    ],
+    "outline": {
+     "width": 1,
+     "style": "solid",
+     "color": "#d9d9d9"
+    }
+   },
+   {
+    "type": "text",
+    "id": "mcd0122",
+    "left": 56,
+    "top": 360,
+    "width": 888,
+    "height": 40,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 10px; color: #8a8a8a;\">* 제품 사양과 가격은 공급사 사정에 따라 바뀔 수 있습니다. 실제 시공 전 샘플로 색상과 질감을 확인해 주세요.</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ },
+ {
+  "id": "mcd0128",
+  "elements": [
+   {
+    "type": "text",
+    "id": "mcd0124",
+    "left": 56,
+    "top": 200,
+    "width": 600,
+    "height": 80,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 36px; color: #1f1f1f;\">감사합니다</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 14px; color: #8a8a8a; letter-spacing: 1px;\">Thank you</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   },
+   {
+    "type": "line",
+    "id": "mcd0125",
+    "left": 56,
+    "top": 300,
+    "start": [
+     0,
+     0
+    ],
+    "end": [
+     40,
+     0
+    ],
+    "points": [
+     "",
+     ""
+    ],
+    "color": "#1f1f1f",
+    "style": "solid",
+    "width": 2
+   },
+   {
+    "type": "text",
+    "id": "mcd0126",
+    "left": 56,
+    "top": 320,
+    "width": 500,
+    "height": 80,
+    "content": "<p style=\"text-align: left;\"><strong><span style=\"font-size: 13px; color: #1f1f1f;\">회사명</span></strong></p><p style=\"text-align: left;\"><span style=\"font-size: 11px; color: #8a8a8a;\">담당자명 · 연락처 010-0000-0000 · email@company.com</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.7
+   },
+   {
+    "type": "text",
+    "id": "mcd0127",
+    "left": 56,
+    "top": 500,
+    "width": 600,
+    "height": 24,
+    "content": "<p style=\"text-align: left;\"><span style=\"font-size: 10px; color: #8a8a8a;\">마감재 정보 제공 · 마코디 macodi.co.kr</span></p>",
+    "rotate": 0,
+    "defaultFontName": "Pretendard",
+    "defaultColor": "#1f1f1f",
+    "lineHeight": 1.4
+   }
+  ],
+  "background": {
+   "type": "solid",
+   "color": "#ffffff"
+  }
+ }
+]

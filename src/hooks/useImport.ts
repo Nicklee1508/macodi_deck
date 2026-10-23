@@ -355,7 +355,7 @@ export default () => {
         else addSlidesFromData(slides)
       }
       catch {
-        message.error('无法正确读取 / 解析该文件')
+        message.error('이 파일을 읽거나 해석할 수 없습니다')
       }
     })
     reader.readAsText(file)
@@ -388,7 +388,7 @@ export default () => {
         else addSlidesFromData(slides)
       }
       catch {
-        message.error('无法正确读取 / 解析该文件')
+        message.error('이 파일을 읽거나 해석할 수 없습니다')
       }
     })
     reader.readAsText(file)
@@ -675,7 +675,7 @@ export default () => {
       }
       catch {
         exporting.value = false
-        message.error('无法正确读取 / 解析该文件')
+        message.error('이 파일을 읽거나 해석할 수 없습니다')
         return
       }
 
@@ -1226,7 +1226,7 @@ export default () => {
               let series: number[][]
   
               if (el.chartType === 'scatterChart' || el.chartType === 'bubbleChart') {
-                labels = el.data[0].map((item, index) => `坐标${index + 1}`)
+                labels = el.data[0].map((item, index) => `좌표${index + 1}`)
                 legends = el.data.map((item, index) => {
                   if (index === 0) return 'X'
                   if (index === 1) return 'Y'

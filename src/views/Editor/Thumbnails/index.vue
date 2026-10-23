@@ -5,7 +5,7 @@
     v-click-outside="() => setThumbnailsFocus(false)"
   >
     <div class="add-slide">
-      <div class="btn" @click="createSlide()"><i-icon-park-outline:plus class="icon" />添加幻灯片</div>
+      <div class="btn" @click="createSlide()"><i-icon-park-outline:plus class="icon" />슬라이드 추가</div>
       <Popover trigger="click" placement="bottom-start" v-model:value="presetLayoutPopoverVisible" center>
         <template #content>
           <Templates 
@@ -41,13 +41,13 @@
               :id="`section-title-input-${element?.sectionTag?.id || 'default'}`" 
               type="text"
               :value="element?.sectionTag?.title || ''"
-              placeholder="输入节名称"
+              placeholder="구역 이름 입력"
               @blur="$event => saveSection($event)"
               @keydown.enter.stop="$event => saveSection($event)"
               v-if="editingSectionId === element?.sectionTag?.id || (index === 0 && editingSectionId === 'default')"
             >
             <span class="text" v-else>
-              <div class="text-content">{{ element?.sectionTag ? (element?.sectionTag?.title || '无标题节') : '默认节' }}</div>
+              <div class="text-content">{{ element?.sectionTag ? (element?.sectionTag?.title || '제목 없는 구역') : '기본 구역' }}</div>
             </span>
           </div>
           <div
@@ -69,7 +69,7 @@
       </template>
     </Draggable>
 
-    <div class="page-number">幻灯片 {{slideIndex + 1}} / {{slides.length}}</div>
+    <div class="page-number">슬라이드 {{slideIndex + 1}} / {{slides.length}}</div>
   </div>
 </template>
 
@@ -262,22 +262,22 @@ const contextmenusSection = (el: HTMLElement): ContextmenuItem[] => {
 
   return [
     {
-      text: '删除节',
+      text: '구역 삭제',
       handler: () => removeSection(sectionId),
     },
     {
-      text: '删除节和幻灯片',
+      text: '구역과 슬라이드 삭제',
       handler: () => {
         mainStore.setActiveElementIdList([])
         removeSectionSlides(sectionId)
       },
     },
     {
-      text: '删除所有节',
+      text: '모든 구역 삭제',
       handler: removeAllSection,
     },
     {
-      text: '重命名节',
+      text: '구역 이름 바꾸기',
       handler: () => editSection(sectionId),
     },
   ]
@@ -288,22 +288,22 @@ const { enterScreening, enterScreeningFromStart } = useScreening()
 const contextmenusThumbnails = (): ContextmenuItem[] => {
   return [
     {
-      text: '粘贴',
+      text: '붙여넣기',
       subText: 'Ctrl + V',
       handler: pasteSlide,
     },
     {
-      text: '全选',
+      text: '모두 선택',
       subText: 'Ctrl + A',
       handler: selectAllSlide,
     },
     {
-      text: '新建页面',
+      text: '새 페이지',
       subText: 'Enter',
       handler: createSlide,
     },
     {
-      text: '幻灯片放映',
+      text: '슬라이드 쇼',
       subText: 'F5',
       handler: enterScreeningFromStart,
     },
@@ -313,49 +313,49 @@ const contextmenusThumbnails = (): ContextmenuItem[] => {
 const contextmenusThumbnailItem = (): ContextmenuItem[] => {
   return [
     {
-      text: '剪切',
+      text: '잘라내기',
       subText: 'Ctrl + X',
       handler: cutSlide,
     },
     {
-      text: '复制',
+      text: '복사',
       subText: 'Ctrl + C',
       handler: copySlide,
     },
     {
-      text: '粘贴',
+      text: '붙여넣기',
       subText: 'Ctrl + V',
       handler: pasteSlide,
     },
     {
-      text: '全选',
+      text: '모두 선택',
       subText: 'Ctrl + A',
       handler: selectAllSlide,
     },
     { divider: true },
     {
-      text: '新建页面',
+      text: '새 페이지',
       subText: 'Enter',
       handler: createSlide,
     },
     {
-      text: '复制页面',
+      text: '페이지 복제',
       subText: 'Ctrl + D',
       handler: copyAndPasteSlide,
     },
     {
-      text: '删除页面',
+      text: '페이지 삭제',
       subText: 'Delete',
       handler: () => deleteSlide(),
     },
     {
-      text: '增加节',
+      text: '구역 추가',
       handler: createSection,
       disable: !!currentSlide.value.sectionTag,
     },
     { divider: true },
     {
-      text: '从当前放映',
+      text: '현재 슬라이드부터 쇼',
       subText: 'Shift + F5',
       handler: enterScreening,
     },

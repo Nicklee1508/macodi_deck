@@ -73,7 +73,7 @@ const props = withDefaults(defineProps<{
   autofocus: false,
   defaultLabel: '',
   search: false,
-  searchLabel: '搜索',
+  searchLabel: '검색',
 })
 
 const emit = defineEmits<{

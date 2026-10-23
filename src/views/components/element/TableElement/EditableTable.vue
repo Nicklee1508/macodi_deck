@@ -780,11 +780,11 @@ const execTableCommand = (payload: TableCommand) => {
   const { canDeleteRow, canDeleteCol } = checkCanDeleteRowOrCol()
 
   if (payload.command === 'delete-row') {
-    if (!canDeleteRow) return message.warning('表格至少保留一行')
+    if (!canDeleteRow) return message.warning('표에는 행이 1개 이상 있어야 합니다')
     return deleteRow(targetCell ? targetCell.rowIndex : tableCells.value.length - 1)
   }
   if (payload.command === 'delete-col') {
-    if (!canDeleteCol) return message.warning('表格至少保留一列')
+    if (!canDeleteCol) return message.warning('표에는 열이 1개 이상 있어야 합니다')
     const colCount = tableCells.value[0]?.length || 1
     return deleteCol(targetCell ? targetCell.colIndex : colCount - 1)
   }
@@ -825,51 +825,51 @@ const contextmenus = (el: HTMLElement): ContextmenuItem[] => {
 
   return [
     {
-      text: '插入列',
+      text: '열 삽입',
       children: [
-        { text: '到左侧', handler: () => insertCol(colIndex) },
-        { text: '到右侧', handler: () => insertCol(colIndex + 1) },
+        { text: '왼쪽으로', handler: () => insertCol(colIndex) },
+        { text: '오른쪽으로', handler: () => insertCol(colIndex + 1) },
       ],
     },
     {
-      text: '插入行',
+      text: '행 삽입',
       children: [
-        { text: '到上方', handler: () => insertRow(rowIndex) },
-        { text: '到下方', handler: () => insertRow(rowIndex + 1) },
+        { text: '위로', handler: () => insertRow(rowIndex) },
+        { text: '아래로', handler: () => insertRow(rowIndex + 1) },
       ],
     },
     {
-      text: '删除列',
+      text: '열 삭제',
       disable: !canDeleteCol,
       handler: () => deleteCol(colIndex),
     },
     {
-      text: '删除行',
+      text: '행 삭제',
       disable: !canDeleteRow,
       handler: () => deleteRow(rowIndex),
     },
     { divider: true },
     {
-      text: '合并单元格',
+      text: '셀 병합',
       disable: !canMerge,
       handler: mergeCells,
     },
     {
-      text: '取消合并单元格',
+      text: '셀 병합 해제',
       disable: !canSplit,
       handler: () => splitCells(rowIndex, colIndex),
     },
     { divider: true },
     {
-      text: '选中当前列',
+      text: '현재 열 선택',
       handler: () => selectCol(colIndex),
     },
     {
-      text: '选中当前行',
+      text: '현재 행 선택',
       handler: () => selectRow(rowIndex),
     },
     {
-      text: '选中全部单元格',
+      text: '모든 셀 선택',
       handler: selectAll,
     },
   ]

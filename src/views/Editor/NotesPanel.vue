@@ -3,7 +3,7 @@
     class="notes-panel" 
     :width="300" 
     :height="560" 
-    :title="`幻灯片${slideIndex + 1}的批注`" 
+    :title="`슬라이드${slideIndex + 1}의 메모`" 
     :left="-270" 
     :top="90"
     :minWidth="300"
@@ -25,8 +25,8 @@
               </div>
             </div>
             <div class="btns">
-              <div class="btn reply" @click="replyNoteId = note.id">回复</div>
-              <div class="btn delete" @click.stop="deleteNote(note.id)">删除</div>
+              <div class="btn reply" @click="replyNoteId = note.id">답글</div>
+              <div class="btn delete" @click.stop="deleteNote(note.id)">삭제</div>
             </div>
           </div>
           <div class="content">{{ note.content }}</div>
@@ -41,35 +41,35 @@
                   </div>
                 </div>
                 <div class="btns">
-                  <div class="btn delete" @click.stop="deleteReply(note.id, reply.id)">删除</div>
+                  <div class="btn delete" @click.stop="deleteReply(note.id, reply.id)">삭제</div>
                 </div>
               </div>
               <div class="content">{{ reply.content }}</div>
             </div>
           </div>
           <div class="note-reply" v-if="replyNoteId === note.id">
-            <TextArea :padding="6" v-model:value="replyContent" placeholder="输入回复内容" :rows="1" @enter.prevent="createNoteReply()" />
+            <TextArea :padding="6" v-model:value="replyContent" placeholder="답글 입력" :rows="1" @enter.prevent="createNoteReply()" />
             <div class="reply-btns">
-              <Button class="btn" size="small" @click="replyNoteId = ''">取消</Button>
-              <Button class="btn" size="small" type="primary" @click="createNoteReply()">回复</Button>
+              <Button class="btn" size="small" @click="replyNoteId = ''">취소</Button>
+              <Button class="btn" size="small" type="primary" @click="createNoteReply()">답글</Button>
             </div>
           </div>
         </div>
-        <div class="empty" v-if="!notes.length">本页暂无批注</div>
+        <div class="empty" v-if="!notes.length">이 페이지에는 메모가 없습니다</div>
       </div>
       <div class="send">
         <TextArea 
           ref="textAreaRef"
           v-model:value="content"
           :padding="6"
-          :placeholder="`输入批注（为${handleElementId ? '选中元素' : '当前页幻灯片' }）`"
+          :placeholder="`메모 입력(${handleElementId ? '선택한 요소' : '현재 슬라이드' })`"
           :rows="2"
           @focus="replyNoteId = ''; activeNoteId = ''"
           @enter.prevent="createNote()"
         />
         <div class="footer">
-          <i-icon-park-outline:delete class="btn icon" v-tooltip="'清空本页批注'" style="flex: 1" @click="clear()" />
-          <Button type="primary" class="btn" style="flex: 12" @click="createNote()"><i-icon-park-outline:plus /> 添加批注</Button>
+          <i-icon-park-outline:delete class="btn icon" v-tooltip="'이 페이지 메모 모두 지우기'" style="flex: 1" @click="clear()" />
+          <Button type="primary" class="btn" style="flex: 12" @click="createNote()"><i-icon-park-outline:plus /> 메모 추가</Button>
         </div>
       </div>
     </div>
@@ -121,7 +121,7 @@ const createNote = () => {
     id: nanoid(),
     content: content.value,
     time: new Date().getTime(),
-    user: '测试用户',
+    user: '테스트 사용자',
   }
   if (handleElementId.value) newNote.elId = handleElementId.value
 
@@ -153,7 +153,7 @@ const createNoteReply = () => {
       id: nanoid(),
       content: replyContent.value,
       time: new Date().getTime(),
-      user: '测试用户',
+      user: '테스트 사용자',
     },
   ]
   const newNote: Note = {

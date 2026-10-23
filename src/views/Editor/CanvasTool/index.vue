@@ -1,76 +1,75 @@
 <template>
   <div class="canvas-tool">
     <div class="left-handler">
-      <span class="handler-item" :class="{ 'disable': !canUndo }" v-tooltip="'撤销（Ctrl + Z）'" @click="undo()">
+      <span class="handler-item" :class="{ 'disable': !canUndo }" v-tooltip="'실행 취소(Ctrl + Z)'" @click="undo()">
         <i-icon-park-outline:back />
       </span>
-      <span class="handler-item" :class="{ 'disable': !canRedo }" v-tooltip="'重做（Ctrl + Y）'" @click="redo()">
+      <span class="handler-item" :class="{ 'disable': !canRedo }" v-tooltip="'다시 실행(Ctrl + Y)'" @click="redo()">
         <i-icon-park-outline:next />
       </span>
       <div class="more">
         <Divider type="vertical" style="height: 20px;" />
         <Popover class="more-icon" trigger="click" v-model:value="moreVisible" :offset="10">
           <template #content>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleNotesPanel(); moreVisible = false"><i-icon-park-outline:comment class="icon" />批注面板</PopoverMenuItem>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleSelectPanel(); moreVisible = false"><i-icon-park-outline:move-one class="icon" />选择窗格</PopoverMenuItem>
-            <PopoverMenuItem class="popover-menu-item" center @click="toggleSraechPanel(); moreVisible = false"><i-icon-park-outline:search class="icon" />查找替换</PopoverMenuItem>
+            <PopoverMenuItem class="popover-menu-item" center @click="toggleNotesPanel(); moreVisible = false"><i-icon-park-outline:comment class="icon" />메모 패널</PopoverMenuItem>
+            <PopoverMenuItem class="popover-menu-item" center @click="toggleSelectPanel(); moreVisible = false"><i-icon-park-outline:move-one class="icon" />선택 창</PopoverMenuItem>
+            <PopoverMenuItem class="popover-menu-item" center @click="toggleSraechPanel(); moreVisible = false"><i-icon-park-outline:search class="icon" />찾기/바꾸기</PopoverMenuItem>
           </template>
           <span class="handler-item">
             <i-icon-park-outline:more />
           </span>
         </Popover>
-        <span class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'批注面板'" @click="toggleNotesPanel()">
+        <span class="handler-item" :class="{ 'active': showNotesPanel }" v-tooltip="'메모 패널'" @click="toggleNotesPanel()">
           <i-icon-park-outline:comment />
         </span>
-        <span class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'选择窗格'" @click="toggleSelectPanel()">
+        <span class="handler-item" :class="{ 'active': showSelectPanel }" v-tooltip="'선택 창'" @click="toggleSelectPanel()">
           <i-icon-park-outline:move-one />
         </span>
-        <span class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'查找/替换（Ctrl + F）'" @click="toggleSraechPanel()">
+        <span class="handler-item" :class="{ 'active': showSearchPanel }" v-tooltip="'찾기/바꾸기(Ctrl + F)'" @click="toggleSraechPanel()">
           <i-icon-park-outline:search />
         </span>
       </div>
     </div>
 
     <div class="add-element-handler">
-      <div class="insert-handler-item group-btn" :class="{ 'active': creatingElement?.type === 'text' }" v-tooltip="'插入文字'">
-        <div class="group-btn-main" @click="drawText()"><i-icon-park-outline:font-size class="icon" /> <span class="text">文本框</span></div>
+      <div class="insert-handler-item group-btn" :class="{ 'active': creatingElement?.type === 'text' }" v-tooltip="'텍스트 삽입'">
+        <div class="group-btn-main" @click="drawText()"><i-icon-park-outline:font-size class="icon" /> <span class="text">텍스트 상자</span></div>
         
         <Popover trigger="click" v-model:value="textTypeSelectVisible" style="height: 100%;" :offset="10">
           <template #content>
-            <PopoverMenuItem center @click="() => { drawText(); textTypeSelectVisible = false }"><i-icon-park-outline:text-rotation-none class="icon" /> 横向文本框</PopoverMenuItem>
-            <PopoverMenuItem center @click="() => { drawText(true); textTypeSelectVisible = false }"><i-icon-park-outline:text-rotation-down class="icon" /> 竖向文本框</PopoverMenuItem>
+            <PopoverMenuItem center @click="() => { drawText(); textTypeSelectVisible = false }"><i-icon-park-outline:text-rotation-none class="icon" /> 가로 텍스트 상자</PopoverMenuItem>
+            <PopoverMenuItem center @click="() => { drawText(true); textTypeSelectVisible = false }"><i-icon-park-outline:text-rotation-down class="icon" /> 세로 텍스트 상자</PopoverMenuItem>
           </template>
           <span class="arrow"><i-icon-park-outline:down /></span>
         </Popover>
       </div>
-      <div class="insert-handler-item group-btn" :class="{ 'active': creatingCustomShape || creatingElement?.type === 'shape' }" v-tooltip="'插入形状'" :offset="10">
+      <div class="insert-handler-item group-btn" :class="{ 'active': creatingCustomShape || creatingElement?.type === 'shape' }" v-tooltip="'도형 삽입'" :offset="10">
         <Popover trigger="click" style="height: 100%;" v-model:value="shapePoolVisible" :offset="10">
           <template #content>
             <ShapePool @select="shape => drawShape(shape)" />
           </template>
-          <div class="group-btn-main"><i-icon-park-outline:graphic-design class="icon" /> <span class="text">形状</span></div>
+          <div class="group-btn-main"><i-icon-park-outline:graphic-design class="icon" /> <span class="text">도형</span></div>
         </Popover>
         
         <Popover trigger="click" v-model:value="shapeMenuVisible" style="height: 100%;" :offset="10">
           <template #content>
-            <PopoverMenuItem center @click="shapeMenuVisible = false; shapePoolVisible = true"><i-icon-park-outline:graphic-design class="icon" />预设形状</PopoverMenuItem>
-            <PopoverMenuItem center @click="() => { svgPathEditorVisible = true; shapeMenuVisible = false }"><i-icon-park-outline:connection class="icon" />路径绘制</PopoverMenuItem>
-            <PopoverMenuItem center @click="() => { drawCustomShape(); shapeMenuVisible = false }"><i-icon-park-outline:writing-fluently class="icon" />自由绘制</PopoverMenuItem>
+            <PopoverMenuItem center @click="shapeMenuVisible = false; shapePoolVisible = true"><i-icon-park-outline:graphic-design class="icon" />기본 도형</PopoverMenuItem>
+            <PopoverMenuItem center @click="() => { svgPathEditorVisible = true; shapeMenuVisible = false }"><i-icon-park-outline:connection class="icon" />경로 그리기</PopoverMenuItem>
+            <PopoverMenuItem center @click="() => { drawCustomShape(); shapeMenuVisible = false }"><i-icon-park-outline:writing-fluently class="icon" />자유 그리기</PopoverMenuItem>
           </template>
           <span class="arrow"><i-icon-park-outline:down /></span>
         </Popover>
       </div>
-      <div class="insert-handler-item group-btn" v-tooltip="'插入图片'">
+      <div class="insert-handler-item group-btn" v-tooltip="'그림 삽입'">
         <FileInput style="height: 100%;" @change="files => insertImageElement(files)">
-          <div class="group-btn-main"><i-icon-park-outline:picture class="icon" /> <span class="text">图片</span></div>
+          <div class="group-btn-main"><i-icon-park-outline:picture class="icon" /> <span class="text">그림</span></div>
         </FileInput>
         
         <Popover trigger="click" v-model:value="imageMenuVisible" style="height: 100%;" :offset="10">
           <template #content>
             <FileInput @change="files => { insertImageElement(files); imageMenuVisible = false }">
-              <PopoverMenuItem center><i-icon-park-outline:upload class="icon" /> 上传图片</PopoverMenuItem>
+              <PopoverMenuItem center><i-icon-park-outline:upload class="icon" /> 그림 올리기</PopoverMenuItem>
             </FileInput>
-            <PopoverMenuItem center @click="openImageLibPanel(); imageMenuVisible = false"><i-icon-park-outline:picture class="icon" /> 在线图库</PopoverMenuItem>
           </template>
           <span class="arrow"><i-icon-park-outline:down /></span>
         </Popover>
@@ -79,16 +78,16 @@
         <template #content>
           <LinePool @select="line => drawLine(line)" />
         </template>
-        <div class="insert-handler-item" :class="{ 'active': creatingElement?.type === 'line' }" v-tooltip="'插入线条'">
-          <i-icon-park-outline:connection class="icon" /> <span class="text">线条</span>
+        <div class="insert-handler-item" :class="{ 'active': creatingElement?.type === 'line' }" v-tooltip="'선 삽입'">
+          <i-icon-park-outline:connection class="icon" /> <span class="text">선</span>
         </div>
       </Popover>
       <Popover trigger="click" v-model:value="chartPoolVisible" :offset="10">
         <template #content>
           <ChartPool @select="chart => { createChartElement(chart); chartPoolVisible = false }" />
         </template>
-        <div class="insert-handler-item" v-tooltip="'插入图表'">
-          <i-icon-park-outline:chart-proportion class="icon" /> <span class="text">图表</span>
+        <div class="insert-handler-item" v-tooltip="'차트 삽입'">
+          <i-icon-park-outline:chart-proportion class="icon" /> <span class="text">차트</span>
         </div>
       </Popover>
       <Popover trigger="click" v-model:value="tableGeneratorVisible" :offset="10">
@@ -98,13 +97,10 @@
             @insert="({ row, col }) => { createTableElement(row, col); tableGeneratorVisible = false }"
           />
         </template>
-        <div class="insert-handler-item" v-tooltip="'插入表格'">
-          <i-icon-park-outline:insert-table class="icon" /> <span class="text">表格</span>
+        <div class="insert-handler-item" v-tooltip="'표 삽입'">
+          <i-icon-park-outline:insert-table class="icon" /> <span class="text">표</span>
         </div>
       </Popover>
-      <div class="insert-handler-item" v-tooltip="'插入公式'" @click="latexEditorVisible = true">
-        <i-icon-park-outline:formula class="icon" /> <span class="text">公式</span>
-      </div>
       <Popover trigger="click" v-model:value="mediaInputVisible" :offset="10">
         <template #content>
           <MediaInput 
@@ -113,17 +109,17 @@
             @insertAudio="({ src, ext }) => { createAudioElement(src, ext); mediaInputVisible = false }"
           />
         </template>
-        <div class="insert-handler-item" v-tooltip="'插入音视频'">
-          <i-icon-park-outline:video-two class="icon" /> <span class="text">音视频</span>
+        <div class="insert-handler-item" v-tooltip="'오디오/동영상 삽입'">
+          <i-icon-park-outline:video-two class="icon" /> <span class="text">오디오/동영상</span>
         </div>
       </Popover>
-      <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'插入符号'" @click="toggleSymbolPanel()">
-        <i-icon-park-outline:symbol class="icon" /> <span class="text">符号</span>
+      <div class="insert-handler-item" :class="{ 'active': showSymbolPanel }" v-tooltip="'기호 삽입'" @click="toggleSymbolPanel()">
+        <i-icon-park-outline:symbol class="icon" /> <span class="text">기호</span>
       </div>
     </div>
 
     <div class="right-handler">
-      <span class="handler-item viewport-size" v-tooltip="'画布缩小（Ctrl + -）'" @click="scaleCanvas('-')">
+      <span class="handler-item viewport-size" v-tooltip="'캔버스 축소(Ctrl + -)'" @click="scaleCanvas('-')">
         <i-icon-park-outline:minus />
       </span>
       <Popover trigger="click" v-model:value="canvasScaleVisible">
@@ -134,27 +130,17 @@
             :key="item" 
             @click="applyCanvasPresetScale(item)"
           >{{item}}%</PopoverMenuItem>
-          <PopoverMenuItem center @click="resetCanvas(); canvasScaleVisible = false">适应屏幕</PopoverMenuItem>
+          <PopoverMenuItem center @click="resetCanvas(); canvasScaleVisible = false">화면에 맞추기</PopoverMenuItem>
         </template>
         <span class="text">{{ canvasScalePercentage }}</span>
       </Popover>
-      <span class="handler-item viewport-size" v-tooltip="'画布放大（Ctrl + =）'" @click="scaleCanvas('+')">
+      <span class="handler-item viewport-size" v-tooltip="'캔버스 확대(Ctrl + =)'" @click="scaleCanvas('+')">
         <i-icon-park-outline:plus />
       </span>
-      <span class="handler-item viewport-size-adaptation" v-tooltip="'适应屏幕（Ctrl + 0）'" @click="resetCanvas()">
+      <span class="handler-item viewport-size-adaptation" v-tooltip="'화면에 맞추기(Ctrl + 0)'" @click="resetCanvas()">
         <i-icon-park-outline:full-screen />
       </span>
     </div>
-
-    <Modal
-      v-model:visible="latexEditorVisible" 
-      :width="880"
-    >
-      <LaTeXEditor 
-        @close="latexEditorVisible = false"
-        @update="data => { createLatexElement(data); latexEditorVisible = false }"
-      />
-    </Modal>
 
     <Modal
       v-model:visible="svgPathEditorVisible"
@@ -186,7 +172,6 @@ import ChartPool from './ChartPool.vue'
 import TableGenerator from './TableGenerator.vue'
 import MediaInput from './MediaInput.vue'
 import SVGPathEditor from './SVGPathEditor.vue'
-import LaTeXEditor from '@/components/LaTeXEditor/index.vue'
 import FileInput from '@/components/FileInput.vue'
 import Modal from '@/components/Modal.vue'
 import Divider from '@/components/Divider.vue'
@@ -220,7 +205,6 @@ const {
   createImageElement,
   createChartElement,
   createTableElement,
-  createLatexElement,
   createVideoElement,
   createAudioElement,
   createShapeElement,
@@ -237,7 +221,6 @@ const linePoolVisible = ref(false)
 const chartPoolVisible = ref(false)
 const tableGeneratorVisible = ref(false)
 const mediaInputVisible = ref(false)
-const latexEditorVisible = ref(false)
 const svgPathEditorVisible = ref(false)
 const textTypeSelectVisible = ref(false)
 const shapeMenuVisible = ref(false)
@@ -324,9 +307,6 @@ const toggleSymbolPanel = () => {
 }
 
 // 打开图库面板
-const openImageLibPanel = () => {
-  mainStore.setImageLibPanelState(true)
-}
 </script>
 
 <style lang="scss" scoped>

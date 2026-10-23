@@ -196,23 +196,23 @@ const contextmenus = (el: HTMLElement): ContextmenuItem[] => {
   if (lv === 1) {
     return [
       {
-        text: '添加子级大纲（章）',
-        handler: () => addItem(id, 'next', '新的一章'),
+        text: '하위 개요 추가(장)',
+        handler: () => addItem(id, 'next', '새 장'),
       },
     ]
   }
   else if (lv === 2) {
     return [
       {
-        text: '上方添加同级大纲（章）',
-        handler: () => addItem(id, 'prev', '新的一章'),
+        text: '위에 같은 단계 개요 추가(장)',
+        handler: () => addItem(id, 'prev', '새 장'),
       },
       {
-        text: '添加子级大纲（节）',
-        handler: () => addItem(id, 'next', '新的一节'),
+        text: '하위 개요 추가(절)',
+        handler: () => addItem(id, 'next', '새 절'),
       },
       {
-        text: '删除此章',
+        text: '이 장 삭제',
         handler: () => deleteItem(id, true),
       },
     ]
@@ -220,30 +220,30 @@ const contextmenus = (el: HTMLElement): ContextmenuItem[] => {
   else if (lv === 3) {
     return [
       {
-        text: '上方添加同级大纲（节）',
-        handler: () => addItem(id, 'prev', '新的一节'),
+        text: '위에 같은 단계 개요 추가(절)',
+        handler: () => addItem(id, 'prev', '새 절'),
       },
       {
-        text: '添加子级大纲（项）',
-        handler: () => addItem(id, 'next', '新的一项'),
+        text: '하위 개요 추가(항목)',
+        handler: () => addItem(id, 'next', '새 항목'),
       },
       {
-        text: '删除此节',
+        text: '이 절 삭제',
         handler: () => deleteItem(id, true),
       },
     ]
   }
   return [
     {
-      text: '上方添加同级大纲（项）',
-      handler: () => addItem(id, 'prev', '新的一项'),
+      text: '위에 같은 단계 개요 추가(항목)',
+      handler: () => addItem(id, 'prev', '새 항목'),
     },
     {
-      text: '下方添加同级大纲（项）',
-      handler: () => addItem(id, 'next', '新的一项'),
+      text: '아래에 같은 단계 개요 추가(항목)',
+      handler: () => addItem(id, 'next', '새 항목'),
     },
     {
-      text: '删除此项',
+      text: '이 항목 삭제',
       handler: () => deleteItem(id),
     },
   ]
@@ -335,13 +335,13 @@ const contextmenus = (el: HTMLElement): ContextmenuItem[] => {
     }
   }
   .item.lv-1 .flag::after {
-    content: '主题';
+    content: '주제';
   }
   .item.lv-2 .flag::after {
-    content: '章';
+    content: '장';
   }
   .item.lv-3 .flag::after {
-    content: '节';
+    content: '절';
   }
   .item.lv-4 .flag::after {
     opacity: 0;

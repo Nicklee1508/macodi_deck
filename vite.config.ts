@@ -34,11 +34,16 @@ export default defineConfig({
     host: '127.0.0.1',
     port: 5173,
     proxy: {
-      '/api': {
-        target: 'https://server.pptist.cn',
+      // 마코디 백엔드(로컬 dev). 운영 빌드는 api2.macodi.co.kr 직접 호출(src/macodi/api.ts).
+      '/macodi-api': {
+        target: process.env.MACODI_API_TARGET || 'http://localhost:8008',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      }
+        rewrite: (path) => path.replace(/^\/macodi-api/, ''),
+        // 백엔드 CORS 허용목록에 dev 주소가 없어 Origin 을 보내면 400 → 같은 출처 호출로 보이게 제거(dev 전용)
+        configure: (proxy) => {
+          proxy.on('proxyReq', (proxyReq) => proxyReq.removeHeader('origin'))
+        },
+      },
     }
   },
   css: {

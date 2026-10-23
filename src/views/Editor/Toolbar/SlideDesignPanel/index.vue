@@ -1,15 +1,15 @@
 <template>
   <div class="slide-design-panel">
-    <div class="title">背景填充</div>
+    <div class="title">배경 채우기</div>
     <div class="row">
       <Select 
         style="flex: 1;" 
         :value="background.type" 
         @update:value="value => updateBackgroundType(value as 'gradient' | 'image' | 'solid')"
         :options="[
-          { label: '纯色填充', value: 'solid' },
-          { label: '图片填充', value: 'image' },
-          { label: '渐变填充', value: 'gradient' },
+          { label: '단색 채우기', value: 'solid' },
+          { label: '그림 채우기', value: 'image' },
+          { label: '그라데이션 채우기', value: 'gradient' },
         ]"
       />
       <div style="width: 10px;"></div>
@@ -30,9 +30,9 @@
         @update:value="value => updateImageBackground({ size: value as SlideBackgroundImageSize })"
         v-else-if="background.type === 'image'"
         :options="[
-          { label: '缩放', value: 'contain' },
-          { label: '拼贴', value: 'repeat' },
-          { label: '缩放铺满', value: 'cover' },
+          { label: '확대/축소', value: 'contain' },
+          { label: '바둑판식', value: 'repeat' },
+          { label: '늘려서 채우기', value: 'cover' },
         ]"
       />
 
@@ -42,8 +42,8 @@
         @update:value="value => updateGradientBackground({ type: value as GradientType })"
         v-else
         :options="[
-          { label: '线性渐变', value: 'linear' },
-          { label: '径向渐变', value: 'radial' },
+          { label: '선형 그라데이션', value: 'linear' },
+          { label: '방사형 그라데이션', value: 'radial' },
         ]"
       />
     </div>
@@ -68,7 +68,7 @@
         />
       </div>
       <div class="row">
-        <div style="width: 40%;">当前色块：</div>
+        <div style="width: 40%;">현재 색:</div>
         <Popover trigger="click" style="width: 60%;">
           <template #content>
             <ColorPicker
@@ -80,7 +80,7 @@
         </Popover>
       </div>
       <div class="row" v-if="background.gradient?.type === 'linear'">
-        <div style="width: 40%;">渐变角度：</div>
+        <div style="width: 40%;">그라데이션 각도:</div>
         <Slider
           :min="0"
           :max="360"
@@ -93,7 +93,7 @@
     </div>
 
     <div class="row">
-      <Button style="flex: 1;" @click="applyBackgroundAllSlide()"><i-icon-park-outline:check /> 应用背景到全部</Button>
+      <Button style="flex: 1;" @click="applyBackgroundAllSlide()"><i-icon-park-outline:check /> 배경을 모두에 적용</Button>
     </div>
 
     <Divider />
@@ -101,48 +101,48 @@
     <div class="row">
       <Select 
         style="width: 100%;" 
-        defaultLabel="自定义"
+        defaultLabel="직접 설정"
         :value="viewportRatio" 
         @update:value="value => updateViewportRatio(value)"
         :options="[
-          { label: '宽屏 16 : 9', value: 0.5625 },
-          { label: '宽屏 16 : 10', value: 0.625 },
-          { label: '标准 4 : 3', value: 0.75 },
-          { label: '纸张 A3 / A4', value: 0.70710678 },
-          { label: '竖向 A3 / A4', value: 1.41421356 },
-          { label: '自定义', value: 'custom' },
+          { label: '와이드 16 : 9', value: 0.5625 },
+          { label: '와이드 16 : 10', value: 0.625 },
+          { label: '표준 4 : 3', value: 0.75 },
+          { label: '용지 A3 / A4', value: 0.70710678 },
+          { label: '세로 A3 / A4', value: 1.41421356 },
+          { label: '직접 설정', value: 'custom' },
         ]"
       />
     </div>
 
     <div class="row">
-      <div class="canvas-size">画布尺寸：{{  viewportSize  }} × {{ toFixed(viewportSize * viewportRatio) }}</div>
+      <div class="canvas-size">캔버스 크기:{{  viewportSize  }} × {{ toFixed(viewportSize * viewportRatio) }}</div>
     </div>
 
     <Divider />
 
     <div class="title">
-      <span>全局主题</span>
+      <span>전체 테마</span>
       <span class="more" @click="moreThemeConfigsVisible = !moreThemeConfigsVisible">
-        <span class="text">更多</span>
+        <span class="text">더 보기</span>
         <i-icon-park-outline:down v-if="moreThemeConfigsVisible" />
         <i-icon-park-outline:right v-else />
       </span>
     </div>
     <div class="row">
-      <div style="width: 40%;">字体：</div>
+      <div style="width: 40%;">글꼴:</div>
       <Select
         style="width: 60%;"
         :value="theme.fontName"
         search
-        searchLabel="搜索字体"
+        searchLabel="글꼴 검색"
         autofocus
         @update:value="value => updateTheme({ fontName: value as string })"
         :options="FONTS"
       />
     </div>
     <div class="row">
-      <div style="width: 40%;">字体颜色：</div>
+      <div style="width: 40%;">글자 색:</div>
       <Popover trigger="click" style="width: 60%;">
         <template #content>
           <ColorPicker
@@ -154,7 +154,7 @@
       </Popover>
     </div>
     <div class="row">
-      <div style="width: 40%;">背景颜色：</div>
+      <div style="width: 40%;">배경 색:</div>
       <Popover trigger="click" style="width: 60%;">
         <template #content>
           <ColorPicker
@@ -166,13 +166,13 @@
       </Popover>
     </div>
     <div class="row">
-      <div style="width: 40%;">主题色：</div>
+      <div style="width: 40%;">테마 색:</div>
       <ColorListButton style="width: 60%;" :colors="theme.themeColors" @click="themeColorsSettingVisible = true" />
     </div>
     
     <template v-if="moreThemeConfigsVisible">
       <div class="row">
-        <div style="width: 40%;">边框样式：</div>
+        <div style="width: 40%;">테두리 스타일:</div>
         <SelectCustom style="width: 60%;">
           <template #options>
             <div class="option" v-for="item in lineStyleOptions" :key="item" @click="updateTheme({ outline: { ...theme.outline, style: item } })">
@@ -185,7 +185,7 @@
         </SelectCustom>
       </div>
       <div class="row">
-        <div style="width: 40%;">边框颜色：</div>
+        <div style="width: 40%;">테두리 색:</div>
         <Popover trigger="click" style="width: 60%;">
           <template #content>
             <ColorPicker
@@ -197,7 +197,7 @@
         </Popover>
       </div>
       <div class="row">
-        <div style="width: 40%;">边框粗细：</div>
+        <div style="width: 40%;">테두리 두께:</div>
         <NumberInput 
           :value="theme.outline.width || 0" 
           @update:value="value => updateTheme({ outline: { ...theme.outline, width: value } })" 
@@ -205,7 +205,7 @@
         />
       </div>
       <div class="row" style="height: 30px;">
-        <div style="width: 40%;">水平阴影：</div>
+        <div style="width: 40%;">가로 그림자:</div>
         <Slider 
           style="width: 60%;"
           :min="-20" 
@@ -216,7 +216,7 @@
         />
       </div>
       <div class="row" style="height: 30px;">
-        <div style="width: 40%;">垂直阴影：</div>
+        <div style="width: 40%;">세로 그림자:</div>
         <Slider
           style="width: 60%;"
           :min="-20"
@@ -227,7 +227,7 @@
         />
       </div>
       <div class="row" style="height: 30px;">
-        <div style="width: 40%;">模糊距离：</div>
+        <div style="width: 40%;">흐림 정도:</div>
         <Slider
           style="width: 60%;"
           :min="1"
@@ -238,7 +238,7 @@
         />
       </div>
       <div class="row">
-        <div style="width: 40%;">阴影颜色：</div>
+        <div style="width: 40%;">그림자 색:</div>
         <Popover trigger="click" style="width: 60%;">
           <template #content>
             <ColorPicker
@@ -252,20 +252,20 @@
     </template>
 
     <div class="row">
-      <Button style="flex: 1;" @click="applyThemeToAllSlides(moreThemeConfigsVisible)"><i-icon-park-outline:check /> 应用主题到全部</Button>
+      <Button style="flex: 1;" @click="applyThemeToAllSlides(moreThemeConfigsVisible)"><i-icon-park-outline:check /> 테마를 모두에 적용</Button>
     </div>
 
     <div class="row">
-      <Button style="flex: 1;" @click="applyFontToAllSlides(theme.fontName)"><i-icon-park-outline:check /> 全局统一字体</Button>
+      <Button style="flex: 1;" @click="applyFontToAllSlides(theme.fontName)"><i-icon-park-outline:check /> 전체 글꼴 통일</Button>
     </div>
 
     <div class="row">
-      <Button style="flex: 1;" @click="themeStylesExtractVisible = true"><i-icon-park-outline:platte /> 从幻灯片提取主题</Button>
+      <Button style="flex: 1;" @click="themeStylesExtractVisible = true"><i-icon-park-outline:platte /> 슬라이드에서 테마 추출</Button>
     </div>
 
     <Divider />
 
-    <div class="title">预置主题</div>
+    <div class="title">기본 테마</div>
     <div class="theme-list">
       <div 
         class="theme-item" 
@@ -277,14 +277,14 @@
         }"
       >
         <div class="theme-item-content">
-          <div class="text" :style="{ color: item.fontColor }">文字 Aa</div>
+          <div class="text" :style="{ color: item.fontColor }">글자 Aa</div>
           <div class="colors">
             <div class="color-block" v-for="(color, index) in item.colors" :key="index" :style="{ backgroundColor: color}"></div>
           </div>
 
           <div class="btns">
-            <Button type="primary" size="small" @click="applyPresetTheme(item)">设置</Button>
-            <Button type="primary" size="small" style="margin-top: 3px;" @click="applyPresetTheme(item, true)">设置并应用</Button>
+            <Button type="primary" size="small" @click="applyPresetTheme(item)">설정</Button>
+            <Button type="primary" size="small" style="margin-top: 3px;" @click="applyPresetTheme(item, true)">설정하고 적용</Button>
           </div>
         </div>
       </div>

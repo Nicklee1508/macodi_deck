@@ -87,6 +87,8 @@
           v-show="!hiddenElementIdList.includes(element.id)"
         />
       </div>
+      <!-- 마코디: 캔버스 안 AI 영역 검색(대상 그림 위 영역·칩·직접 그리기) -->
+      <AiRegionLayer />
     </div>
 
     <div class="drag-mask" v-if="spaceKeyState"></div>
@@ -104,6 +106,7 @@
 
 <script lang="ts" setup>
 import { nextTick, onMounted, onUnmounted, provide, ref, watch, watchEffect, useTemplateRef } from 'vue'
+import AiRegionLayer from '@/macodi/AiRegionLayer.vue'
 import { throttle } from 'lodash'
 import { storeToRefs } from 'pinia'
 import { useMainStore, useSlidesStore, useKeyboardStore } from '@/store'
@@ -279,7 +282,7 @@ const toggleRuler = () => {
 // 开关浮动菜单
 const toggleBubbleMenu = () => {
   mainStore.setBubbleMenuState(!showBubbleMenu.value)
-  message.success(`元素气泡菜单已${showBubbleMenu.value ? '启用' : '禁用'}`)
+  message.success(`요소 말풍선 메뉴${showBubbleMenu.value ? '켜기' : '끄기'}`)
 }
 
 // 在鼠标绘制的范围插入元素
@@ -307,58 +310,58 @@ const insertCustomShape = (data: CreateCustomShapeData) => {
 const contextmenus = (): ContextmenuItem[] => {
   return [
     {
-      text: '粘贴',
+      text: '붙여넣기',
       subText: 'Ctrl + V',
       handler: pasteElement,
     },
     {
-      text: '全选',
+      text: '모두 선택',
       subText: 'Ctrl + A',
       handler: selectAllElements,
     },
     {
-      text: '标尺',
+      text: '눈금자',
       subText: showRuler.value ? '√' : '',
       handler: toggleRuler,
     },
     {
-      text: '网格线',
+      text: '격자선',
       handler: () => mainStore.setGridLineSize(gridLineSize.value ? 0 : 50),
       children: [
         {
-          text: '无',
+          text: '없음',
           subText: gridLineSize.value === 0 ? '√' : '',
           handler: () => mainStore.setGridLineSize(0),
         },
         {
-          text: '小',
+          text: '작게',
           subText: gridLineSize.value === 25 ? '√' : '',
           handler: () => mainStore.setGridLineSize(25),
         },
         {
-          text: '中',
+          text: '중간',
           subText: gridLineSize.value === 50 ? '√' : '',
           handler: () => mainStore.setGridLineSize(50),
         },
         {
-          text: '大',
+          text: '크게',
           subText: gridLineSize.value === 100 ? '√' : '',
           handler: () => mainStore.setGridLineSize(100),
         },
       ],
     },
     {
-      text: '重置当前页',
+      text: '현재 페이지 초기화',
       handler: deleteAllElements,
     },
     {
-      text: '气泡菜单',
+      text: '말풍선 메뉴',
       subText: showBubbleMenu.value ? '√' : '',
       handler: toggleBubbleMenu,
     },
     { divider: true },
     {
-      text: '幻灯片放映',
+      text: '슬라이드 쇼',
       subText: 'F5',
       handler: enterScreeningFromStart,
     },

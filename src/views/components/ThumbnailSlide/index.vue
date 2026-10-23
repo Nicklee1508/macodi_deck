@@ -22,7 +22,7 @@
         :elementIndex="index + 1"
       />
     </div>
-    <div class="placeholder" v-else>加载中 ...</div>
+    <div class="placeholder" v-else>불러오는 중 ...</div>
   </div>
 </template>
 

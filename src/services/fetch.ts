@@ -19,7 +19,7 @@ const request = async (url: string, options: RequestInit): Promise<Response> => 
       return jsonResponse
     } 
     catch (err) {
-      throw new Error('服务器返回了非流响应')
+      throw new Error('서버가 스트림이 아닌 응답을 보냈습니다')
     }
   }
 

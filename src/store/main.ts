@@ -37,9 +37,6 @@ export interface MainState {
   showSearchPanel: boolean
   showNotesPanel: boolean
   showSymbolPanel: boolean
-  showMarkupPanel: boolean
-  showImageLibPanel: boolean
-  showAIPPTDialog: boolean | 'running'
 }
 
 const nanoid = customAlphabet('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz')
@@ -62,7 +59,7 @@ export const useMainStore = defineStore('main', {
     showBubbleMenu: false, // 显示浮动菜单
     creatingElement: null, // 正在插入的元素信息，需要通过绘制插入的元素（文字、形状、线条）
     creatingCustomShape: false, // 正在绘制任意多边形
-    toolbarState: ToolbarStates.SLIDE_DESIGN, // 右侧工具栏状态
+    toolbarState: ToolbarStates.MACODI, // 右侧工具栏状态 — 마코디 탭으로 시작
     clipingImageElementId: '', // 当前正在裁剪的图片ID  
     richTextAttrs: defaultRichTextAttrs, // 富文本状态
     selectedTableCells: [], // 选中的表格单元格
@@ -76,9 +73,6 @@ export const useMainStore = defineStore('main', {
     showSearchPanel: false, // 打开查找替换面板
     showNotesPanel: false, // 打开批注面板
     showSymbolPanel: false, // 打开符号面板
-    showMarkupPanel: false, // 打开类型标注面板
-    showImageLibPanel: false, // 打开图片库面板
-    showAIPPTDialog: false, // 打开AIPPT创建窗口
   }),
 
   getters: {
@@ -213,16 +207,7 @@ export const useMainStore = defineStore('main', {
       this.showSymbolPanel = show
     },
 
-    setMarkupPanelState(show: boolean) {
-      this.showMarkupPanel = show
-    },
 
-    setImageLibPanelState(show: boolean) {
-      this.showImageLibPanel = show
-    },
 
-    setAIPPTDialogState(show: boolean | 'running') {
-      this.showAIPPTDialog = show
-    },
   },
 })

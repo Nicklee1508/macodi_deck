@@ -86,17 +86,17 @@
             :value="activeSegmentType"
             @update:value="updateSegmentType"
           >
-            <RadioButton value="L" :disabled="activePointIndex === 0">直线</RadioButton>
-            <RadioButton value="Q" :disabled="activePointIndex === 0">曲线Q</RadioButton>
-            <RadioButton value="C" :disabled="activePointIndex === 0">曲线C</RadioButton>
-            <RadioButton value="A" :disabled="activePointIndex === 0">圆弧</RadioButton>
+            <RadioButton value="L" :disabled="activePointIndex === 0">직선</RadioButton>
+            <RadioButton value="Q" :disabled="activePointIndex === 0">곡선Q</RadioButton>
+            <RadioButton value="C" :disabled="activePointIndex === 0">곡선C</RadioButton>
+            <RadioButton value="A" :disabled="activePointIndex === 0">원호</RadioButton>
           </RadioGroup>
         </div>
 
         <Divider :margin="20" />
 
         <div class="panel-section">
-          <div class="section-title">坐标：</div>
+          <div class="section-title">좌표:</div>
           <div class="input-row">
             <NumberInput
               class="number-input"
@@ -106,7 +106,7 @@
               :value="activePoint.x"
               @update:value="value => updatePointPosition('x', value)"
             >
-              <template #prefix>水平：</template>
+              <template #prefix>가로:</template>
             </NumberInput>
             <NumberInput
               class="number-input"
@@ -116,7 +116,7 @@
               :value="activePoint.y"
               @update:value="value => updatePointPosition('y', value)"
             >
-              <template #prefix>垂直：</template>
+              <template #prefix>세로:</template>
             </NumberInput>
           </div>
         </div>
@@ -124,7 +124,7 @@
         <template v-if="activePoint.q">
           <Divider :margin="20" />
           <div class="panel-section">
-            <div class="section-title">控制点：</div>
+            <div class="section-title">조절점:</div>
             <div class="input-row">
               <NumberInput
                 class="number-input"
@@ -134,7 +134,7 @@
                 :value="activePoint.q.x"
                 @update:value="value => updateQuadraticPosition('x', value)"
               >
-                <template #prefix>水平：</template>
+                <template #prefix>가로:</template>
               </NumberInput>
               <NumberInput
                 class="number-input"
@@ -144,7 +144,7 @@
                 :value="activePoint.q.y"
                 @update:value="value => updateQuadraticPosition('y', value)"
               >
-                <template #prefix>垂直：</template>
+                <template #prefix>세로:</template>
               </NumberInput>
             </div>
           </div>
@@ -153,7 +153,7 @@
         <template v-if="activePoint.c">
           <Divider :margin="20" />
           <div class="panel-section">
-            <div class="section-title">控制点：</div>
+            <div class="section-title">조절점:</div>
             <div class="input-row">
               <NumberInput
                 class="number-input"
@@ -163,7 +163,7 @@
                 :value="activePoint.c[0].x"
                 @update:value="value => updateCubicPosition('x', value, 0)"
               >
-                <template #prefix>1-水平：</template>
+                <template #prefix>1-가로:</template>
               </NumberInput>
               <NumberInput
                 class="number-input"
@@ -173,7 +173,7 @@
                 :value="activePoint.c[0].y"
                 @update:value="value => updateCubicPosition('y', value, 0)"
               >
-                <template #prefix>1-垂直：</template>
+                <template #prefix>1-세로:</template>
               </NumberInput>
             </div>
             <div class="input-row">
@@ -185,7 +185,7 @@
                 :value="activePoint.c[1].x"
                 @update:value="value => updateCubicPosition('x', value, 1)"
               >
-                <template #prefix>2-水平：</template>
+                <template #prefix>2-가로:</template>
               </NumberInput>
               <NumberInput
                 class="number-input"
@@ -195,7 +195,7 @@
                 :value="activePoint.c[1].y"
                 @update:value="value => updateCubicPosition('y', value, 1)"
               >
-                <template #prefix>2-垂直：</template>
+                <template #prefix>2-세로:</template>
               </NumberInput>
             </div>
           </div>
@@ -204,7 +204,7 @@
         <template v-if="activePoint.a">
           <Divider :margin="20" />
           <div class="panel-section">
-            <div class="section-title">圆弧：</div>
+            <div class="section-title">원호:</div>
             <div class="input-row">
               <NumberInput
                 class="number-input"
@@ -214,7 +214,7 @@
                 :value="activePoint.a.rx"
                 @update:value="value => updateArcParam('rx', value)"
               >
-                <template #prefix>水平半径：</template>
+                <template #prefix>가로 반지름:</template>
               </NumberInput>
               <NumberInput
                 class="number-input"
@@ -224,7 +224,7 @@
                 :value="activePoint.a.ry"
                 @update:value="value => updateArcParam('ry', value)"
               >
-                <template #prefix>垂直半径：</template>
+                <template #prefix>세로 반지름:</template>
               </NumberInput>
             </div>
             <div class="input-row">
@@ -236,12 +236,12 @@
                 :value="activePoint.a.rot"
                 @update:value="value => updateArcParam('rot', value)"
               >
-                <template #prefix>旋转：</template>
+                <template #prefix>회전:</template>
               </NumberInput>
             </div>
             <div class="checkbox-row">
-              <Checkbox :value="activePoint.a.laf === 1" @update:value="value => updateArcParam('laf', value ? 1 : 0)">大弧</Checkbox>
-              <Checkbox :value="activePoint.a.sf === 1" @update:value="value => updateArcParam('sf', value ? 1 : 0)">顺时针</Checkbox>
+              <Checkbox :value="activePoint.a.laf === 1" @update:value="value => updateArcParam('laf', value ? 1 : 0)">큰 호</Checkbox>
+              <Checkbox :value="activePoint.a.sf === 1" @update:value="value => updateArcParam('sf', value ? 1 : 0)">시계 방향</Checkbox>
             </div>
           </div>
         </template>
@@ -249,7 +249,7 @@
         <Divider :margin="20" />
 
         <div class="panel-section">
-          <Checkbox :value="closePath" @update:value="value => closePath = value">闭合路径</Checkbox>
+          <Checkbox :value="closePath" @update:value="value => closePath = value">경로 닫기</Checkbox>
         </div>
 
         <Divider :margin="20" />
@@ -261,10 +261,10 @@
     </div>
 
     <div class="footer">
-      <div class="tooltips">Tips: 双击追加直线，右键追加线段或删除点；拖动端点和控制点调整路径。</div>
+      <div class="tooltips">Tips: 더블클릭으로 직선 추가, 오른쪽 클릭으로 선분 추가 또는 점 삭제. 끝점과 조절점을 끌어 경로를 다듬으세요.</div>
       <div class="footer-actions">
-        <Button @click="emit('close')">关闭</Button>
-        <Button type="primary" :disabled="!canInsert" @click="insert()">确认</Button>
+        <Button @click="emit('close')">닫기</Button>
+        <Button type="primary" :disabled="!canInsert" @click="insert()">확인</Button>
       </div>
     </div>
   </div>
@@ -542,24 +542,24 @@ const prepareContextmenu = (e: MouseEvent) => {
 const contextmenus = (): ContextmenuItem[] => {
   return [
     {
-      text: '追加直线',
+      text: '직선 추가',
       handler: () => addPoint('L'),
     },
     {
-      text: '追加二次曲线',
+      text: '2차 곡선 추가',
       handler: () => addPoint('Q'),
     },
     {
-      text: '追加三次曲线',
+      text: '3차 곡선 추가',
       handler: () => addPoint('C'),
     },
     {
-      text: '追加弧线',
+      text: '호 추가',
       handler: () => addPoint('A'),
     },
     { divider: true },
     {
-      text: '删除当前点',
+      text: '현재 점 삭제',
       disable: activePointIndex.value === 0,
       handler: removeActivePoint,
     },

@@ -6,7 +6,7 @@
       </template>
       <button class="toolbar-btn">
         <i-icon-park-outline:fill class="icon" />
-        <span>填充</span>
+        <span>채우기</span>
       </button>
     </Popover>
     <BorderPanel />

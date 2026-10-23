@@ -2,12 +2,12 @@
   <div class="toolbar-content">
     <button class="toolbar-btn" @click="clipImage()">
       <i-icon-park-outline:tailoring class="icon" />
-      <span>裁剪</span>
+      <span>자르기</span>
     </button>
     <FileInput @change="files => replaceImage(files)">
       <button class="toolbar-btn">
         <i-icon-park-outline:transform class="icon" />
-        <span>替换</span>
+        <span>바꾸기</span>
       </button>
     </FileInput>
   </div>

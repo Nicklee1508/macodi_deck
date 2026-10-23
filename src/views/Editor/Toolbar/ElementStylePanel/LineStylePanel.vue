@@ -1,7 +1,7 @@
 <template>
   <div class="line-style-panel">
     <div class="title">
-      <span>点击替换线条类型</span>
+      <span>클릭해서 선 종류 바꾸기</span>
       <i-icon-park-outline:down />
     </div>
     <div class="line-pool-wrapper">
@@ -49,7 +49,7 @@
     </div>
 
     <div class="row">
-      <div style="width: 40%;">线条样式：</div>
+      <div style="width: 40%;">선 스타일:</div>
       <SelectCustom style="width: 60%;">
         <template #options>
           <div class="option" v-for="item in lineStyleOptions" :key="item" @click="updateLine({ style: item })">
@@ -62,7 +62,7 @@
       </SelectCustom>
     </div>
     <div class="row">
-      <div style="width: 40%;">线条颜色：</div>
+      <div style="width: 40%;">선 색:</div>
       <Popover trigger="click" style="width: 60%;">
         <template #content>
           <ColorPicker
@@ -74,7 +74,7 @@
       </Popover>
     </div>
     <div class="row">
-      <div style="width: 40%;">线条宽度：</div>
+      <div style="width: 40%;">선 두께:</div>
       <NumberInput 
         :value="handleLineElement.width" 
         @update:value="value => updateLine({ width: value })" 
@@ -83,7 +83,7 @@
     </div>
     
     <div class="row">
-      <div style="width: 40%;">起点样式：</div>
+      <div style="width: 40%;">시작점 모양:</div>
       <SelectCustom style="width: 60%;">
         <template #options>
           <div class="option" v-for="item in lineMarkerOptions" :key="item" @click="updateLine({ points: [item, handleLineElement.points[1]] })">
@@ -96,7 +96,7 @@
       </SelectCustom>
     </div>
     <div class="row">
-      <div style="width: 40%;">终点样式：</div>
+      <div style="width: 40%;">끝점 모양:</div>
       <SelectCustom style="width: 60%;">
         <template #options>
           <div class="option" v-for="item in lineMarkerOptions" :key="item" @click="updateLine({ points: [handleLineElement.points[0], item] })">
@@ -110,7 +110,7 @@
     </div>
 
     <div class="row" v-if="handleLineElement.broken2">
-      <div style="width: 40%;">线条方向：</div>
+      <div style="width: 40%;">선 방향:</div>
       <Select 
         style="width: 60%;"
         :value="handleLineElement.broken2Direction || 'auto'"
@@ -122,7 +122,7 @@
     <Divider />
 
     <div class="row">
-      <Button style="flex: 1;" @click="updateLine({ start: handleLineElement.end, end: handleLineElement.start })"><i-icon-park-outline:switch /> 交换方向</Button>
+      <Button style="flex: 1;" @click="updateLine({ start: handleLineElement.end, end: handleLineElement.start })"><i-icon-park-outline:switch /> 방향 바꾸기</Button>
     </div>
 
     <Divider />
@@ -160,9 +160,9 @@ const lineStyleOptions = ref<LineStyleType[]>(['solid', 'dashed', 'dotted'])
 const lineMarkerOptions = ref<LinePoint[]>(['', 'arrow', 'dot'])
 
 const lineBroken2DirectionOptions = ref<{ label: string; value: Broken2LineDirection | 'auto' }[]>([
-  { label: '自动', value: 'auto' },
-  { label: '水平', value: 'horizontal' },
-  { label: '垂直', value: 'vertical' },
+  { label: '자동', value: 'auto' },
+  { label: '가로', value: 'horizontal' },
+  { label: '세로', value: 'vertical' },
 ])
 interface LineTypeOption {
   key: string

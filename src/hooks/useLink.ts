@@ -11,11 +11,11 @@ export default () => {
   const setLink = (handleElement: PPTElement, link: PPTElementLink) => {
     const linkRegExp = /^(https?):\/\/[\w\-]+(\.[\w\-]+)+([\w\-.,@?^=%&:\/~+#]*[\w\-@?^=%&\/~+#])?$/
     if (link.type === 'web' && !linkRegExp.test(link.target)) {
-      message.error('不是正确的网页链接地址')
+      message.error('올바른 웹 주소가 아닙니다')
       return false
     }
     if (link.type === 'slide' && !link.target) {
-      message.error('请先选择链接目标')
+      message.error('먼저 연결할 대상을 선택해 주세요')
       return false
     }
     const props = { link }

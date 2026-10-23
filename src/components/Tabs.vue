@@ -17,7 +17,7 @@
         '--color': tab.color,
       }"
       @click="!tab.disabled && emit('update:value', tab.key)"
-    >{{tab.label}}</div>
+    ><img v-if="tab.img" class="tab-img" :src="tab.img" :alt="tab.label" /><template v-else>{{tab.label}}</template></div>
   </div>
 </template>
 
@@ -29,6 +29,7 @@ interface TabItem {
   label: string
   color?: string
   disabled?: boolean
+  img?: string
 }
 
 withDefaults(defineProps<{
@@ -109,5 +110,10 @@ const emit = defineEmits<{
       }
     }
   }
+}
+.tab-img {
+  display: block;
+  height: 13px;
+  margin: 0 auto;
 }
 </style>

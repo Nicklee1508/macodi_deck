@@ -3,10 +3,10 @@
     <div class="container">
       <div class="left">
         <div class="input-area">
-          <TextArea v-model:value="latex" placeholder="输入 LaTeX 公式" ref="textAreaRef" />
+          <TextArea v-model:value="latex" placeholder="LaTeX 수식 입력" ref="textAreaRef" />
         </div>
         <div class="preview">
-          <div class="placeholder" v-if="!latex">公式预览</div>
+          <div class="placeholder" v-if="!latex">수식 미리보기</div>
           <div class="preview-content" v-else>
             <FormulaContent
               :width="518"
@@ -52,8 +52,8 @@
       </div>
     </div>
     <div class="footer">
-      <Button class="btn" @click="emit('close')">取消</Button>
-      <Button class="btn" type="primary" @click="update()">确定</Button>
+      <Button class="btn" @click="emit('close')">취소</Button>
+      <Button class="btn" type="primary" @click="update()">확인</Button>
     </div>
   </div>
 </template>
@@ -76,8 +76,8 @@ interface TabItem {
 }
 
 const tabs: TabItem[] = [
-  { label: '常用符号', key: 'symbol' },
-  { label: '预置公式', key: 'formula' },
+  { label: '자주 쓰는 기호', key: 'symbol' },
+  { label: '기본 수식', key: 'formula' },
 ]
 
 interface LatexResult {
@@ -123,7 +123,7 @@ onMounted(() => {
 })
 
 const update = () => {
-  if (!latex.value) return message.error('公式不能为空')
+  if (!latex.value) return message.error('수식을 입력해 주세요')
 
   const eq = new hfmath(latex.value)
   const pathd = eq.pathd({})

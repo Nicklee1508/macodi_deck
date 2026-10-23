@@ -13,28 +13,28 @@
     </div>
     <div class="configs">
       <div class="row">
-        <div class="title">导出范围：</div>
+        <div class="title">내보내기 범위:</div>
         <RadioGroup
           class="config-item"
           v-model:value="rangeType"
         >
-          <RadioButton style="width: 33.33%;" value="all">全部</RadioButton>
-          <RadioButton style="width: 33.33%;" value="current">当前页</RadioButton>
-          <RadioButton style="width: 33.33%;" value="custom">自定义</RadioButton>
+          <RadioButton style="width: 33.33%;" value="all">전체</RadioButton>
+          <RadioButton style="width: 33.33%;" value="current">현재 페이지</RadioButton>
+          <RadioButton style="width: 33.33%;" value="custom">직접 설정</RadioButton>
         </RadioGroup>
       </div>
       <div class="row">
-        <div class="title">导出模式：</div>
+        <div class="title">내보내기 방식:</div>
         <RadioGroup
           class="config-item"
           v-model:value="exportMode"
         >
-          <RadioButton style="width: 50%;" value="standard">标准版</RadioButton>
-          <RadioButton style="width: 50%;" value="image">纯图版</RadioButton>
+          <RadioButton style="width: 50%;" value="standard">기본</RadioButton>
+          <RadioButton style="width: 50%;" value="image">그림으로만</RadioButton>
         </RadioGroup>
       </div>
       <div class="row" style="margin-bottom: 32px" v-if="rangeType === 'custom'">
-        <div class="title" :data-range="`（${range[0]} ~ ${range[1]}）`">自定义范围：</div>
+        <div class="title" :data-range="`(${range[0]} ~ ${range[1]})`">직접 지정한 범위:</div>
         <Slider
           class="config-item"
           range
@@ -47,29 +47,29 @@
       
       <template v-if="exportMode === 'standard'">
         <div class="row">
-          <div class="title">忽略音频/视频：</div>
+          <div class="title">오디오/동영상 제외:</div>
           <div class="config-item">
-            <Switch v-model:value="ignoreMedia" v-tooltip="'导出时默认忽略音视频，若您的幻灯片中存在音视频元素，且希望将其导出到PPTX文件中，可选择关闭「忽略音视频」选项，但要注意这将会大幅增加导出用时。'" />
+            <Switch v-model:value="ignoreMedia" v-tooltip="'내보낼 때 기본적으로 오디오/동영상은 빼고 내보냅니다. 슬라이드의 오디오/동영상까지 PPTX에 넣으려면 「오디오/동영상 제외」를 끄세요. 다만 내보내는 시간이 크게 늘어납니다.'" />
           </div>
         </div>
         <div class="row">
-          <div class="title">覆盖默认母版：</div>
+          <div class="title">기본 마스터 덮어쓰기:</div>
           <div class="config-item">
             <Switch v-model:value="masterOverwrite" />
           </div>
         </div>
 
         <div class="tip" v-if="!ignoreMedia">
-          提示：1. 支持导出格式：avi、mp4、mov、wmv、mp3、wav；2. 跨域资源无法导出。
+          안내: 1. 내보낼 수 있는 형식: avi, mp4, mov, wmv, mp3, wav 2. 다른 사이트 주소의 파일은 내보낼 수 없습니다.
         </div>
       </template>
     </div>
     <div class="btns">
-      <Button class="btn export" type="primary" @click="execExport()"><i-icon-park-outline:download /> 导出 PPTX</Button>
-      <Button class="btn close" @click="emit('close')">关闭</Button>
+      <Button class="btn export" type="primary" @click="execExport()"><i-icon-park-outline:download /> 내보내기 PPTX</Button>
+      <Button class="btn close" @click="emit('close')">닫기</Button>
     </div>
 
-    <FullscreenSpin :loading="exporting" tip="正在导出..." />
+    <FullscreenSpin :loading="exporting" tip="내보내는 중..." />
   </div>
 </template>
 
@@ -147,7 +147,7 @@ const execExport = () => {
   }
 }
 .configs {
-  width: 350px;
+  width: 520px; // 글자가 줄바꿈되지 않게 넓힘(원래 350/300)
   height: calc(100% - 80px);
   display: flex;
   flex-direction: column;
@@ -162,7 +162,8 @@ const execExport = () => {
   }
 
   .title {
-    width: 100px;
+    width: 150px;
+    white-space: nowrap;
     position: relative;
 
     &::after {
@@ -184,7 +185,7 @@ const execExport = () => {
   }
 }
 .btns {
-  width: 300px;
+  width: 400px;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -195,7 +196,7 @@ const execExport = () => {
     flex: 1;
   }
   .close {
-    width: 100px;
+    width: 110px;
     margin-left: 10px;
   }
 }
