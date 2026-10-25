@@ -34,7 +34,7 @@ export const ai = reactive({
   img: null as HTMLImageElement | null,
   msg: '',
   box: null as SrcBox | null,
-  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string },
+  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string; purpose: string },
   results: [] as MacodiProduct[],
   searching: false,
   page: 1,
@@ -82,6 +82,105 @@ export const stopAi = () => {
   })
 }
 
+/* ---- 공간 인식(화면엔 안 보임) — AI 서버 /productai/regions 가 슬라이드를 바닥·벽·천장으로 나눔.
+ *  ① 시범 선은 창·하늘·가구가 아니라 바닥·벽·천장 면 위에 그린다
+ *  ② 사용자가 잡은 박스가 주로 어느 면인지 보고 그 용도(purpose)로 추천을 좁힌다
+ *  서버가 없거나 실패하면 예전 방식(색 덩어리 시범 + 용도 없이 검색) 그대로. */
+interface SceneRegion { purpose: string; area: number; polygon: [number, number][]; box: [number, number, number, number]; flat?: boolean }
+const PURPOSES = ['floor', 'wall', 'ceiling']
+let regionCache: { key: string; list: Promise<SceneRegion[]> } | null = null
+const imgKey = (im: HTMLImageElement) => `${im.src.length}:${im.src.slice(300, 400)}:${im.src.slice(-120)}`
+const toJpegData = (im: HTMLImageElement, max = 1024) => {
+  const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight))
+  const c = document.createElement('canvas')
+  c.width = Math.max(1, Math.round(im.naturalWidth * k))
+  c.height = Math.max(1, Math.round(im.naturalHeight * k))
+  c.getContext('2d')!.drawImage(im, 0, 0, c.width, c.height)
+  return c.toDataURL('image/jpeg', 0.88)
+}
+const analyzeRegions = (im: HTMLImageElement): Promise<SceneRegion[]> => {
+  const key = imgKey(im)
+  if (regionCache?.key === key) return regionCache.list
+  const call = postJson<{ regions?: SceneRegion[] } & SceneCues>(AI_URL + '/productai/regions', { image: toJpegData(im) })
+    .then(r => {
+      const regs = (r.regions || []).filter(x => PURPOSES.includes(x.purpose) && x.box && x.polygon?.length > 2)
+      return isScene(regs, r) ? regs : [] // 자재 사진·아이소메트릭·평면도·보드 등 = 공간 인식 안 씀(예전 방식)
+    })
+  const timeout = new Promise<SceneRegion[]>(res => setTimeout(() => res([]), 8000))
+  const list = Promise.race([call, timeout]).catch(() => [] as SceneRegion[])
+  regionCache = { key, list }
+  return list
+}
+
+/** 눈높이 투시도인지 — 분할 모델은 눈높이 사진으로 배워서 그 밖(자재 사진·아이소메트릭·평면도·보드)에선
+ *  면을 '찍어서' 판단해 틀린다(천장 무늬 → 벽, 아이소메트릭 검은 배경 → 벽 등). 그때는 쓰지 않는다.
+ *   · 실내: 천장 10% 이상 + 바닥·벽·천장 중 두 가지 이상이 각각 10% 이상
+ *   · 외관: 건물 외벽 30% 이상 + 하늘 5% 이상 또는 바닥(보도) 10% 이상
+ *  (2026-10-25 샘플 12쪽: 실내 3·5~9쪽·외관 11·12쪽 통과 / 아이소메트릭 4·보드 10·목차 1·항공지도 2쪽·자재 사진 제외) */
+interface SceneCues { sky?: number; ceiling?: number; building?: number; frame?: number }
+const isScene = (regs: SceneRegion[], c: SceneCues) => {
+  // 둘레가 단색 배경(콜라주·보드·아이소메트릭 슬라이드) — 슬라이드 배경을 천장·바닥으로 잘못 봄 → 예전 방식
+  if ((c.frame || 0) >= 0.6) return false
+  const share: Record<string, number> = {}
+  for (const r of regs) share[r.purpose] = (share[r.purpose] || 0) + r.area
+  const n10 = Object.values(share).filter(v => v >= 0.1).length
+  const interior = (c.ceiling || 0) >= 0.1 && n10 >= 2
+  const exterior = (c.building || 0) >= 0.3 && ((c.sky || 0) >= 0.05 || (share.floor || 0) >= 0.1)
+  return interior || exterior
+}
+
+// 시범 후보 제한 — 바닥·벽·천장 영역(다각형)을 W×H 격자에 칠한 마스크(1 = 마감 면). 창·하늘·가구·겹친 그림은 0
+const finishMask = (regs: SceneRegion[]) => (W: number, H: number) => {
+  const c = document.createElement('canvas')
+  c.width = W
+  c.height = H
+  const g = c.getContext('2d', { willReadFrequently: true })!
+  g.fillStyle = '#000'
+  for (const r of regs) {
+    g.beginPath()
+    r.polygon.forEach(([x, y], i) => (i ? g.lineTo(x * W, y * H) : g.moveTo(x * W, y * H)))
+    g.closePath()
+    g.fill()
+  }
+  const d = g.getImageData(0, 0, W, H).data
+  const m = new Uint8Array(W * H)
+  for (let i = 0; i < m.length; i++) m[i] = d[i * 4 + 3] > 0 ? 1 : 0
+  return m
+}
+// 박스 안을 가장 많이 차지하는 면(바닥/벽/천장) — 35% 이상일 때만 그 용도로 좁힘
+const purposeOf = (regs: SceneRegion[], b: SrcBox) => {
+  if (!regs.length) return ''
+  const G = 200
+  const c = document.createElement('canvas')
+  c.width = G
+  c.height = G
+  const g = c.getContext('2d', { willReadFrequently: true })!
+  const bx = Math.max(0, Math.floor(b.x * G)), by = Math.max(0, Math.floor(b.y * G))
+  const bw = Math.max(1, Math.min(G - bx, Math.ceil(b.w * G))), bh = Math.max(1, Math.min(G - by, Math.ceil(b.h * G)))
+  let best = '', bestFrac = 0
+  for (const part of PURPOSES) {
+    const polys = regs.filter(r => r.purpose === part)
+    if (!polys.length) continue
+    g.clearRect(0, 0, G, G)
+    g.fillStyle = '#000'
+    for (const r of polys) {
+      g.beginPath()
+      r.polygon.forEach(([x, y], i) => (i ? g.lineTo(x * G, y * G) : g.moveTo(x * G, y * G)))
+      g.closePath()
+      g.fill()
+    }
+    const d = g.getImageData(bx, by, bw, bh).data
+    let n = 0
+    for (let i = 3; i < d.length; i += 4) if (d[i] > 0) n++
+    const frac = n / (bw * bh)
+    if (frac > bestFrac) {
+      bestFrac = frac
+      best = part
+    }
+  }
+  return bestFrac >= 0.35 ? best : ''
+}
+
 /** [AI 영역 검색] — 슬라이드 위 어디든 둘러 그려서 검색. 누를 때마다 시범 선을 보여준다 */
 export const startManual = async () => {
   stopAi()
@@ -91,7 +190,10 @@ export const startManual = async () => {
     const im = await capture()
     if (!ai.active || my !== reqId) return
     ai.img = im
-    const stroke = demoStroke(im)
+    // 시범 = 예전 색 덩어리 방식(면 하나를 깔끔하게 잡음) + 공간 사진이면 바닥·벽·천장 위 덩어리만 후보
+    const regs = await analyzeRegions(im)
+    if (!ai.active || my !== reqId) return
+    const stroke = (regs.length && demoStroke(im, finishMask(regs))) || demoStroke(im)
     if (!stroke) return
     ai.demo = stroke
   }
@@ -124,7 +226,9 @@ export const searchArea = async (b: SrcBox) => {
     const im = await capture()
     if (my !== reqId || !ai.active) return
     ai.img = im
-    searchBox(b)
+    const regs = await analyzeRegions(im)
+    if (my !== reqId || !ai.active) return
+    searchBox(b, purposeOf(regs, b))
   }
   catch {
     if (my === reqId) ai.msg = '슬라이드를 읽지 못했어요. 외부 주소 그림이 있으면 다시 넣어 주세요.'
@@ -151,7 +255,7 @@ const avgColor = (canvas: HTMLCanvasElement) => {
   return n ? [Math.round(r / n), Math.round(g / n), Math.round(b / n)] : [0, 0, 0]
 }
 
-const searchBox = (b: SrcBox) => {
+const searchBox = (b: SrcBox, purpose = '') => {
   const im = ai.img
   if (!im) return
   ai.box = b
@@ -170,6 +274,7 @@ const searchBox = (b: SrcBox) => {
   ai.post = {
     rgb_r: rgb[0], rgb_g: rgb[1], rgb_b: rgb[2],
     cropdata: c.toDataURL('image/png'), // ⚠️ AI 서버는 PNG 접두사만 벗긴다
+    purpose, // floor|wall|ceiling — 그 용도 자재로 좁힘('' = 전체)
   }
   search(1)
 }
@@ -178,6 +283,7 @@ const fetchPage = (page: number) => postJson<unknown>(AI_URL + '/productai', {
   rgb_r: ai.post!.rgb_r, rgb_g: ai.post!.rgb_g, rgb_b: ai.post!.rgb_b,
   page, categories: [], companyName: '',
   cropdata: ai.post!.cropdata, txtSearch: '', isRandom: 0, storeName: '',
+  purpose: ai.post!.purpose,
 }).then(raw => {
   const r = raw as { data?: MacodiProduct[]; products?: MacodiProduct[]; results?: MacodiProduct[] } | MacodiProduct[] | null
   return Array.isArray(r) ? r : (r?.data || r?.products || r?.results || [])

@@ -18,11 +18,14 @@ const grid = (img: HTMLImageElement) => {
   return { rgba: ctx.getImageData(0, 0, W, H).data, W, H }
 }
 
-/** 튜토리얼 시범용 — 화면 가운데 가까운 적당한 크기 영역의 외곽을 손으로 그린 듯한 선으로(0~1) */
-export const demoStroke = (img: HTMLImageElement): [number, number][] | null => {
+/** 튜토리얼 시범용 — 화면 가운데 가까운 적당한 크기 영역의 외곽을 손으로 그린 듯한 선으로(0~1)
+ *  allow: 후보 제한 마스크(W×H, 1=허용 — 공간 인식의 바닥·벽·천장). 주면 덩어리의 70% 이상이 허용 칸인 것만,
+ *  해당 덩어리가 없으면 null(호출 쪽이 제한 없이 다시 고름) */
+export const demoStroke = (img: HTMLImageElement, allow?: (W: number, H: number) => Uint8Array): [number, number][] | null => {
   const { rgba, W, H } = grid(img)
   const seg = segment(rgba, W, H, 8)
   const N = W * H
+  const ok = allow ? allow(W, H) : null
   // 슬라이드 바탕(가장 큰 면)은 빼고 — 사진이 없어도 배경 박스·도형·글자 덩어리가 시범 대상
   let bg = 0
   for (let c = 1; c < seg.count; c++) if (seg.area[c] > seg.area[bg]) bg = c
@@ -30,13 +33,15 @@ export const demoStroke = (img: HTMLImageElement): [number, number][] | null => 
   for (let c = 0; c < seg.count; c++) {
     const ar = seg.area[c] / N
     if (c === bg || ar < 0.01 || ar > 0.7) continue
-    let sx = 0, sy = 0
+    let sx = 0, sy = 0, inside = 0
     for (let i = 0; i < N; i++) {
       if (seg.label[i] === c) {
         sx += i % W
         sy += (i / W) | 0
+        if (ok && ok[i]) inside++
       }
     }
+    if (ok && inside < 0.7 * seg.area[c]) continue // 마감 면(바닥·벽·천장) 밖 덩어리 — 창·하늘·가구·겹친 그림
     const cx = sx / seg.area[c] / W, cy = sy / seg.area[c] / H
     // 반듯함(둘레 대비 면적, 원=1) — 지그재그 덩어리 말고 기둥·판넬처럼 깔끔한 면을 시범으로
     let per = 0
@@ -57,7 +62,7 @@ export const demoStroke = (img: HTMLImageElement): [number, number][] | null => 
   }
   const loops = best < 0 ? [] : regionLoops(seg, best).sort((p, q) => q.length - p.length)
   const outer = loops[0]
-  if (!outer || outer.length < 3) return ellipseStroke() // 알맞은 면이 없어도 시범은 항상 보여준다
+  if (!outer || outer.length < 3) return ok ? null : ellipseStroke() // 알맞은 면이 없어도 시범은 항상 보여준다(제한 중이면 호출 쪽이 제한 없이 다시)
   // 고르게 다시 찍고, 살짝 안쪽 + 손떨림
   let len = 0
   const seglen: number[] = []

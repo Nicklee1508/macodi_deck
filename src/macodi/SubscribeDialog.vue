@@ -497,6 +497,12 @@ $navy: #23443A;
   background: #fff;
   &.pro { border: 2px solid #23443A; }
 }
+// 휴대폰 — 카드를 위아래로(구독 카드 먼저)
+@media (max-width: 600px) {
+  .sp-cards { grid-template-columns: 1fr; gap: 22px; margin-top: 8px; }
+  .sp-card { padding: 22px 20px 18px; }
+  .sp-card.pro { order: -1; }
+}
 .sp-badge {
   position: absolute;
   top: -12px;

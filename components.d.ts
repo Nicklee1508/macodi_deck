@@ -142,6 +142,7 @@ declare module 'vue' {
     'IIconParkOutline:textRotationDown': typeof import('~icons/icon-park-outline/text-rotation-down')['default']
     'IIconParkOutline:textRotationNone': typeof import('~icons/icon-park-outline/text-rotation-none')['default']
     'IIconParkOutline:textUnderline': typeof import('~icons/icon-park-outline/text-underline')['default']
+    'IIconParkOutline:textureTwo': typeof import('~icons/icon-park-outline/texture-two')['default']
     'IIconParkOutline:theme': typeof import('~icons/icon-park-outline/theme')['default']
     'IIconParkOutline:transform': typeof import('~icons/icon-park-outline/transform')['default']
     'IIconParkOutline:undo': typeof import('~icons/icon-park-outline/undo')['default']

@@ -10,6 +10,8 @@
       </div>
     </div>
     <div class="menu">
+      <div class="menu-item" @click="changeMode('material')"><i-icon-park-outline:texture-two class="icon" /> 머티리얼</div>
+      <Divider type="vertical" style="height: 30px;" />
       <div class="menu-item" @click="changeMode('editor')"><i-icon-park-outline:edit class="icon" /> 편집</div>
       <Divider type="vertical" style="height: 30px;" />
       <div class="menu-item" @click="changeMode('player')"><i-icon-park-outline:full-screen-play class="icon" /> 재생</div>
@@ -73,7 +75,7 @@ onMounted(() => {
   align-items: center;
 
   .menu-item {
-    width: 50%;
+    flex: 1;
     height: 100%;
     display: flex;
     justify-content: center;

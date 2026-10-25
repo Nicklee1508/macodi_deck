@@ -21,7 +21,7 @@ import { MACODI_API } from '@/macodi/api'
 import { clearDraft, draftState, fileState, getFile, loadDraft, putFile, saveDraft } from '@/macodi/autosave'
 import { shrinkSlides } from '@/macodi/shrinkImages'
 import ImageFilterDefs from '@/macodi/ImageFilterDefs.vue'
-import { isFirstVisit, loadSampleDeck } from '@/macodi/sampleDeck'
+import { isFirstVisit, loadSampleDeck, upgradeSampleImages } from '@/macodi/sampleDeck'
 import { handleBillingReturn, startSubscriptionWatch, subscribeState } from '@/macodi/subscription'
 
 import Editor from './views/Editor/index.vue'
@@ -97,7 +97,8 @@ onMounted(async () => {
       if (draft.viewportRatio) slidesStore.setViewportRatio(draft.viewportRatio)
       // 예전에 원본 크기로 들어간 큰 그림은 열 때 한 번 줄임(편집 지연 방지)
       const { slides: light } = await shrinkSlides(draft.slides as never)
-      slidesStore.setSlides(light)
+      // 임시 저장된 샘플이면 페이지 그림만 최신 샘플 그림으로(고친 내용은 그대로)
+      slidesStore.setSlides((draft.sample && !draft.fileId && await upgradeSampleImages(light)) || light)
       draftState.savedAt = draft.savedAt
       fileState.sample = !!draft.sample
       // 열려 있던 내 파일 이어서(Ctrl+S 가 같은 파일로)

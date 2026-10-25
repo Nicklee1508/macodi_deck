@@ -35,6 +35,35 @@ export const markSampleShown = () => {
   catch { /* 무시 */ }
 }
 
+/** 예전 샘플 페이지 그림 → 지금 샘플의 같은 페이지 그림으로(고친 내용·넣은 자재는 그대로).
+ *  예: (SAMPLE) 글자를 넣은 새 그림으로 바뀐 뒤에도, 이미 열어 둔(임시 저장된) 샘플이 새 그림을 보이게.
+ *  바꿀 게 없으면 null */
+const PAGE_RE = /\/mocks\/sample\/page-(\d+)-[^/]+$/
+export const upgradeSampleImages = async (slides: Slide[]): Promise<Slide[] | null> => {
+  const d = await fetchSampleDeck().catch(() => null)
+  if (!d) return null
+  const latest = new Map<string, string>()
+  for (const s of d.slides) {
+    for (const el of s.elements) {
+      if (el.type !== 'image') continue
+      const m = PAGE_RE.exec(el.src)
+      if (m) latest.set(m[1], el.src)
+    }
+  }
+  let changed = false
+  const next = slides.map(s => ({
+    ...s,
+    elements: s.elements.map(el => {
+      const m = el.type === 'image' ? PAGE_RE.exec(el.src) : null
+      const src = m && latest.get(m[1])
+      if (!src || el.type !== 'image' || src === el.src) return el
+      changed = true
+      return { ...el, src }
+    }),
+  }))
+  return changed ? next : null
+}
+
 export const loadSampleDeck = async () => {
   const slidesStore = useSlidesStore()
   const d = await fetchSampleDeck()

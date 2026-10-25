@@ -264,7 +264,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKey))
 const onOutsideDown = (e: PointerEvent) => {
   if (!ai.active || ai.paused) return
   const t = e.target as Element | null
-  if (t && t.closest && t.closest('.ai-layer, .macodi-panel')) return
+  if (t && t.closest && t.closest('.ai-layer, .macodi-panel, .mobile-material')) return
   stopAi()
 }
 onMounted(() => window.addEventListener('pointerdown', onOutsideDown, true))

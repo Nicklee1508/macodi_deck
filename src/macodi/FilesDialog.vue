@@ -73,10 +73,11 @@ import Button from '@/components/Button.vue'
 import ThumbnailSlide from '@/views/components/ThumbnailSlide/index.vue'
 import { type DeckFile, deleteFile, fileState, listFiles } from './autosave'
 import useDeckFiles from './useDeckFiles'
-import { fetchSampleDeck } from './sampleDeck'
+import { fetchSampleDeck, upgradeSampleImages } from './sampleDeck'
 import { ensureSubscribed } from './subscription'
 
-const { title } = storeToRefs(useSlidesStore())
+const slidesStore = useSlidesStore()
+const { title, slides } = storeToRefs(slidesStore)
 const { saveFileAs, openFile, openSample, openBlank } = useDeckFiles()
 
 // 샘플 제안서 미리보기(첫 화면 슬라이드)
@@ -93,6 +94,8 @@ const doOpenBlank = async () => {
 const doOpenSample = async () => {
   // 지금 열려 있는 게 샘플이면 그대로 이어서(고친 내용 유지)
   if (fileState.sample && !fileState.id) {
+    const up = await upgradeSampleImages(slides.value) // 샘플 그림이 바뀌었으면 그림만 새것으로
+    if (up) slidesStore.setSlides(up)
     fileState.dialog = ''
     return
   }
