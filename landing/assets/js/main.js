@@ -95,6 +95,9 @@ var CONFIG = {
 
   // ===== 히어로: 편집 화면 재현 + 자동 재생 (장면 1 제품 보드 ↔ 장면 2 공간 + 마감재) =====
   (function hero() {
+    // 히어로 시연 속도 — 1.5배 빠르게(대기 시간 ÷ 1.5). CSS 쪽 움직임 시간도 같이 줄임(style.css .app__cursor·.hsel.grow 등)
+    var SPEED = 1.5;
+    var hwait = function (ms) { return wait(ms / SPEED); };
     var fit = document.getElementById('appFit');
     var app = document.getElementById('app');
     var hgrid = document.getElementById('heroGrid');
@@ -180,7 +183,8 @@ var CONFIG = {
       (sc.extra || []).forEach(function (m) { hgrid.appendChild(matCard(m, 'div')); });
     }
     SCENES.forEach(reset);
-    show(SCENES[0]);
+    var FIRST = 1; // 첫 장면 = AI 영역 검색(공간 + 마감재). 그다음 제품 보드 장면과 번갈아
+    show(SCENES[FIRST]);
     if (reduceMotion) { SCENES.forEach(function (sc) { sc.add.forEach(function (i) { put(sc, i, false); }); }); return; }
 
     // 커서를 요소 가운데로(앱 기준 좌표 — 축소 배율을 되돌려 계산)
@@ -201,16 +205,16 @@ var CONFIG = {
     var click = async function (el) {
       cursor.classList.add('is-click');
       el.classList.add('is-press');
-      await wait(220);
+      await hwait(220);
       el.classList.remove('is-press');
-      await wait(300);
+      await hwait(300);
       cursor.classList.remove('is-click');
     };
     // AI 영역 검색: AI 버튼 → 사진 위 영역 드래그 → 추천 목록 → 첫 번째 추천 클릭
     var aiPick = async function (sc, i) {
       var ai = sc.ai[i], r = ai.rect, name = sc.mats[i].name;
       moveTo(aiBtn, .55, .55);
-      await wait(1000);
+      await hwait(1000);
       await click(aiBtn);
       aiBtn.classList.add('on');
       aiTag.classList.add('on');
@@ -220,39 +224,39 @@ var CONFIG = {
       aiSel.style.top = r[1] + '%';
       aiSel.style.width = aiSel.style.height = '0';
       moveTo(photo, r[0] / 100, r[1] / 100);
-      await wait(1000);
+      await hwait(1000);
       aiSel.classList.add('on');
       void aiSel.offsetWidth;
       aiSel.classList.add('grow');
       aiSel.style.width = r[2] + '%';
       aiSel.style.height = r[3] + '%';
       moveTo(photo, (r[0] + r[2]) / 100, (r[1] + r[3]) / 100);
-      await wait(1100);
+      await hwait(1100);
       say('AI 추천 검색 중…');
-      await wait(800);
+      await hwait(800);
       hgrid.innerHTML = '';
       var target;
       ai.recs.forEach(function (m, k) { var c = matCard(m, 'div'); hgrid.appendChild(c); if (!k) target = c; });
       say('AI 추천 자재');
-      await wait(600);
+      await hwait(600);
       moveTo(target);
-      await wait(1000);
+      await hwait(1000);
       target.classList.add('is-hover');
-      await wait(350);
+      await hwait(350);
       cursor.classList.add('is-click');
       target.classList.add('is-press');
       say('“' + name + '” 삽입 중…');
-      await wait(220);
+      await hwait(220);
       target.classList.remove('is-press');
-      await wait(250);
+      await hwait(250);
       put(sc, i, true);
       say('삽입 완료: ' + name, true);
       aiSel.classList.add('fade');
-      await wait(450);
+      await hwait(450);
       cursor.classList.remove('is-click');
       aiBtn.classList.remove('on');
       aiTag.classList.remove('on');
-      await wait(900);
+      await hwait(900);
       renderPanel(sc);
     };
     // 한 장면: 마감재 2개를 차례로 배치(장면 2는 AI 영역 검색) → 잠시 보여준 뒤 다음 장면을 위해 되돌림
@@ -261,46 +265,46 @@ var CONFIG = {
         if (sc.ai && sc.ai[sc.add[k]]) { await aiPick(sc, sc.add[k]); continue; }
         var i = sc.add[k], card = cardEls[i], name = sc.mats[i].name;
         moveTo(card);
-        await wait(1000);
+        await hwait(1000);
         card.classList.add('is-hover');
-        await wait(350);
+        await hwait(350);
         cursor.classList.add('is-click');
         card.classList.add('is-press');
         say('“' + name + '” 삽입 중…');
-        await wait(220);
+        await hwait(220);
         card.classList.remove('is-press');
-        await wait(250);
+        await hwait(250);
         put(sc, i, true);
         say('삽입 완료: ' + name, true);
-        await wait(450);
+        await hwait(450);
         cursor.classList.remove('is-click');
         card.classList.remove('is-hover');
-        await wait(900);
+        await hwait(900);
       }
       moveTo(sc.slots.lastElementChild, .5, .5);
-      await wait(2600);
+      await hwait(2600);
     };
     var undo = async function (sc) {
       [].slice.call(sc.slots.children, sc.base.length).forEach(function (n) { n.classList.add('is-out'); });
-      await wait(550);
+      await hwait(550);
       reset(sc);
     };
 
     (async function loop() {
-      moveTo(SCENES[0].slots, .5, .6);
-      await wait(400);
+      moveTo(SCENES[FIRST].slots, .5, .6);
+      await hwait(400);
       cursor.style.opacity = 1;
-      for (var n = 0; ; n = (n + 1) % SCENES.length) {
+      for (var n = FIRST; ; n = (n + 1) % SCENES.length) {
         await whenVisible();
         var sc = SCENES[n], next = SCENES[(n + 1) % SCENES.length];
         await play(sc);
         // 왼쪽 슬라이드 목록에서 다음 장면 클릭
         moveTo(next.th, .6, .5);
-        await wait(1000);
+        await hwait(1000);
         await click(next.th);
         undo(sc);
         show(next);
-        await wait(700);
+        await hwait(700);
       }
     })();
   })();
@@ -535,6 +539,69 @@ var CONFIG = {
       });
     });
   });
+
+  // ===== 자유로운 편집: 글자 크기 → 색 → 이미지 크기 조절(링크 버튼 고정) → 링크 → 제품 상세·판매 페이지 =====
+  (function editDemo() {
+    var ewait = function (ms) { return wait(ms / 1.5); }; // 시연 1.5배 빠르게
+    var card = document.getElementById('editCard');
+    if (!card || reduceMotion) return;
+    var sel = document.getElementById('editSel');
+    var cursor = document.getElementById('editCursor');
+    var page = document.getElementById('editPage');
+    var link = sel.querySelector('.spec__link');
+    var handle = document.getElementById('editHandle');
+    var bSize = document.getElementById('editSize'), bGold = document.getElementById('editGold'), bGreen = document.getElementById('editGreen');
+    var at = function (el, fx, fy) { // 카드 기준 좌표로 커서 이동
+      var r = el.getBoundingClientRect(), c = card.getBoundingClientRect();
+      cursor.style.transform = 'translate(' + (r.left - c.left + r.width * (fx == null ? .5 : fx)) + 'px,' + (r.top - c.top + r.height * (fy == null ? .5 : fy)) + 'px)';
+    };
+    var press = async function (el) {
+      cursor.classList.add('is-click');
+      el.classList.add('is-press');
+      await ewait(200);
+      el.classList.remove('is-press');
+      await ewait(250);
+      cursor.classList.remove('is-click');
+    };
+    var visible = false;
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { visible = es[0].isIntersecting; }, { threshold: 0.4 }).observe(card);
+    else visible = true;
+    var whenVisible = function () { return new Promise(function (r) { (function chk() { visible && !document.hidden ? r() : setTimeout(chk, 300); })(); }); };
+    var reset = function () {
+      card.classList.remove('is-big', 'is-gold', 'is-green');
+      sel.style.width = '';
+      page.classList.remove('is-on');
+    };
+    var MAXW = '66%'; // 가장 크게 키울 때(흰 박스 높이는 CSS 에서 고정)
+    (async function loop() {
+      at(sel, .5, 1.2);
+      await ewait(300);
+      cursor.style.opacity = 1;
+      for (;;) {
+        await whenVisible();
+        // 1) 글자 크게
+        at(bSize); await ewait(700); await press(bSize); card.classList.add('is-big'); await ewait(700);
+        // 2) 글자 색 — 값은 머스터드, 항목명은 진초록
+        at(bGold); await ewait(600); await press(bGold); card.classList.add('is-gold'); await ewait(600);
+        at(bGreen); await ewait(500); await press(bGreen); card.classList.add('is-green'); await ewait(800);
+        // 3) 모서리 끌어 이미지 크기 조절(커졌다 작아짐) — 링크 버튼 크기는 그대로
+        at(handle); await ewait(700);
+        cursor.classList.add('is-click');
+        sel.style.width = MAXW; await ewait(80); at(handle); await ewait(900);
+        sel.style.width = '42%'; await ewait(80); at(handle); await ewait(900);
+        sel.style.width = '52%'; await ewait(80); at(handle); await ewait(700);
+        cursor.classList.remove('is-click');
+        await ewait(400);
+        // 4) 링크 버튼 → 제품 상세·판매 페이지
+        at(link); await ewait(700); await press(link);
+        page.classList.add('is-on'); await ewait(600);
+        at(page.querySelector('.pg__btn--buy')); await ewait(2600);
+        page.classList.remove('is-on'); await ewait(600);
+        // 처음 모습으로
+        reset(); at(sel, .5, 1.2); await ewait(1600);
+      }
+    })();
+  })();
 
   // ===== 이런 분들께 =====
   // [제목, 설명, 아이콘(24×24 선 아이콘 path)]

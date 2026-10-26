@@ -55,7 +55,7 @@ import AiRegionLayer from '@/macodi/AiRegionLayer.vue'
 import { ai, logPick, search as aiSearch, startManual, stopAi, thumbOf } from '@/macodi/aiRegion'
 import type { MacodiProduct } from '@/macodi/api'
 import useInsertSpecCard from '@/macodi/useInsertSpecCard'
-import { ensureSubscribed, subscribeState } from '@/macodi/subscription'
+import { ensureSubscribed, freeMsg, subscribeState } from '@/macodi/subscription'
 import { fileState } from '@/macodi/autosave'
 
 defineProps<{
@@ -116,7 +116,7 @@ const onScroll = () => {
 }
 watch(() => [ai.results.length, ai.others.length, ai.searching], () => nextTick(onScroll))
 
-// 자재 누르기 = 이 슬라이드에 스펙 카드로 담기(구독 기능 — 무료 1개 체험 후 구독 팝업)
+// 자재 누르기 = 이 슬라이드에 스펙 카드로 담기(구독 기능 — 무료 3개 체험 후 구독 팝업)
 const { insertSpecCard } = useInsertSpecCard()
 const pick = async (p: MacodiProduct) => {
   if (!(await ensureSubscribed('insert'))) return
@@ -127,7 +127,7 @@ const pick = async (p: MacodiProduct) => {
   setStatus(`"${p.name || '자재'}" 담는 중…`)
   insertSpecCard(p)
     .then(() => {
-      setStatus(free ? '무료 체험으로 1개를 담았어요. 더 담으려면 구독해 주세요.' : `슬라이드에 담았어요: ${p.name || '자재'} · 슬라이드를 누르면 다시 찾아요`)
+      setStatus(free ? freeMsg() : `슬라이드에 담았어요: ${p.name || '자재'} · 슬라이드를 누르면 다시 찾아요`)
       listRef.value?.scrollTo({ top: 0, behavior: 'smooth' }) // 담긴 카드가 보이게
     })
     .catch(e => setStatus((e && e.message) || '담지 못했어요.', true))

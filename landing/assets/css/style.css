@@ -159,7 +159,7 @@ h1, h2, h3, h4, p { margin: 0; }
 /* 히어로 장면 2: AI 영역 검색 — 사진 위 사각형 선택 영역(JS 가 위치·크기 지정) */
 .hsel { position: absolute; width: 0; height: 0; border: 2px dashed #fff; outline: 1px solid var(--accent); background: rgba(212, 162, 76, .22); opacity: 0; pointer-events: none; }
 .hsel.on { opacity: 1; }
-.hsel.grow { transition: width .9s cubic-bezier(.45, .05, .25, 1), height .9s cubic-bezier(.45, .05, .25, 1); }
+.hsel.grow { transition: width .6s cubic-bezier(.45, .05, .25, 1), height .6s cubic-bezier(.45, .05, .25, 1); }
 .hsel.fade { transition: opacity .4s; opacity: 0; }
 .hsel i { position: absolute; width: 7px; height: 7px; background: #fff; border: 1.5px solid var(--accent); }
 .hsel i:nth-child(1) { left: -5px; top: -5px; } .hsel i:nth-child(2) { right: -5px; top: -5px; }
@@ -202,6 +202,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .app__foot span:last-child { padding-left: 14px; }
 .app__cursor { position: absolute; left: 0; top: 0; width: 26px; height: 26px; z-index: 5; pointer-events: none; opacity: 0;
   transition: transform .9s cubic-bezier(.45, .05, .25, 1), opacity .3s; }
+#heroCursor { transition: transform .6s cubic-bezier(.45, .05, .25, 1), opacity .3s; } /* 히어로 시연만 1.5배 빠르게(.9s→.6s) */
 .app__cursor svg { width: 26px; height: 26px; fill: #16201c; stroke: #fff; stroke-width: 1.4; filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .3)); }
 .app__cursor i { position: absolute; left: 2px; top: 0; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; border: 2px solid var(--accent); opacity: 0; }
 .app__cursor.is-click i { animation: ripple .5s ease-out; }
@@ -431,7 +432,7 @@ button.mcard.is-used { border-color: var(--accent); }
 .ai-grid .mcard:nth-child(2) { animation-delay: .08s; } .ai-grid .mcard:nth-child(3) { animation-delay: .16s; } .ai-grid .mcard:nth-child(4) { animation-delay: .24s; }
 
 /* ---------- 편집 카드 ---------- */
-.editcard { position: relative; background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 64px 0 56px; box-shadow: var(--shadow); display: flex; justify-content: center; container-type: inline-size; }
+.editcard { position: relative; height: 620px; background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 64px 0 56px; box-shadow: var(--shadow); display: flex; justify-content: center; align-items: center; container-type: inline-size; } /* 높이 고정 — 이미지 크기 조절 시연 중에도 박스는 그대로 */
 .editcard__sel { position: relative; width: 52%; outline: 1.5px solid var(--accent); outline-offset: 10px; }
 .editcard__sel .h { position: absolute; width: 11px; height: 11px; background: #fff; border: 1.5px solid var(--accent); border-radius: 2px; }
 .h1 { left: -16px; top: -16px; } .h2 { right: -16px; top: -16px; } .h3 { left: -16px; bottom: -16px; } .h4 { right: -16px; bottom: -16px; }
@@ -443,6 +444,40 @@ button.mcard.is-used { border-color: var(--accent); }
 .editcard__tools { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 4px; box-shadow: 0 8px 18px -10px rgba(0, 0, 0, .3); }
 .editcard__tools span { width: 30px; height: 28px; display: grid; place-items: center; font-size: 13px; font-weight: 700; border-radius: 6px; color: var(--ink-2); }
 .editcard__tools span.sw::after { content: ''; width: 14px; height: 14px; border-radius: 50%; background: var(--c); }
+/* 편집 시연 — 글자 크기·색, 이미지 크기(링크 버튼은 고정 크기), 링크 → 제품 상세·판매 페이지 */
+.editcard__sel { transition: width .47s cubic-bezier(.45, .05, .25, 1); }
+.spec--lg .spec__rows div { transition: font-size .23s; }
+.spec--lg .spec__rows dt, .spec--lg .spec__rows dd { transition: color .23s; }
+.spec--lg .spec__link { width: 40px; border-radius: 9px; } /* 이미지 크기와 상관없이 고정 */
+.editcard__tools span small { font-size: 9px; margin-left: 1px; }
+.editcard__tools span.is-press { background: #eef2ee; }
+.editcard.is-big .spec--lg .spec__rows div { font-size: 15.5px; }
+.editcard.is-gold .spec--lg .spec__rows dd { color: #b07d1f; font-weight: 600; }
+.editcard.is-green .spec--lg .spec__rows dt { color: #23443A; font-weight: 600; }
+.spec__link.is-press { transform: scale(.9); transition: transform .15s; }
+.editcard__cursor { z-index: 6; transition: transform .4s cubic-bezier(.45, .05, .25, 1), opacity .3s; }
+.editcard__page { position: absolute; inset: 14%; /* 브라우저 창 = 흰 박스의 약 72% */ z-index: 5; background: #fff; border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 24px 48px -16px rgba(0, 0, 0, .35); overflow: hidden; opacity: 0; transform: translateY(14px) scale(.97); pointer-events: none; transition: opacity .23s, transform .23s; display: flex; flex-direction: column; }
+.editcard__page.is-on { opacity: 1; transform: none; }
+.pg__bar { flex: none; display: flex; align-items: center; gap: 5px; padding: 9px 12px; background: #f3f4f2; border-bottom: 1px solid var(--line); }
+.pg__bar i { width: 8px; height: 8px; border-radius: 50%; background: #d6d9d5; }
+.pg__bar span { margin-left: 8px; flex: 1; padding: 3px 10px; border-radius: 6px; background: #fff; font-size: 11px; color: #777; }
+.pg__body { flex: 1; display: flex; flex-direction: column; gap: 12px; padding: 14px; min-height: 0; }
+.pg__img { flex: 1; min-height: 0; border-radius: 12px; overflow: hidden; background: var(--bg-2, #eef2ee); } /* 이미지 = 위 전체 폭 */
+.pg__img img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; }
+.pg__info { flex: none; display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; min-width: 0; }
+.pg__left, .pg__right { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.pg__brand { margin: 0; font-size: 10.5px; color: #8a948f; }
+.pg__name { margin: 0 0 2px; font-size: 18px; font-weight: 800; color: #23443A; letter-spacing: -.2px; }
+.pg__rows { margin: 0; display: grid; gap: 2px; }
+.pg__rows div { display: flex; gap: 8px; font-size: 10.5px; }
+.pg__rows dt { width: 52px; flex: none; color: #8a948f; }
+.pg__rows dd { margin: 0; color: #2b3330; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pg__price { margin: 0; display: flex; justify-content: space-between; align-items: baseline; font-size: 10.5px; color: #8a948f; }
+.pg__price b { font-size: 13px; color: #2b3330; }
+.pg__price.is-deal b { color: #b07d1f; }
+.pg__btns { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 4px; }
+.pg__btn { display: grid; place-items: center; height: 28px; border-radius: 7px; border: 1px solid #23443A; font-size: 10.5px; font-weight: 700; color: #23443A; background: #fff; }
+.pg__btn--buy { height: 30px; background: #23443A; color: #fff; }
 
 /* ---------- 기본 기능 그리드 ---------- */
 .fgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -570,6 +605,8 @@ button.mcard.is-used { border-color: var(--accent); }
   .ft__top { flex-direction: column; }
 }
 @media (max-width: 640px) {
+  .editcard { height: 500px; }
+  .pg__info { grid-template-columns: 1fr; gap: 8px; }
   .m-only { display: inline; }
   .pc-only { display: none; }
   .wrap { padding: 0 16px; }

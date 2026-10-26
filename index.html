@@ -2,6 +2,30 @@
 <html lang="ko">
   <head>
     <meta charset="UTF-8">
+    <!-- 짧은 SMS/광고 링크용 — ?s=sms|meta|google|kakao 를 utm_* 로 확장(gtag보다 먼저 실행해야 GA4가 소스로 인식). -->
+    <script>
+      (function () {
+        try {
+          var q = new URLSearchParams(location.search), s = q.get('s');
+          if (s && !q.get('utm_source')) {
+            var M = { sms: ['sms', 'sms'], meta: ['meta', 'cpc'], google: ['google', 'cpc'], kakao: ['kakao', 'social'], insta: ['instagram', 'social'] };
+            var m = M[s] || [s, 'link'];
+            q.set('utm_source', m[0]); q.set('utm_medium', m[1]);
+            if (!q.get('utm_campaign')) q.set('utm_campaign', 'moodeck_launch');
+            q.delete('s');
+            history.replaceState(null, '', location.pathname + '?' + q.toString() + location.hash);
+          }
+        } catch (e) { /* 무시 */ }
+      })();
+    </script>
+    <!-- 무드덱 전용 GA4 (마코디 GA와 분리된 '별도 속성' moodeck). 랜딩(landing/index.html)과 동일 ID. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5F961QBTRT"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-5F961QBTRT');
+    </script>
     <link rel="icon" type="image/svg+xml" href="/moodeck-icon.svg">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="renderer" content="webkit">

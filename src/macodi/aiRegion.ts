@@ -12,6 +12,9 @@
 import { reactive } from 'vue'
 import { AI_URL, type MacodiProduct, toCdn } from './api'
 import { demoStroke } from './colorRegions'
+import { avoidJoints, boxStroke, shadeColor } from './shade'
+
+const SHADE_FIX = false // 그늘 보정 대표색 사용 여부(정답지 평균 비교 전까지 끔)
 
 export interface SrcBox { x: number; y: number; w: number; h: number } // 슬라이드 기준 0~1
 
@@ -34,7 +37,7 @@ export const ai = reactive({
   img: null as HTMLImageElement | null,
   msg: '',
   box: null as SrcBox | null,
-  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string; purpose: string },
+  post: null as null | { rgb_r: number; rgb_g: number; rgb_b: number; cropdata: string; purpose: string; hex: string },
   results: [] as MacodiProduct[],
   searching: false,
   page: 1,
@@ -193,8 +196,19 @@ export const startManual = async () => {
     // 시범 = 예전 색 덩어리 방식(면 하나를 깔끔하게 잡음) + 공간 사진이면 바닥·벽·천장 위 덩어리만 후보
     const regs = await analyzeRegions(im)
     if (!ai.active || my !== reqId) return
-    const stroke = (regs.length && demoStroke(im, finishMask(regs))) || demoStroke(im)
+    let stroke = (regs.length && demoStroke(im, finishMask(regs))) || demoStroke(im)
     if (!stroke) return
+    // 줄눈 피하기 — 시범 박스 안에 곧은 줄눈이 있으면 줄눈 사이 가장 넓은 칸으로 줄임(shade.ts)
+    let x1 = 1, y1 = 1, x2 = 0, y2 = 0
+    for (const [x, y] of stroke) {
+      x1 = Math.min(x1, x)
+      y1 = Math.min(y1, y)
+      x2 = Math.max(x2, x)
+      y2 = Math.max(y2, y)
+    }
+    const b0 = { x: Math.max(0, x1), y: Math.max(0, y1), w: Math.min(1, x2) - Math.max(0, x1), h: Math.min(1, y2) - Math.max(0, y1) }
+    const jb = b0.w > 0 && b0.h > 0 ? avoidJoints(im, b0) : b0
+    if (jb !== b0) stroke = boxStroke(jb)
     ai.demo = stroke
   }
   catch { /* 시범 생략 */ }
@@ -235,26 +249,6 @@ export const searchArea = async (b: SrcBox) => {
   }
 }
 
-// 웹 getColorFromImage — 64px 다운샘플, 알파 16 미만 제외 평균
-const avgColor = (canvas: HTMLCanvasElement) => {
-  const w = Math.min(64, canvas.width), h = Math.min(64, canvas.height)
-  const c = document.createElement('canvas')
-  c.width = w
-  c.height = h
-  const ctx = c.getContext('2d')!
-  ctx.drawImage(canvas, 0, 0, w, h)
-  const d = ctx.getImageData(0, 0, w, h).data
-  let r = 0, g = 0, b = 0, n = 0
-  for (let i = 0; i < d.length; i += 4) {
-    if (d[i + 3] < 16) continue
-    r += d[i]
-    g += d[i + 1]
-    b += d[i + 2]
-    n++
-  }
-  return n ? [Math.round(r / n), Math.round(g / n), Math.round(b / n)] : [0, 0, 0]
-}
-
 const searchBox = (b: SrcBox, purpose = '') => {
   const im = ai.img
   if (!im) return
@@ -270,11 +264,14 @@ const searchBox = (b: SrcBox, purpose = '') => {
   catch {
     return
   }
-  const rgb = avgColor(c)
+  // 대표색 = 그늘 보정색(렌더는 카탈로그보다 어둡게 나옴 — shade.ts 실측) → AI 서버 색 재정렬에 그대로 사용.
+  //  ⚠️ SHADE_FIX=false 동안은 hex 를 보내지 않음 = 그전 방식(AI 서버가 크롭에서 직접 대표색 측정). 평균 비교 끝나면 결정
+  const { rgb, hex } = shadeColor(c)
   ai.post = {
     rgb_r: rgb[0], rgb_g: rgb[1], rgb_b: rgb[2],
     cropdata: c.toDataURL('image/png'), // ⚠️ AI 서버는 PNG 접두사만 벗긴다
     purpose, // floor|wall|ceiling — 그 용도 자재로 좁힘('' = 전체)
+    hex: SHADE_FIX ? hex : '',
   }
   search(1)
 }
@@ -284,6 +281,7 @@ const fetchPage = (page: number) => postJson<unknown>(AI_URL + '/productai', {
   page, categories: [], companyName: '',
   cropdata: ai.post!.cropdata, txtSearch: '', isRandom: 0, storeName: '',
   purpose: ai.post!.purpose,
+  hex: ai.post!.hex,
 }).then(raw => {
   const r = raw as { data?: MacodiProduct[]; products?: MacodiProduct[]; results?: MacodiProduct[] } | MacodiProduct[] | null
   return Array.isArray(r) ? r : (r?.data || r?.products || r?.results || [])

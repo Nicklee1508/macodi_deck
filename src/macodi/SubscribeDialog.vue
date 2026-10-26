@@ -21,7 +21,7 @@
             <li>.pptx 불러오기 · 내보내기</li>
             <li>PDF · 이미지 내보내기</li>
             <li>슬라이드 쇼 · 발표자 모드</li>
-            <li>마감재 이미지 배치 1개 체험</li>
+            <li>마감재 이미지 배치 {{ FREE_INSERT_LIMIT }}개 체험</li>
           </ul>
           <button type="button" class="sp-btn ghost" @click="close">무료로 계속 쓰기</button>
         </div>
@@ -144,7 +144,7 @@
 import { computed, ref, watch } from 'vue'
 import Modal from '@/components/Modal.vue'
 import message from '@/utils/message'
-import { activateKey, cancelSubscription, resendKey, startBilling, subscribeState } from './subscription'
+import { FREE_INSERT_LIMIT, activateKey, cancelSubscription, resendKey, startBilling, subscribeState } from './subscription'
 
 const email = ref('')
 const agreeAuto = ref(false)
@@ -178,7 +178,7 @@ const close = () => {
 
 const headTitle = computed(() => (
   subscribeState.reason === 'new' ? '새 프로젝트를 만들려면 구독이 필요해요'
-    : subscribeState.reason === 'insert' ? '무료 체험(마감재 1개)을 모두 썼어요'
+    : subscribeState.reason === 'insert' ? `무료 체험(마감재 ${FREE_INSERT_LIMIT}개)을 모두 썼어요`
       : 'moodeck 요금 안내'
 ))
 const canPay = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value) && agreeAuto.value && agreeTerms.value)

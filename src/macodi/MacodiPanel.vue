@@ -91,7 +91,7 @@ import ColorFilter from './ColorFilter.vue'
 import { sizeWxL } from './sizeFormat'
 import { ai, logPick, search as aiSearch, startManual, stopAi, thumbOf } from './aiRegion'
 import { fixKoreanTypo } from './hangulFix'
-import { ensureSubscribed, subscribeState } from './subscription'
+import { ensureSubscribed, freeMsg, subscribeState } from './subscription'
 import { fileState } from './autosave'
 
 const q = ref('') // 입력 중인 글자
@@ -172,13 +172,13 @@ watch([products, loadingMore], () => nextTick(() => {
 
 const { insertSpecCard } = useInsertSpecCard()
 const insert = async (p: MacodiProduct, checked = false) => {
-  if (!checked && !(await ensureSubscribed('insert'))) return // 자재 담기 = 구독 기능(무료 1개 체험 후엔 구독 팝업)
+  if (!checked && !(await ensureSubscribed('insert'))) return // 자재 담기 = 구독 기능(무료 3개 체험 후엔 구독 팝업)
   const free = subscribeState.freeUsedNotice
   subscribeState.freeUsedNotice = false
   setStatus(`"${p.name || '자재'}" 삽입 중…`)
   insertSpecCard(p)
     .then(() => setStatus(free
-      ? `무료 체험으로 1개를 담았어요. 더 담으려면 구독해 주세요.`
+      ? freeMsg()
       : `삽입 완료: ${p.name || '자재'}`))
     .catch(e => setStatus((e && e.message) || '삽입하지 못했습니다.', true))
 }
@@ -227,7 +227,7 @@ const onColorOpen = () => {
 const insertAi = async (p: MacodiProduct) => {
   if (!(await ensureSubscribed('insert'))) return
   ai.paused = true
-  insert(p, true) // 위에서 이미 확인함(두 번 확인하면 무료 1개가 두 번 깎임)
+  insert(p, true) // 위에서 이미 확인함(두 번 확인하면 무료 체험이 두 번 깎임)
   logPick(p.id)
 }
 

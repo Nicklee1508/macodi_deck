@@ -68,7 +68,7 @@ export const subscribeState = reactive({
   /** 카드 등록·첫 결제 실패 안내창(mode 'failed')의 제목·내용 */
   failTitle: '',
   failMsg: '',
-  /** 무료 체험 1개를 방금 썼음 → 패널이 안내 */
+  /** 무료 체험 1개를 방금 썼음 → 패널이 안내(남은 개수는 freeInsertsLeft) */
   freeUsedNotice: false,
 })
 
@@ -147,13 +147,20 @@ export const refreshStatus = async () => {
   return subscribeState.active
 }
 
-/** 구독 없이 마감재 담기 무료 체험 — 이 브라우저에서 1개까지 */
+/** 구독 없이 마감재 담기 무료 체험 — 이 브라우저에서 3개까지 */
 const FREE_INSERT_STORE = 'moodeck.freeInserts'
-export const FREE_INSERT_LIMIT = 1
+export const FREE_INSERT_LIMIT = 3
 export const freeInsertsLeft = () => Math.max(0, FREE_INSERT_LIMIT - (Number(read(FREE_INSERT_STORE)) || 0))
+/** 무료로 담은 직후 안내 — 남은 개수까지 */
+export const freeMsg = () => {
+  const left = freeInsertsLeft()
+  return left > 0
+    ? `무료 체험으로 담았어요. 무료로 ${left}개 더 담을 수 있어요.`
+    : `무료 체험 ${FREE_INSERT_LIMIT}개를 모두 썼어요. 더 담으려면 구독해 주세요.`
+}
 const useFreeInsert = () => write(FREE_INSERT_STORE, String((Number(read(FREE_INSERT_STORE)) || 0) + 1))
 
-/** 담기·새 프로젝트 직전 — 서버로 바로 확인하고, 아니면 구독 팝업(담기는 무료 1개까지 먼저 허용) */
+/** 담기·새 프로젝트 직전 — 서버로 바로 확인하고, 아니면 구독 팝업(담기는 무료 3개까지 먼저 허용) */
 export const ensureSubscribed = async (reason: 'new' | 'insert') => {
   if (subscribeState.key && await refreshStatus()) return true
   if (reason === 'insert' && freeInsertsLeft() > 0) {
