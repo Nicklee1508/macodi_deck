@@ -41,6 +41,7 @@ function getSource(): Record<string, string> {
 
 /** 관리자(내부) 기기 표식 — ?s=internal 로 한 번 각인하면 이후 비콘에 internal:1(MA 집계서 기본 제외). */
 function internalFlag(): Record<string, number> {
+  if (import.meta.env.DEV) return { internal: 1 } // 로컬 개발(npm run dev) 기록은 항상 사내
   try { return localStorage.getItem('moodeck.internal') === '1' ? { internal: 1 } : {} }
   catch { return {} }
 }
