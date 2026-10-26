@@ -79,6 +79,7 @@ export const loadImage = (src: string) => new Promise<HTMLImageElement>((resolve
 
 export const stopAi = () => {
   reqId++
+  prefetch = null
   Object.assign(ai, {
     active: false, img: null, msg: '',
     box: null, post: null, paused: false, others: [], results: [], demo: null, searching: false, page: 1, hasMore: false,
@@ -93,7 +94,8 @@ interface SceneRegion { purpose: string; area: number; polygon: [number, number]
 const PURPOSES = ['floor', 'wall', 'ceiling']
 let regionCache: { key: string; list: Promise<SceneRegion[]> } | null = null
 const imgKey = (im: HTMLImageElement) => `${im.src.length}:${im.src.slice(300, 400)}:${im.src.slice(-120)}`
-const toJpegData = (im: HTMLImageElement, max = 1024) => {
+// AI 서버는 518px 로 줄여 분석 → 640px 면 충분(전송·처리 빨라짐, 결과 같음)
+const toJpegData = (im: HTMLImageElement, max = 640) => {
   const k = Math.min(1, max / Math.max(im.naturalWidth, im.naturalHeight))
   const c = document.createElement('canvas')
   c.width = Math.max(1, Math.round(im.naturalWidth * k))
@@ -184,6 +186,12 @@ const purposeOf = (regs: SceneRegion[], b: SrcBox) => {
   return bestFrac >= 0.35 ? best : ''
 }
 
+/** 미리 준비 — AI 버튼에 마우스를 올리면 슬라이드 캡처·영역 분석을 먼저 시작(클릭할 때 기다림 줄이기). 실패는 무시 */
+export const prewarm = () => {
+  if (ai.active && !ai.paused) return
+  capture().then(im => analyzeRegions(im)).catch(() => undefined)
+}
+
 /** [AI 영역 검색] — 슬라이드 위 어디든 둘러 그려서 검색. 누를 때마다 시범 선을 보여준다 */
 export const startManual = async () => {
   stopAi()
@@ -210,14 +218,18 @@ export const startManual = async () => {
     const jb = b0.w > 0 && b0.h > 0 ? avoidJoints(im, b0) : b0
     if (jb !== b0) stroke = boxStroke(jb)
     ai.demo = stroke
+    // 시범 선을 그리는 동안 추천 검색을 미리 시작(방금 찍은 슬라이드 그대로) — 선이 끝나면 결과가 이미 와 있게
+    const pb = strokeBox(stroke)
+    if (pb) {
+      prefetch = { box: pb, at: Date.now() }
+      searchBox(pb, purposeOf(regs, pb), false)
+    }
   }
   catch { /* 시범 생략 */ }
 }
 
-/** 손으로 그린 선(슬라이드 기준 0~1) → 그 바깥 사각형(라운드 박스)으로 검색 — 웹 onDrawEnd 와 같음 */
-export const searchStroke = async (stroke: [number, number][]) => {
-  ai.demo = null
-  ai.msg = ''
+// 선 → 바깥 사각형(0~1). 너무 작으면 null
+const strokeBox = (stroke: [number, number][]): SrcBox | null => {
   let x1 = 1, y1 = 1, x2 = 0, y2 = 0
   for (const [x, y] of stroke) {
     x1 = Math.min(x1, x)
@@ -225,15 +237,31 @@ export const searchStroke = async (stroke: [number, number][]) => {
     x2 = Math.max(x2, x)
     y2 = Math.max(y2, y)
   }
-  if (x2 - x1 < 0.01 || y2 - y1 < 0.01) {
+  return x2 - x1 < 0.01 || y2 - y1 < 0.01 ? null : { x: x1, y: y1, w: x2 - x1, h: y2 - y1 }
+}
+// 시범 중 미리 시작한 검색 — 선이 끝나 같은 박스로 검색을 부르면 다시 찍거나 다시 검색하지 않음
+let prefetch: { box: SrcBox; at: number } | null = null
+
+/** 손으로 그린 선(슬라이드 기준 0~1) → 그 바깥 사각형(라운드 박스)으로 검색 — 웹 onDrawEnd 와 같음 */
+export const searchStroke = async (stroke: [number, number][]) => {
+  ai.demo = null
+  ai.msg = ''
+  const b = strokeBox(stroke)
+  if (!b) {
     ai.msg = '영역이 너무 작아요. 조금 더 크게 그려주세요.'
     return
   }
-  await searchArea({ x: x1, y: y1, w: x2 - x1, h: y2 - y1 })
+  await searchArea(b)
 }
 
 /** 박스 영역 검색 — 그릴 때·박스를 옮기거나 키운 뒤 놓을 때. 슬라이드는 매번 새로 찍는다(내용이 바뀌었을 수 있음) */
 export const searchArea = async (b: SrcBox) => {
+  const p = prefetch
+  prefetch = null
+  if (p && Date.now() - p.at < 10000 && ['x', 'y', 'w', 'h'].every(k => Math.abs(p.box[k as keyof SrcBox] - b[k as keyof SrcBox]) < 1e-9)) {
+    ai.box = b // 시범 박스 — 검색은 이미 진행 중
+    return
+  }
   ai.box = b
   const my = ++reqId
   try {
@@ -249,10 +277,10 @@ export const searchArea = async (b: SrcBox) => {
   }
 }
 
-const searchBox = (b: SrcBox, purpose = '') => {
+const searchBox = (b: SrcBox, purpose = '', show = true) => {
   const im = ai.img
   if (!im) return
-  ai.box = b
+  if (show) ai.box = b // 시범 미리 검색이면 박스는 선이 끝난 뒤에 보임
   const srcW = b.w * im.naturalWidth, srcH = b.h * im.naturalHeight
   const out = Math.min(1, CROP_MAX_OUT / Math.max(srcW, srcH, 1))
   const c = document.createElement('canvas')

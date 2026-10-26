@@ -7,7 +7,12 @@
     (function () {
       try {
         var q = new URLSearchParams(location.search), s = q.get('s');
-        if (s && !q.get('utm_source')) {
+        if (s === 'internal') {
+          // 관리자(내부) 기기 표식 — 이 기기의 이후 모든 비콘에 internal:1 첨부(MA 집계서 기본 제외). 한 번만 누르면 영구.
+          try { localStorage.setItem('moodeck.internal', '1'); } catch (ie) {}
+          q.delete('s');
+          history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q.toString() : '') + location.hash);
+        } else if (s && !q.get('utm_source')) {
           var M = { sms: ['sms', 'sms'], meta: ['meta', 'cpc'], google: ['google', 'cpc'], kakao: ['kakao', 'social'], insta: ['instagram', 'social'] };
           var m = M[s] || [s, 'link'];
           q.set('utm_source', m[0]); q.set('utm_medium', m[1]);
@@ -699,7 +704,7 @@
 <script>
   (function () {
     // ⚠️ 무드덱 MA 수집 URL(analytics_back .../events/deck)로 교체. 비우면 GA4만 동작.
-    var BEACON = '';
+    var BEACON = 'https://maapi.macodi.co.kr:8000/events/deck';
     function did() {
       try {
         var k = 'moodeck.deviceId', v = localStorage.getItem(k);
@@ -717,10 +722,11 @@
         var s = localStorage.getItem('moodeck.src'); return s ? JSON.parse(s) : {};
       } catch (e) { return {}; }
     }
+    function intl() { try { return localStorage.getItem('moodeck.internal') === '1' ? { internal: 1 } : {}; } catch (e) { return {}; } }
     function send(event, extra) {
       if (!BEACON) return;
       try {
-        var b = Object.assign({ deviceId: did(), event: event, page: 'landing' }, src(), extra || {});
+        var b = Object.assign({ deviceId: did(), event: event, page: 'landing' }, src(), intl(), extra || {});
         fetch(BEACON, { method: 'POST', headers: { 'content-type': 'application/json' }, keepalive: true, body: JSON.stringify(b) }).catch(function () {});
       } catch (e) {}
     }

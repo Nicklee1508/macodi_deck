@@ -103,7 +103,19 @@ const waitImages = (root: HTMLElement) => Promise.all(
     img.onerror = () => res()
   }))),
 )
-const captureSlide = async (): Promise<HTMLImageElement> => {
+// 같은 슬라이드(내용 그대로)면 다시 찍지 않음 — AI 버튼을 다시 누르거나 미리 준비(prewarm)한 그림을 그대로 씀
+let lastCap: { key: string; img: Promise<HTMLImageElement> } | null = null
+const captureSlide = (): Promise<HTMLImageElement> => {
+  const key = currentSlide.value ? JSON.stringify(currentSlide.value) : ''
+  if (key && lastCap?.key === key) return lastCap.img
+  const img = captureFresh()
+  lastCap = { key, img }
+  img.catch(() => {
+    if (lastCap?.img === img) lastCap = null
+  })
+  return img
+}
+const captureFresh = async (): Promise<HTMLImageElement> => {
   capturing.value = true
   try {
     await nextTick()
@@ -233,7 +245,7 @@ let demoRaf = 0
 watch(() => ai.demo, stroke => {
   cancelAnimationFrame(demoRaf)
   if (!stroke || !stroke.length) return
-  const start = performance.now(), DUR = 1400
+  const start = performance.now(), DUR = 700 // 시범 선 그리는 시간(1.4초 → 0.7초)
   const step = (t: number) => {
     if (ai.demo !== stroke || !W.value) {
       points.value = []
@@ -247,7 +259,7 @@ watch(() => ai.demo, stroke => {
       setTimeout(() => {
         points.value = []
         if (ai.demo === stroke) searchStroke(stroke)
-      }, 250)
+      }, 120)
     }
   }
   demoRaf = requestAnimationFrame(step)

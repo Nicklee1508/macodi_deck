@@ -39,6 +39,12 @@ function getSource(): Record<string, string> {
   return {}
 }
 
+/** 관리자(내부) 기기 표식 — ?s=internal 로 한 번 각인하면 이후 비콘에 internal:1(MA 집계서 기본 제외). */
+function internalFlag(): Record<string, number> {
+  try { return localStorage.getItem('moodeck.internal') === '1' ? { internal: 1 } : {} }
+  catch { return {} }
+}
+
 export function track(event: string, params: Record<string, any> = {}): void {
   try {
     window.gtag?.('event', event, { device_id: deviceId, ...params })
@@ -50,7 +56,7 @@ export function track(event: string, params: Record<string, any> = {}): void {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         keepalive: true,
-        body: JSON.stringify({ deviceId, event, page: 'editor', ...getSource(), ...params }),
+        body: JSON.stringify({ deviceId, event, page: 'editor', ...getSource(), ...internalFlag(), ...params }),
       }).catch(() => {})
     }
     catch { /* MA 비콘 실패 무시 */ }

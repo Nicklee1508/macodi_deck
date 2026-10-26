@@ -14,6 +14,7 @@
         :class="{ on: ai.active && !ai.paused, pulse: aiTip }"
         :title="ai.active && !ai.paused ? 'AI 영역 검색 끝내기' : 'AI 영역 검색 — 슬라이드 위에서 찾을 곳을 둘러 그리기'"
         @click="toggle"
+        @mouseenter="prewarm"
       >AI<span v-if="ai.active && !ai.paused" class="clr" title="AI 영역 검색 끝내기" @click.stop="stopAi">×</span></button>
       <!-- 컬러 필터 — 색과 검색어를 함께 적용. 버튼을 누르는 순간 AI 영역 검색은 꺼짐 -->
       <ColorFilter v-model="color" @open="onColorOpen" />
@@ -89,7 +90,7 @@ import { type MacodiProduct, colorSearchProducts, searchProducts, toCdn } from '
 import useInsertSpecCard from './useInsertSpecCard'
 import ColorFilter from './ColorFilter.vue'
 import { sizeWxL } from './sizeFormat'
-import { ai, logPick, search as aiSearch, startManual, stopAi, thumbOf } from './aiRegion'
+import { ai, logPick, prewarm, search as aiSearch, startManual, stopAi, thumbOf } from './aiRegion'
 import { fixKoreanTypo } from './hangulFix'
 import { ensureSubscribed, freeMsg, subscribeState } from './subscription'
 import { fileState } from './autosave'
